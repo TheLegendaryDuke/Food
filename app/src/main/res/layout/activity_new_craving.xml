@@ -9,54 +9,54 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="itsjustaaron.food.NewCraving">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="30sp"
-        android:text="Food:"
-        android:paddingTop="10dp"
-        android:textStyle="bold"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:id="@+id/searchFood"
+        android:visibility="gone"
+        android:gravity="center_horizontal">
 
-        android:id="@+id/textView2"
-        android:layout_alignTop="@+id/button"
-        android:layout_alignParentStart="true" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Please enter comma seperated tags or the name of the food"
+            android:textSize="20sp"
+            android:textColor="#000000"
+            android:textStyle="bold"
+            android:layout_alignParentTop="true"
+            android:id="@+id/searchFoodPrompt"/>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Select a Food"
-        android:id="@+id/button"
-        android:layout_marginStart="20dp"
-        android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/textView2" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Create a Food"
-        android:id="@+id/button2"
-        android:layout_alignTop="@+id/button"
-        android:layout_toEndOf="@+id/button"
-        android:layout_marginStart="20dp" />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/searchFoodBox"
+                android:layout_alignParentEnd="true"
+                android:id="@+id/searchFoodSearch"
+                android:text="Search"
+                android:onClick="Search"/>
 
-    <ImageView
-        android:layout_width="65dp"
-        android:layout_height="65dp"
-        android:id="@+id/newCravingImage"
-        android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/textView2"
-        android:layout_marginStart="10dp"
-        android:visibility="gone"/>
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:singleLine="true"
+                android:id="@+id/searchFoodBox"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="65dp"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Food Name"
-        android:id="@+id/newCravingFoodName"
-        android:layout_toEndOf="@id/newCravingImage"
-        android:layout_marginStart="10dp"
-        android:layout_alignBottom="@id/newCravingImage"
-        android:visibility="gone"/>
+        </RelativeLayout>
 
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent">
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/searchFoodResult">
+            </ListView>
+        </ScrollView>
+    </LinearLayout>
 </RelativeLayout>
