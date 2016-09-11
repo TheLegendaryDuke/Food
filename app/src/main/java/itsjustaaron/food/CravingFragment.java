@@ -210,8 +210,6 @@ public class CravingFragment extends Fragment {
         } else {
             if(Data.cravings == null) {
                 Data.cravings = new ArrayList<Craving>();
-            }else {
-                Data.cravings.clear();
             }
             Data.collection.nextPage(new AsyncCallback<BackendlessCollection<Map>>() {
                 @Override
