@@ -73,6 +73,7 @@ public class Main extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Data.cravings = new ArrayList<>();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
