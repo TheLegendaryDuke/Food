@@ -33,7 +33,7 @@ public class Welcome extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
         String appVersion = "v1";
-        Backendless.initApp(this, "0020F1DC-E584-AD36-FF74-6D3E9E917400", "7DCC75D9-058A-6830-FF54-817317E0C000", appVersion);
+        //Backendless.Init ommitted
         new Thread() {
             @Override
             public void run() {
