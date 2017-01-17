@@ -3,9 +3,10 @@ package itsjustaaron.food;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,10 +16,9 @@ import android.widget.Toast;
 
 import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
-import com.backendless.async.callback.AsyncCallback;
-import com.backendless.exceptions.BackendlessFault;
+import com.backendless.exceptions.BackendlessException;
 import com.backendless.persistence.local.UserIdStorageFactory;
-import com.backendless.persistence.local.UserTokenStorageFactory;
+
 
 public class Welcome extends AppCompatActivity {
 
@@ -28,50 +28,50 @@ public class Welcome extends AppCompatActivity {
         this.finish();
     }
 
+    private ProgressDialog wait;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
+        wait = new ProgressDialog(Welcome.this);
+        wait.setTitle("Please wait...");
         String appVersion = "v1";
         Backendless.initApp(this, "0020F1DC-E584-AD36-FF74-6D3E9E917400", "7DCC75D9-058A-6830-FF54-817317E0C000", appVersion);
-        new Thread() {
+        //Check for previous login session
+        new AsyncTask<Void, Void, Integer>() {
+            //0 is success, 1 is failed(no previous login session available), 2 is error(login session no longer valid)
             @Override
-            public void run() {
-                Backendless.UserService.isValidLogin(new AsyncCallback<Boolean>() {
-                    @Override
-                    public void handleResponse(Boolean aBoolean) {
-
-                        if(aBoolean) {
-                            String userID = UserIdStorageFactory.instance().getStorage().get();
-                            Backendless.Data.of(BackendlessUser.class).findById(userID, new AsyncCallback<BackendlessUser>() {
-                                @Override
-                                public void handleResponse(BackendlessUser backendlessUser) {
-                                    Data.user = backendlessUser;
-                                    Proceed();
-                                }
-
-                                @Override
-                                public void handleFault(BackendlessFault backendlessFault) {
-                                }
-                            });
-                        }else {
-                            findViewById(R.id.CoverImage).setVisibility(View.GONE);
-                            findViewById(R.id.WelcomeBG).setVisibility(View.GONE);
-                        }
+            public Integer doInBackground(Void... voids) {
+                try {
+                    boolean aBoolean = Backendless.UserService.isValidLogin();
+                    if (aBoolean) {
+                        String userID = UserIdStorageFactory.instance().getStorage().get();
+                        Data.user = Backendless.Data.of(BackendlessUser.class).findById(userID);
+                        Proceed();
+                        return 0;
+                    } else {
+                        return 1;
                     }
-
-                    @Override
-                    public void handleFault(BackendlessFault backendlessFault) {
-                        findViewById(R.id.CoverImage).setVisibility(View.GONE);
-                        findViewById(R.id.WelcomeBG).setVisibility(View.GONE);
-                        Toast.makeText(getApplicationContext(), "Your login session has expired!", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                } catch (Exception e) {
+                    Log.d("backendless", e.toString());
+                    return 2;
+                }
             }
-        }.run();
+
+            @Override
+            public void onPostExecute(Integer result) {
+                if (result == 2) {
+                    Toast.makeText(getApplicationContext(), "Your login session has expired!", Toast.LENGTH_SHORT).show();
+                }
+                findViewById(R.id.CoverImage).setVisibility(View.GONE);
+                findViewById(R.id.WelcomeBG).setVisibility(View.GONE);
+            }
+        }.execute(new Void[]{});
     }
 
     public void Login(View view) {
+        //create a really big form as an alertdialog(not sure what other option is available without starting a new activity)
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
         final View popup = inflater.inflate(R.layout.login, null);
@@ -80,12 +80,10 @@ public class Welcome extends AppCompatActivity {
                 .setPositiveButton("Proceed", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        final ProgressDialog wait = new ProgressDialog(Welcome.this);
-                        wait.setMessage("Loading...");
                         wait.show();
                         final String email = ((TextView)popup.findViewById(R.id.loginEmail)).getText().toString();
                         final String password = ((TextView)popup.findViewById(R.id.loginPassword)).getText().toString();
-                        if(email == null || password == null || email.equals("") || password.equals("")) {
+                        if(email.equals("") || password.equals("")) {
                             new AlertDialog.Builder(Welcome.this).setTitle("Error").setMessage("Please enter your email and password!").setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
@@ -94,68 +92,49 @@ public class Welcome extends AppCompatActivity {
                             }).show();
                         }else {
                             final boolean stayLogged = ((CheckBox) popup.findViewById(R.id.stayLogged)).isChecked();
-                            new Thread() {
-                                @Override
-                                public void run() {
-                                    Backendless.UserService.login(email, password, new AsyncCallback<BackendlessUser>() {
-                                        @Override
-                                        public void handleResponse(BackendlessUser backendlessUser) {
-                                            Data.user = backendlessUser;
-                                            Proceed();
-                                            wait.dismiss();
-                                        }
+                            new AsyncTask<Void, Void, Integer>() {
+                                String message;
 
-                                        @Override
-                                        public void handleFault(BackendlessFault backendlessFault) {
-                                            wait.dismiss();
-                                            String errorCode = backendlessFault.getCode();
-                                            String message;
-                                            final boolean reset;
-                                            if (errorCode.equals("3003")) {
-                                                message = "Invalid login or password!";
-                                                reset = false;
-                                            } else if (errorCode.equals("3006")) {
-                                                message = "Please enter your email and password!";
-                                                reset = false;
-                                            } else if (errorCode.equals("3036")) {
-                                                message = "Too many failed attempts, account locked!";
-                                                reset = true;
-                                            } else {
-                                                message = "Error code" + errorCode + ", please contact z.aoran@gmail.com";
-                                                reset = false;
-                                            }
-                                            final AlertDialog.Builder secondAlert = new AlertDialog.Builder(Welcome.this).setTitle(message)
-                                                    .setPositiveButton(reset ? "Retrieve Your Password" : "OK", new DialogInterface.OnClickListener() {
-                                                        @Override
-                                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                                            if (reset) {
-                                                                new AlertDialog.Builder(Welcome.this).setTitle("Check your email for your password.").setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                                                    @Override
-                                                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                                                        Backendless.UserService.restorePassword(email);
-                                                                        dialogInterface.dismiss();
-                                                                    }
-                                                                }).show();
-                                                                dialogInterface.dismiss();
-                                                            } else {
-                                                                dialogInterface.dismiss();
-                                                            }
-                                                        }
-                                                    });
-                                            if (reset) {
-                                                secondAlert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                //0 is success, 1 is failure
+                                public Integer doInBackground(Void... voids) {
+                                    try {
+                                        Data.user = Backendless.UserService.login(email, password, stayLogged);
+                                        return 0;
+                                    } catch (BackendlessException e) {
+                                        String errorCode = e.getCode();
+                                        final boolean reset;
+                                        if (errorCode.equals("3003")) {
+                                            message = "Invalid login or password! Please check your email address and try again.";
+                                        } else if (errorCode.equals("3006")) {
+                                            message = "Please enter your email and password!";
+                                        } else if (errorCode.equals("3036")) {
+                                            message = "Too many failed attempts, account is reset! Check your entered email for new password";
+                                            Backendless.UserService.restorePassword(email);
+                                        } else {
+                                            message = "Error code" + errorCode + ", please contact developer at z.aoran@gmail.com";
+                                        }
+                                        return 1;
+                                    }
+                                }
+
+                                @Override
+                                public void onPostExecute(Integer result) {
+                                    if (result == 0) {
+                                        Proceed();
+                                    } else {
+                                        new AlertDialog.Builder(Welcome.this)
+                                                .setTitle(message)
+                                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                                     @Override
                                                     public void onClick(DialogInterface dialogInterface, int i) {
                                                         dialogInterface.dismiss();
                                                     }
-                                                });
-                                            }
-                                            secondAlert.show();
-                                        }
-                                    }, stayLogged);
+                                                }).show();
+                                        wait.dismiss();
+                                    }
                                 }
-                            }.run();
-
+                            }.execute(new Void[]{});
                         }
                     }
                 }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -179,10 +158,10 @@ public class Welcome extends AppCompatActivity {
                         final ProgressDialog wait = new ProgressDialog(Welcome.this);
                         wait.setMessage("Loading...");
                         wait.show();
-                        final String email = ((TextView)popup.findViewById(R.id.loginEmail)).getText().toString();
-                        String password = ((TextView)popup.findViewById(R.id.loginPassword)).getText().toString();
-                        String name = ((TextView)popup.findViewById(R.id.loginName)).getText().toString();
-                        if(email == null || password == null || email.equals("") || password.equals("") || name.equals("")) {
+                        final String email = ((TextView) popup.findViewById(R.id.loginEmail)).getText().toString();
+                        String password = ((TextView) popup.findViewById(R.id.loginPassword)).getText().toString();
+                        String name = ((TextView) popup.findViewById(R.id.loginName)).getText().toString();
+                        if (email.equals("") || password.equals("") || name.equals("")) {
                             new AlertDialog.Builder(Welcome.this).setTitle("Try Again").setMessage("Please fill all the text boxes!").setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
@@ -190,57 +169,58 @@ public class Welcome extends AppCompatActivity {
                                 }
                             }).show();
                             wait.dismiss();
-                        }else {
+                        } else {
                             final BackendlessUser user = new BackendlessUser();
                             user.setEmail(email);
                             user.setPassword(password);
                             user.setProperty("name", name);
                             user.setProperty("portrait", "");
-                            new Thread() {
+                            new AsyncTask<Void, Void, Integer>() {
+                                String message;
                                 @Override
-                                public void run(){
-                                    Backendless.UserService.register(user, new AsyncCallback<BackendlessUser>() {
-                                        @Override
-                                        public void handleResponse(BackendlessUser backendlessUser) {
-                                            wait.dismiss();
-                                            Data.user = backendlessUser;
-                                            new AlertDialog.Builder(Welcome.this).setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialogInterface, int i) {
-                                                    dialogInterface.dismiss();
-                                                }
-                                            }).setTitle("Your account has been created!").setMessage("Please check your email to activate your account").show();
-                                            //Go to next activity
-                                            Proceed();
+                                public Integer doInBackground(Void... voids) {
+                                    try {
+                                        Data.user = Backendless.UserService.register(user);
+                                        return 0;
+                                    } catch (BackendlessException e) {
+                                        String errorCode = e.getCode();
+                                        if (errorCode.equals("3011")) {
+                                            message = "Please enter a password.";
+                                        } else if (errorCode.equals("3013")) {
+                                            message = "Please enter your email.";
+                                        } else if (errorCode.equals("3033")) {
+                                            message = "This email address is already taken.";
+                                        } else if (errorCode.equals("3040")) {
+                                            message = "Please enter a valid email address.";
+                                        } else {
+                                            message = "Error code" + errorCode + ", please contact z.aoran@gmail.com";
                                         }
-
-                                        @Override
-                                        public void handleFault(BackendlessFault backendlessFault) {
-                                            wait.dismiss();
-                                            String errorCode = backendlessFault.getCode();
-                                            String message;
-                                            if (errorCode.equals("3011")) {
-                                                message = "Please enter a password.";
-                                            } else if (errorCode.equals("3013")) {
-                                                message = "Please enter your email.";
-                                            } else if (errorCode.equals("3033")) {
-                                                message = "This email address is already taken.";
-                                            } else if (errorCode.equals("3040")) {
-                                                message = "Please enter a valid email address.";
-                                            } else {
-                                                message = "Error code" + errorCode + ", please contact z.aoran@gmail.com";
-                                            }
-                                            new AlertDialog.Builder(Welcome.this).setTitle("Error").setMessage(message).setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialogInterface, int i) {
-                                                    dialogInterface.dismiss();
-                                                }
-                                            }).show();
-                                        }
-                                    });
+                                        return 1;
+                                    }
                                 }
-                            }.run();
 
+                                @Override
+                                public void onPostExecute(Integer result) {
+                                    if (result == 0) {
+                                        new AlertDialog.Builder(Welcome.this).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                dialogInterface.dismiss();
+                                            }
+                                        }).setTitle("Your account has been created!").setMessage("Please check your email to activate your account").show();
+                                        //Go to next activity
+                                        Proceed();
+                                    } else {
+                                        wait.dismiss();
+                                        new AlertDialog.Builder(Welcome.this).setTitle("Error").setMessage(message).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                dialogInterface.dismiss();
+                                            }
+                                        }).show();
+                                    }
+                                }
+                            }.execute(new Void[]{});
                         }
                     }
                 })
@@ -251,6 +231,7 @@ public class Welcome extends AppCompatActivity {
                     }
                 }).show();
     }
+
     public void Guest(View view) {
         Data.user = null;
         //Go to next activity
