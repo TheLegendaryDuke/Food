@@ -6,4 +6,5 @@ package itsjustaaron.food;
 public class Offer {
     public String offerer;
     public String objectId;
+    public Food food;
 }

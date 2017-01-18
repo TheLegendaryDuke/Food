@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -40,6 +41,7 @@ import com.android.volley.toolbox.Volley;
 import com.backendless.Backendless;
 import com.backendless.BackendlessCollection;
 import com.backendless.async.callback.AsyncCallback;
+import com.backendless.exceptions.BackendlessException;
 import com.backendless.exceptions.BackendlessFault;
 
 import java.io.BufferedInputStream;
@@ -63,6 +65,7 @@ public class Main extends AppCompatActivity
 
     private static ProgressDialog progressDialog;
 
+    //helpers to implement wait
     public static void showWait() {
         progressDialog.show();
     }
@@ -83,31 +86,72 @@ public class Main extends AppCompatActivity
         progressDialog.setMessage("Please wait...");
 
         Data.tags = new ArrayList<String>();
-        new Thread() {
+        new AsyncTask<Void, Void, Void>() {
             @Override
-            public void run() {
-                Backendless.Persistence.of("tags").find(new AsyncCallback<BackendlessCollection<Map>>() {
-                    @Override
-                    public void handleResponse(BackendlessCollection<Map> mapBackendlessCollection) {
-                        List<Map> result = mapBackendlessCollection.getCurrentPage();
-                        for(int i = 0; i < result.size(); i++) {
-                            Data.tags.add(result.get(i).get("tag").toString());
-                        }
+            public Void doInBackground(Void... voids) {
+                try {
+                    //download all the available food tags
+                    List<Map> result = Backendless.Persistence.of("tags").find().getCurrentPage();
+                    for (int i = 0; i < result.size(); i++) {
+                        Data.tags.add(result.get(i).get("tag").toString());
                     }
-
-                    @Override
-                    public void handleFault(BackendlessFault backendlessFault) {
-                        Log.d(backendlessFault.getMessage(), "handleFault: ");
-                    }
-                });
+                }catch (BackendlessException e) {
+                    Log.d("backendless", e.toString());
+                }
+                return null;
             }
-        }.start();
+        }.execute(new Void[]{});
+
+        final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        if (Data.user == null) {
+            ((TextView) navigationView.getHeaderView(0).findViewById(R.id.DrawerName)).setText("Guest");
+        } else {
+            ((TextView) navigationView.getHeaderView(0).findViewById(R.id.DrawerName)).setText((String) Data.user.getProperty("name"));
+            if (Data.user.getProperty("portrait") != "") {
+                //download the user portrait if there is one
+                final File portrait = new File(getFilesDir() + "/" + Data.user.getProperty("portrait").toString());
+                if (portrait.exists()) {
+                    ((ImageView) navigationView.getHeaderView(0).findViewById(R.id.userPortrait)).setImageBitmap(BitmapFactory.decodeFile(portrait.getAbsolutePath()));
+                } else {
+                    new AsyncTask<Void, Void, Void>() {
+                        @Override
+                        public Void doInBackground(Void... voids) {
+                            String path = "https://api.backendless.com/0020F1DC-E584-AD36-FF74-6D3E9E917400/v1/files/users/" + Data.user.getEmail() + "/" + Data.user.getProperty("portrait");
+                            try {
+                                URL url = new URL(path);
+                                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                                conn.setDoInput(true);
+                                conn.connect();
+                                InputStream is = conn.getInputStream();
+                                Bitmap bm = BitmapFactory.decodeStream(is);
+                                FileOutputStream fos = new FileOutputStream(portrait);
+                                ByteArrayOutputStream outstream = new ByteArrayOutputStream();
+                                bm.compress(Bitmap.CompressFormat.PNG, 100, outstream);
+                                byte[] byteArray = outstream.toByteArray();
+                                fos.write(byteArray);
+                                fos.close();
+                            } catch (Exception e) {
+                                Log.d("downloadPortrait", e.toString());
+                            }
+                            return null;
+                        }
+
+                        @Override
+                        public void onPostExecute(Void v) {
+                            ((ImageView) navigationView.getHeaderView(0).findViewById(R.id.userPortrait)).setImageBitmap(BitmapFactory.decodeFile(portrait.getAbsolutePath()));
+                        }
+                    }.execute(new Void[]{});
+                }
+            }
+        }
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                //provide title for tabs
                 int position = tab.getPosition();
                 switch (position) {
                     case 0:
@@ -133,6 +177,7 @@ public class Main extends AppCompatActivity
 
             }
         });
+
         final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
         final PagerAdapter adapter = new MainPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
@@ -144,45 +189,9 @@ public class Main extends AppCompatActivity
         toggle.syncState();
 
 
-        final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
 
-        if (Data.user == null) {
-            ((TextView) navigationView.getHeaderView(0).findViewById(R.id.DrawerName)).setText("Guest");
-        } else {
-            ((TextView) navigationView.getHeaderView(0).findViewById(R.id.DrawerName)).setText((String) Data.user.getProperty("name"));
-            if (Data.user.getProperty("portrait") != "") {
-                final File portrait = new File(getFilesDir() + "/" + Data.user.getProperty("portrait").toString());
-                if (portrait.exists()) {
-                    ((ImageView) navigationView.getHeaderView(0).findViewById(R.id.userPortrait)).setImageBitmap(BitmapFactory.decodeFile(portrait.getAbsolutePath()));
-                } else {
-                    new Thread() {
-                        public void run() {
-                            if (Data.user.getProperty("portrait") != "") {
-                                String path  = "https://api.backendless.com/0020F1DC-E584-AD36-FF74-6D3E9E917400/v1/files/users/" + Data.user.getEmail() + "/" + Data.user.getProperty("portrait");
-                                try {
-                                    URL url = new URL(path);
-                                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                                    conn.setDoInput(true);
-                                    conn.connect();
-                                    InputStream is = conn.getInputStream();
-                                    Bitmap bm = BitmapFactory.decodeStream(is);
-                                    FileOutputStream fos = new FileOutputStream(portrait);
-                                    ByteArrayOutputStream outstream = new ByteArrayOutputStream();
-                                    bm.compress(Bitmap.CompressFormat.PNG, 100, outstream);
-                                    byte[] byteArray = outstream.toByteArray();
-                                    fos.write(byteArray);
-                                    fos.close();
-                                } catch(Exception e) {
-                                    new AlertDialog.Builder(Main.this).setMessage(e.getMessage()).show();
-                                }
-                            }
-                        }
-                    }.start();
-                ((ImageView) navigationView.getHeaderView(0).findViewById(R.id.userPortrait)).setImageBitmap(BitmapFactory.decodeFile(portrait.getAbsolutePath()));
-                }
-            }
-        }
+
+
     }
 
     public void ProfileSetup(View view) {
