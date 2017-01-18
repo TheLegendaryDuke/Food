@@ -18,7 +18,7 @@ import java.util.ArrayList;
  * Created by aozhang on 1/18/2017.
  */
 
-public class myAdapter <T> extends RecyclerView.Adapter<myAdapter.ViewHolder> {
+public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     private String fileDir;
     private Context context;
     private char source;
@@ -38,7 +38,7 @@ public class myAdapter <T> extends RecyclerView.Adapter<myAdapter.ViewHolder> {
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public myAdapter(ArrayList<T> myDataset, char s, Context context) {
+    public MyAdapter(ArrayList<T> myDataset, char s, Context context) {
         mDataset = myDataset;
         source = s;
         //TODO: check if fileDir is the dir I want
@@ -48,7 +48,7 @@ public class myAdapter <T> extends RecyclerView.Adapter<myAdapter.ViewHolder> {
 
     // Create new views (invoked by the layout manager)
     @Override
-    public myAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
+    public MyAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                    int viewType) {
         View v;
         // create a new view

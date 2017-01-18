@@ -1,10 +1,12 @@
 package itsjustaaron.food;
 
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +15,7 @@ import android.widget.AbsListView;
 import com.backendless.Backendless;
 import com.backendless.BackendlessCollection;
 import com.backendless.async.callback.AsyncCallback;
+import com.backendless.exceptions.BackendlessException;
 import com.backendless.exceptions.BackendlessFault;
 import com.backendless.persistence.BackendlessDataQuery;
 import com.backendless.persistence.QueryOptions;
@@ -63,7 +66,7 @@ public class CravingFragment extends Fragment {
     public View rootView;
     private RecyclerView mRecyclerView;
     private LinearLayoutManager mLayoutManager;
-    private myAdapter mAdapter;
+    private MyAdapter mAdapter;
 
 
 //    public class CravingAdapter extends ArrayAdapter<Craving> {
@@ -226,6 +229,7 @@ public class CravingFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Data.cravings = new ArrayList<Craving>();
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -236,20 +240,72 @@ public class CravingFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getActivity().getBaseContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new myAdapter<Craving>(Data.cravings, 'c', getActivity().getBaseContext());
+        mAdapter = new MyAdapter<Craving>(Data.cravings, 'c', getActivity().getBaseContext());
         mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.addOnScrollListener(new endlessScroll(mLayoutManager) {
+
+        new AsyncTask<Void, Void, Void>() {
+            ProgressDialog wait;
+
             @Override
-            public void onLoadMore(int page, int totalItemsCount, final RecyclerView view) {
-                new AsyncTask<Integer, Void, Void>() {
+            public void onPreExecute() {
+                wait = new ProgressDialog(getActivity().getBaseContext());
+                wait.setMessage("Please wait...");
+                wait.show();
+            }
+
+            @Override
+            public Void doInBackground(Void... voids) {
+                try {
+                    BackendlessDataQuery backendlessDataQuery = new BackendlessDataQuery();
+                    QueryOptions queryOptions = new QueryOptions();
+                    queryOptions.setOffset(0);
+                    queryOptions.setPageSize(Data.loadCount);
+                    backendlessDataQuery.setQueryOptions(queryOptions);
+                    Data.collection = Backendless.Data.of("Craving").find(backendlessDataQuery);
+                    ArrayList<Map> temp = new ArrayList<>(Data.collection.getCurrentPage());
+                    for(int i = 0; i < temp.size(); i++) {
+                        Data.cravings.add(new Craving(temp.get(i)));
+                    }
+                }catch (BackendlessException e) {
+                    Log.d("backgroundless", e.toString());
+                }
+                return null;
+            }
+
+            @Override
+            public void onPostExecute(Void v) {
+                mAdapter.notifyDataSetChanged();
+                wait.dismiss();
+            }
+        }.execute(new Void[]{});
+
+        final EndlessScroll endlessScroll = new EndlessScroll(mLayoutManager) {
+            @Override
+            public void onLoadMore(int page, final RecyclerView view) {
+                new AsyncTask<Void, Void, Void>() {
                     @Override
-                    public Void doInBackground(Integer... ints) {
-                        ints[0]++;
+                    public Void doInBackground(Void... voids) {
+                        BackendlessCollection<Map> backendlessCollection = Data.collection.nextPage();
+                        Data.collection = backendlessCollection;
+                        //TODO: reorganize retrieving logic here
+                                temp.addAll(backendlessCollection.getCurrentPage());
+                                for (int i = 0; i < temp.size(); i++) {
+                                    Map obj = temp.get(i);
+                                    final Craving craving = new Craving(obj, true);
+                                }
+                            }
+
+                            @Override
+                            public void handleFault(BackendlessFault backendlessFault) {
+                                Main.hideWait();
+                            }
+                        });
                     }
                     //TODO: look up if this will work
                 }.execute(new Integer[]{totalItemsCount});
             }
-        });
+        };
+        mRecyclerView.addOnScrollListener(endlessScroll);
 
         Data.cravings = new ArrayList<Craving>();
 

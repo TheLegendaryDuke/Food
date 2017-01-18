@@ -1,11 +1,9 @@
 package itsjustaaron.food;
 
-import android.app.ProgressDialog;
 import android.util.Log;
 
 import com.backendless.Backendless;
 import com.backendless.BackendlessCollection;
-import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 import com.backendless.persistence.BackendlessDataQuery;
@@ -13,7 +11,6 @@ import com.backendless.persistence.BackendlessDataQuery;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 /**
  * Created by Aaron-Work on 8/17/2016.
@@ -26,10 +23,34 @@ public class Craving {
 
     public Craving() {}
 
-    public Craving(final Map map, final Runnable runnable) {
+    public Craving(Map map) {
         this.objectId = map.get("objectId").toString();
         this.numFollowers = Integer.parseInt(map.get("numFollowers").toString());
         final String foodID = map.get("foodID").toString();
+        boolean found = false;
+        for(int i = 0; i < Data.foods.size(); i++) {
+            if(Data.foods.get(i).objectId == foodID) {
+                this.food = Data.foods.get(i);
+                found = true;
+                break;
+            }
+        }
+        if(!found) {
+            //TODO: finish this
+            food = new Food(Backendless.Persistence.of("Food").findById(foodID));
+            BackendlessDataQuery dataQuery = new BackendlessDataQuery();
+            dataQuery.setWhereClause("cravingID='" + objectId + "' and userID='" + Data.user.getEmail() + "'");
+            List<Map> maps = Backendless.Persistence.of("cravingFollowers").find(dataQuery).getCurrentPage();
+            if (maps == null || maps.size() == 0) {
+                following = false;
+            } else {
+                following = true;
+            }
+        }
+    }
+
+    public Craving(final Map map, final Runnable runnable) {
+
         new Thread(){
             @Override
             public synchronized void run() {

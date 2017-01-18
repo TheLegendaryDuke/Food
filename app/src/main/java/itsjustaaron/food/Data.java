@@ -17,4 +17,5 @@ public class Data {
     public static ArrayList<String> tags;
     public static CravingFragment cravingFragment;
     public static OfferFragment offerFragment;
+    public static ArrayList<Food> foods;
 }
