@@ -42,6 +42,7 @@ import java.util.Map;
 public class Main extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private int tabSelected = 0;
+    protected PagerAdapter adapter;
 
     private static ProgressDialog progressDialog;
 
@@ -160,7 +161,7 @@ public class Main extends AppCompatActivity
         });
 
         final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
-        final PagerAdapter adapter = new MainPagerAdapter(getSupportFragmentManager());
+        adapter = new MainPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
 
@@ -226,6 +227,12 @@ public class Main extends AppCompatActivity
                     onSearchRequested();
                     TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
                     break;
+                case R.id.menu_refresh:
+                    if(getSupportActionBar().getTitle() == "What others are craving") {
+                        Data.cravingFragment.refresh(null);
+                    }else {
+                        //TODO: to be finished after offer
+                    }
             }
         }
         return super.onOptionsItemSelected(item);

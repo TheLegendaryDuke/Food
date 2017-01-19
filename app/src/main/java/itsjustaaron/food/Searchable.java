@@ -1,16 +1,13 @@
 package itsjustaaron.food;
 
 import android.app.Activity;
-import android.app.ListActivity;
 import android.app.SearchManager;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.Toast;
 
 import com.backendless.Backendless;
-import com.backendless.BackendlessCollection;
-import com.backendless.async.callback.AsyncCallback;
-import com.backendless.exceptions.BackendlessFault;
 import com.backendless.persistence.BackendlessDataQuery;
 
 import java.util.ArrayList;
@@ -22,6 +19,8 @@ import java.util.Map;
  */
 public class Searchable extends Activity {
 
+    private String whereClause;
+
     private void doMySearch(String query) {
         List<String> tagResult = Food.csvToList(query);
         boolean tagCheck = true;
@@ -31,7 +30,7 @@ public class Searchable extends Activity {
                 break;
             }
         }
-        String whereClause = "";
+        whereClause = "";
         if(tagCheck) {
             for(int i = 0; i< tagResult.size(); i++) {
                 whereClause = whereClause + "tags LIKE '%" + tagResult.get(i) + "%'";
@@ -42,63 +41,49 @@ public class Searchable extends Activity {
         }else {
             whereClause = "name LIKE '%" + query + "%'";
         }
-        final BackendlessDataQuery dataQuery = new BackendlessDataQuery();
-        dataQuery.setWhereClause(whereClause);
-        new Thread() {
+        new AsyncTask<Void, Void, Void>() {
             @Override
-            public void run() {
-                Backendless.Persistence.of("Food").find(dataQuery, new AsyncCallback<BackendlessCollection<Map>>() {
-                    @Override
-                    public void handleResponse(BackendlessCollection<Map> mapBackendlessCollection) {
-                        List<String> foodIDs = new ArrayList<String>();
-                        final List<Map> maps = mapBackendlessCollection.getCurrentPage();
-                        if(maps.size() != 0) {
-                            Data.cravings.clear();
-                            for (int i = 0; i < maps.size(); i++) {
-                                foodIDs.add(maps.get(i).get("objectId").toString());
-                            }
-                            String where = "foodID in (";
-                            for (int i = 0; i < foodIDs.size(); i++) {
-                                where = where + "'" + foodIDs.get(i) + "'";
-                                if (i != foodIDs.size() - 1) {
-                                    where = where + ", ";
-                                }
-                            }
-                            where = where + ")";
-                            final BackendlessDataQuery backendlessDataQuery = new BackendlessDataQuery();
-                            backendlessDataQuery.setWhereClause(where);
-                            Backendless.Persistence.of("Craving").find(backendlessDataQuery, new AsyncCallback<BackendlessCollection<Map>>() {
-                                @Override
-                                public void handleResponse(BackendlessCollection<Map> mapBackendlessCollection) {
-                                    Data.collection = mapBackendlessCollection;
-                                    List<Map> mapResult = mapBackendlessCollection.getCurrentPage();
-                                    for (int i = 0; i < mapResult.size(); i++) {
-                                        Map obj = mapResult.get(i);
-                                        final Craving craving = new Craving(obj, true);
-                                    }
-                                    finish();
-                                }
-
-                                @Override
-                                public void handleFault(BackendlessFault backendlessFault) {
-
-                                }
-                            });
-                        }else {
-                            Data.cravings.clear();
-                            Data.cravingFragment.notifyChanges();
-                            Toast.makeText(getApplicationContext(), "Your search yields no results", Toast.LENGTH_SHORT).show();
-                            finish();
+            public Void doInBackground(Void... voids) {
+                Data.cravings.clear();
+                BackendlessDataQuery dataQuery = new BackendlessDataQuery();
+                dataQuery.setWhereClause(whereClause);
+                List<Map> maps = Backendless.Persistence.of("Food").find(dataQuery).getCurrentPage();
+                List<String> foodIDs = new ArrayList<String>();
+                if (maps.size() != 0) {
+                    for (int i = 0; i < maps.size(); i++) {
+                        foodIDs.add(maps.get(i).get("objectId").toString());
+                    }
+                    String where = "foodID in (";
+                    for (int i = 0; i < foodIDs.size(); i++) {
+                        where = where + "'" + foodIDs.get(i) + "'";
+                        if (i != foodIDs.size() - 1) {
+                            where = where + ", ";
                         }
                     }
-
-                    @Override
-                    public void handleFault(BackendlessFault backendlessFault) {
-
+                    where = where + ")";
+                    final BackendlessDataQuery backendlessDataQuery = new BackendlessDataQuery();
+                    backendlessDataQuery.setWhereClause(where);
+                    Data.collection = Backendless.Persistence.of("Craving").find(backendlessDataQuery);
+                    List<Map> mapResult = Data.collection.getCurrentPage();
+                    for (int i = 0; i < mapResult.size(); i++) {
+                        Map obj = mapResult.get(i);
+                        final Craving craving = new Craving(obj);
+                        Data.cravings.add(craving);
                     }
-                });
+                    finish();
+                }
+                return null;
             }
-        }.start();
+
+            @Override
+            public void onPostExecute(Void v) {
+                Data.cravingFragment.notifyChanges();
+                if(Data.cravings.size() == 0) {
+                    Toast.makeText(getApplicationContext(), "Your search yields no results", Toast.LENGTH_SHORT).show();
+                }
+                finish();
+            }
+        }.execute(new Void[]{});
     }
 
     @Override

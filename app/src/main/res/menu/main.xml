@@ -11,4 +11,9 @@
         android:title="Add New"
         android:icon="@drawable/add"
         app:showAsAction="always" />
+    <item
+        android:id="@+id/menu_refresh"
+        android:title="Refresh"
+        android:icon="@drawable/ic_refresh"
+        app:showAsAction="never"/>
 </menu>
