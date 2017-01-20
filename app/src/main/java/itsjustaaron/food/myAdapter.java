@@ -24,19 +24,6 @@ public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     private char source;
     private ArrayList<T> mDataset;
 
-    // Provide a reference to the views for each data item
-    // Complex data items may need more than one view per item, and
-    // you provide access to all the views for a data item in a view holder
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        // each data item is just a string in this case
-        public View view;
-
-        public ViewHolder(View v) {
-            super(v);
-            view = v;
-        }
-    }
-
     // Provide a suitable constructor (depends on the kind of dataset)
     public MyAdapter(ArrayList<T> myDataset, char s, Context context) {
         mDataset = myDataset;
@@ -55,8 +42,8 @@ public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         if (source == 'c') {
             v = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.craving_list_item, parent, false);
-        }else {
-        //TODO: to be filled in
+        } else {
+            //TODO: to be filled in
             v = null;
         }
         ViewHolder vh = new ViewHolder(v);
@@ -69,7 +56,7 @@ public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         View v = holder.view;
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        if(source == 'c') {
+        if (source == 'c') {
             final ImageView image = (ImageView) v.findViewById(R.id.cravingItemImage);
             TextView description = (TextView) v.findViewById(R.id.cravingItemDescription);
             TextView tags = (TextView) v.findViewById(R.id.cravingItemTags);
@@ -83,7 +70,7 @@ public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             description.setText(craving.food.name);
             tags.setText(craving.food.tags);
             if (craving.following) {
-                likeOrNot.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_favorite_black_48dp, null));
+                likeOrNot.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), R.mipmap.favorite, null));
             } else {
                 likeOrNot.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_favorite_border_black_48dp, null));
             }
@@ -92,7 +79,7 @@ public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                 public void onClick(View view) {
                     craving.followSwitch();
                     if (craving.following) {
-                        likeOrNot.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_favorite_black_48dp, null));
+                        likeOrNot.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), R.mipmap.favorite, null));
                         count.setText(String.valueOf(Integer.parseInt(count.getText().toString()) + 1));
                     } else {
                         likeOrNot.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_favorite_border_black_48dp, null));
@@ -112,7 +99,7 @@ public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             description.setOnClickListener(listener);
             count.setText(String.valueOf(craving.numFollowers));
             image.setImageBitmap(BitmapFactory.decodeFile(imagePath));
-        }else {
+        } else {
 
         }
 
@@ -122,5 +109,18 @@ public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     @Override
     public int getItemCount() {
         return mDataset.size();
+    }
+
+    // Provide a reference to the views for each data item
+    // Complex data items may need more than one view per item, and
+    // you provide access to all the views for a data item in a view holder
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        // each data item is just a string in this case
+        public View view;
+
+        public ViewHolder(View v) {
+            super(v);
+            view = v;
+        }
     }
 }

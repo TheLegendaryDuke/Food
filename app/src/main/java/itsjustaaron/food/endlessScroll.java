@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
  */
 
 public abstract class EndlessScroll extends RecyclerView.OnScrollListener {
+    LinearLayoutManager mLayoutManager;
     // The minimum amount of items to have below your current scroll position
     // before loading more.
     private int visibleThreshold = 5;
@@ -20,8 +21,6 @@ public abstract class EndlessScroll extends RecyclerView.OnScrollListener {
     // Sets the starting page index
     private int startingPageIndex = 0;
 
-    LinearLayoutManager mLayoutManager;
-
     public EndlessScroll(LinearLayoutManager layoutManager) {
         this.mLayoutManager = layoutManager;
     }
@@ -31,8 +30,7 @@ public abstract class EndlessScroll extends RecyclerView.OnScrollListener {
         for (int i = 0; i < lastVisibleItemPositions.length; i++) {
             if (i == 0) {
                 maxSize = lastVisibleItemPositions[i];
-            }
-            else if (lastVisibleItemPositions[i] > maxSize) {
+            } else if (lastVisibleItemPositions[i] > maxSize) {
                 maxSize = lastVisibleItemPositions[i];
             }
         }
