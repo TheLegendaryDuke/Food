@@ -22,13 +22,13 @@ import com.backendless.persistence.local.UserIdStorageFactory;
 
 public class Welcome extends AppCompatActivity {
 
+    private ProgressDialog wait;
+
     private void Proceed() {
         Intent intent = new Intent(this, Main.class);
         startActivity(intent);
         this.finish();
     }
-
-    private ProgressDialog wait;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,16 +81,16 @@ public class Welcome extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         wait.show();
-                        final String email = ((TextView)popup.findViewById(R.id.loginEmail)).getText().toString();
-                        final String password = ((TextView)popup.findViewById(R.id.loginPassword)).getText().toString();
-                        if(email.equals("") || password.equals("")) {
+                        final String email = ((TextView) popup.findViewById(R.id.loginEmail)).getText().toString();
+                        final String password = ((TextView) popup.findViewById(R.id.loginPassword)).getText().toString();
+                        if (email.equals("") || password.equals("")) {
                             new AlertDialog.Builder(Welcome.this).setTitle("Error").setMessage("Please enter your email and password!").setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     dialogInterface.dismiss();
                                 }
                             }).show();
-                        }else {
+                        } else {
                             final boolean stayLogged = ((CheckBox) popup.findViewById(R.id.stayLogged)).isChecked();
                             new AsyncTask<Void, Void, Integer>() {
                                 String message;
@@ -138,11 +138,11 @@ public class Welcome extends AppCompatActivity {
                         }
                     }
                 }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
-                    }
-                });
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
         builder.show();
     }
 
@@ -177,6 +177,7 @@ public class Welcome extends AppCompatActivity {
                             user.setProperty("portrait", "");
                             new AsyncTask<Void, Void, Integer>() {
                                 String message;
+
                                 @Override
                                 public Integer doInBackground(Void... voids) {
                                     try {

@@ -24,21 +24,21 @@ public class Searchable extends Activity {
     private void doMySearch(String query) {
         List<String> tagResult = Food.csvToList(query);
         boolean tagCheck = true;
-        for(int i = 0; i < tagResult.size(); i++) {
-            if(!Data.tags.contains(tagResult.get(i))) {
+        for (int i = 0; i < tagResult.size(); i++) {
+            if (!Data.tags.contains(tagResult.get(i))) {
                 tagCheck = false;
                 break;
             }
         }
         whereClause = "";
-        if(tagCheck) {
-            for(int i = 0; i< tagResult.size(); i++) {
+        if (tagCheck) {
+            for (int i = 0; i < tagResult.size(); i++) {
                 whereClause = whereClause + "tags LIKE '%" + tagResult.get(i) + "%'";
-                if(i != tagResult.size() - 1) {
+                if (i != tagResult.size() - 1) {
                     whereClause = whereClause + " and ";
                 }
             }
-        }else {
+        } else {
             whereClause = "name LIKE '%" + query + "%'";
         }
         new AsyncTask<Void, Void, Void>() {
@@ -78,7 +78,7 @@ public class Searchable extends Activity {
             @Override
             public void onPostExecute(Void v) {
                 Data.cravingFragment.notifyChanges();
-                if(Data.cravings.size() == 0) {
+                if (Data.cravings.size() == 0) {
                     Toast.makeText(getApplicationContext(), "Your search yields no results", Toast.LENGTH_SHORT).show();
                 }
                 finish();

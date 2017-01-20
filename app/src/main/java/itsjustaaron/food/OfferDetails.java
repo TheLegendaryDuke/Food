@@ -1,7 +1,7 @@
 package itsjustaaron.food;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
 public class OfferDetails extends AppCompatActivity {
 

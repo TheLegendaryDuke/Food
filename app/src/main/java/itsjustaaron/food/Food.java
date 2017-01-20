@@ -19,6 +19,34 @@ public class Food {
     public String tags;
     public String description;
 
+    public Food(Map map) {
+        this.objectId = map.get("objectId").toString();
+        this.image = map.get("image").toString();
+        this.name = map.get("name").toString();
+        this.tags = map.get("tags").toString();
+        this.description = map.get("description").toString();
+    }
+
+    public static List<String> csvToList(String csv) {
+        String[] values = csv.split(",");
+        List<String> tags = new ArrayList<String>();
+        for (int i = 0; i < values.length; i++) {
+            tags.add(values[i]);
+        }
+        return tags;
+    }
+
+    public static String listToCsv(List<String> tags) {
+        StringBuilder csv = new StringBuilder();
+        for (int i = 0; i < tags.size(); i++) {
+            csv.append(tags.get(i));
+            if (i != tags.size() - 1) {
+                csv.append(",");
+            }
+        }
+        return csv.toString();
+    }
+
     public void save() {
         HashMap map = new HashMap();
         map.put("objectId", objectId);
@@ -37,32 +65,5 @@ public class Food {
 
             }
         });
-    }
-
-    public static List<String> csvToList(String csv) {
-        String[] values = csv.split(",");
-        List<String> tags = new ArrayList<String>();
-        for(int i = 0; i < values.length; i++) {
-            tags.add(values[i]);
-        }
-        return tags;
-    }
-    public static String listToCsv(List<String> tags) {
-        StringBuilder csv = new StringBuilder();
-        for(int i = 0; i < tags.size(); i++) {
-            csv.append(tags.get(i));
-            if(i != tags.size() - 1) {
-                csv.append(",");
-            }
-        }
-        return csv.toString();
-    }
-
-    public Food(Map map) {
-        this.objectId = map.get("objectId").toString();
-        this.image = map.get("image").toString();
-        this.name = map.get("name").toString();
-        this.tags = map.get("tags").toString();
-        this.description = map.get("description").toString();
     }
 }

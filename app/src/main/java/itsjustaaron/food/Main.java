@@ -41,10 +41,9 @@ import java.util.Map;
 
 public class Main extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    private int tabSelected = 0;
-    protected PagerAdapter adapter;
-
     private static ProgressDialog progressDialog;
+    protected PagerAdapter adapter;
+    private int tabSelected = 0;
 
     //helpers to implement wait
     public static void showWait() {
@@ -77,7 +76,7 @@ public class Main extends AppCompatActivity
                     for (int i = 0; i < result.size(); i++) {
                         Data.tags.add(result.get(i).get("tag").toString());
                     }
-                }catch (BackendlessException e) {
+                } catch (BackendlessException e) {
                     Log.d("backendless", e.toString());
                 }
                 return null;
@@ -171,9 +170,6 @@ public class Main extends AppCompatActivity
         toggle.syncState();
 
 
-
-
-
     }
 
     public void ProfileSetup(View view) {
@@ -217,7 +213,7 @@ public class Main extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        if(tabSelected == 0) {
+        if (tabSelected == 0) {
             switch (id) {
                 case R.id.addNew:
                     Intent next = new Intent(this, NewCraving.class);
@@ -228,9 +224,9 @@ public class Main extends AppCompatActivity
                     TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
                     break;
                 case R.id.menu_refresh:
-                    if(getSupportActionBar().getTitle() == "What others are craving") {
+                    if (getSupportActionBar().getTitle() == "What others are craving") {
                         Data.cravingFragment.refresh(null);
-                    }else {
+                    } else {
                         //TODO: to be finished after offer
                     }
             }

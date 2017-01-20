@@ -1,7 +1,7 @@
 package itsjustaaron.food;
 
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 /**
  * Created by Aaron-Work on 8/7/2016.
  */
-public class OfferFragment extends Fragment{
+public class OfferFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
