@@ -138,7 +138,6 @@ public class CravingDetails extends AppCompatActivity {
                         Intent next = new Intent(getApplicationContext(), NewOffer.class);
                         next.putExtra("foodID", craving.food.objectId);
                         startActivity(next);
-                        finish();
                     }
                 });
                 progress.dismiss();

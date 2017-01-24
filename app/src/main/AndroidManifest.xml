@@ -35,7 +35,9 @@
             android:parentActivityName=".Main"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity android:name=".NewCraving" />
+        <activity android:name=".NewCraving"
+            android:parentActivityName=".Main"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity
             android:name=".Searchable"
             android:launchMode="singleTop"
@@ -52,7 +54,7 @@
             android:name=".CravingDetails"
             android:parentActivityName=".Main" />
         <activity android:name=".NewOffer" />
-        <activity android:name=".OfferDetails"></activity>
+        <activity android:name=".OfferDetails"/>
     </application>
 
 </manifest>

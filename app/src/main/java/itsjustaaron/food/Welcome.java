@@ -112,7 +112,7 @@ public class Welcome extends AppCompatActivity {
                                             message = "Too many failed attempts, account is reset! Check your entered email for new password";
                                             Backendless.UserService.restorePassword(email);
                                         } else {
-                                            message = "Error code" + errorCode + ", please contact developer at z.aoran@gmail.com";
+                                            message = "Error code " + errorCode + ", please contact developer at z.aoran@gmail.com";
                                         }
                                         return 1;
                                     }
