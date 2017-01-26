@@ -57,7 +57,7 @@ public class Food {
         map.put("name", name);
         map.put("tags", tags);
         map.put("description", description);
-        Backendless.Persistence.of("Food").save(map, new AsyncCallback<Map>() {
+        Backendless.Persistence.of("foods").save(map, new AsyncCallback<Map>() {
             @Override
             public void handleResponse(Map map) {
 

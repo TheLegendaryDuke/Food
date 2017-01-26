@@ -94,7 +94,7 @@ public class NewFood extends AppCompatActivity {
                                                 craving.put("foodID", values.get(position).objectId);
                                                 craving.put("numFollowers", "1");
                                                 craving.put("ownerID", Data.user.getEmail());
-                                                Map map = Backendless.Persistence.of("Craving").save(craving);
+                                                Map map = Backendless.Persistence.of("cravings").save(craving);
                                                 Map<String, String> cravingFollower = new HashMap<String, String>();
                                                 cravingFollower.put("userID", Data.user.getEmail());
                                                 cravingFollower.put("cravingID", map.get("objectId").toString());
@@ -110,9 +110,9 @@ public class NewFood extends AppCompatActivity {
                                         public void onPostExecute(Integer x) {
                                             if (x == 0) {
                                                 Toast.makeText(context, "Succeeded", Toast.LENGTH_SHORT).show();
-                                                finish();
+                                                //TODO: return through intent
                                             } else {
-                                                Toast.makeText(context, "Error, please contact the developer if the problem persists", Toast.LENGTH_LONG).show();
+                                                Toast.makeText(context, getString(R.string.error), Toast.LENGTH_LONG).show();
                                             }
                                             dialogInterface.dismiss();
                                             wait.dismiss();
@@ -168,7 +168,7 @@ public class NewFood extends AppCompatActivity {
                                 findViewById(R.id.createFood).setVisibility(View.VISIBLE);
                             }
                         })
-                        .setNegativeButton("Go Back", new DialogInterface.OnClickListener() {
+                        .setNegativeButton("Go Back to Search", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 findViewById(R.id.searchFood).setVisibility(View.VISIBLE);
@@ -216,29 +216,52 @@ public class NewFood extends AppCompatActivity {
                 alertDialog.setPositiveButton("add", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String tag = input.getText().toString().toUpperCase();
+                        final String tag = input.getText().toString().toUpperCase();
                         if(Data.tags.contains(tag)) {
                             Toast.makeText(NewFood.this, "There is already a tag with the same name!", Toast.LENGTH_LONG).show();
                         }else {
                             Data.tags.add(tag);
-                            final CheckedTextView ctv = new CheckedTextView(NewFood.this);
-                            ctv.setText(tag);
-                            ctv.setChecked(true);
-                            ctv.setId(Data.tags.size() - 1);
-                            ctv.setCheckMarkDrawable(ContextCompat.getDrawable(NewFood.this, R.drawable.ic_check));
-                            ctv.setOnClickListener(new View.OnClickListener() {
+
+                            new AsyncTask<Void, Void, Integer>() {
                                 @Override
-                                public void onClick(View v) {
-                                    if(ctv.isChecked()) {
-                                        ctv.setCheckMarkDrawable(null);
-                                        ctv.setChecked(false);
-                                    }else {
-                                        ctv.setCheckMarkDrawable(ContextCompat.getDrawable(NewFood.this, R.drawable.ic_check));
-                                        ctv.setChecked(true);
+                                public Integer doInBackground(Void... voids) {
+                                    HashMap<String, String> tagMap = new HashMap<String, String>();
+                                    tagMap.put("tag", tag);
+                                    tagMap.put("ownerId", Data.user.getEmail());
+                                    try{
+                                        Backendless.Persistence.of("tags").save(tagMap);
+                                        return 0;
+                                    }catch (BackendlessException e){
+                                        return 1;
                                     }
                                 }
-                            });
-                            container.addView(ctv, container.getChildCount() - 1);
+
+                                @Override
+                                public void onPostExecute(Integer integer){
+                                    if(integer == 0) {
+                                        final CheckedTextView ctv = new CheckedTextView(NewFood.this);
+                                        ctv.setText(tag);
+                                        ctv.setChecked(true);
+                                        ctv.setId(Data.tags.size() - 1);
+                                        ctv.setCheckMarkDrawable(ContextCompat.getDrawable(NewFood.this, R.drawable.ic_check));
+                                        ctv.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                if(ctv.isChecked()) {
+                                                    ctv.setCheckMarkDrawable(null);
+                                                    ctv.setChecked(false);
+                                                }else {
+                                                    ctv.setCheckMarkDrawable(ContextCompat.getDrawable(NewFood.this, R.drawable.ic_check));
+                                                    ctv.setChecked(true);
+                                                }
+                                            }
+                                        });
+                                        container.addView(ctv, container.getChildCount() - 1);
+                                    }else {
+                                        Toast.makeText(NewFood.this, getString(R.string.error), Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            }.execute(new Void[]{});
                         }
                     }
                 }).setNegativeButton("cancel", new DialogInterface.OnClickListener() {
@@ -283,17 +306,41 @@ public class NewFood extends AppCompatActivity {
         String name = ((EditText)findViewById(R.id.createFoodName)).getText().toString();
         String desc = ((EditText)findViewById(R.id.createFoodDesc)).getText().toString();
         try {
-            File dest = new File(Data.fileDir + "/foods/" + name + ".png");
+            final File dest = new File(Data.fileDir + "/foods/" + name + ".png");
             OutputStream out = new FileOutputStream(dest);
             pic.compress(Bitmap.CompressFormat.PNG, 100, out);
             Food food = new Food();
-            HashMap<String, String> hashMap = new HashMap<>();
+            final HashMap<String, String> hashMap = new HashMap<>();
             hashMap.put("name", name);
             hashMap.put("description", desc);
             hashMap.put("image", name + ".png");
+            hashMap.put("ownerId", Data.user.getEmail());
+            new AsyncTask<Void,Void,Integer>() {
+                @Override
+                public Integer doInBackground(Void... voids) {
+                    try {
+                        Backendless.Files.upload(dest, "foods/", false);
+                        Backendless.Persistence.of("foods").save(hashMap);
+                        return 0;
+                    } catch (BackendlessException e) {
+                        return 1;
+                    } catch (Exception e) {
+                        return 1;
+                    }
+                }
 
+                @Override
+                public void onPostExecute(Integer i) {
+                    if (i == 0) {
+                        Toast.makeText(NewFood.this, "Created successfully.", Toast.LENGTH_SHORT).show();
+                        //TODO: return through intent
+                    } else {
+                        Toast.makeText(NewFood.this, getString(R.string.error), Toast.LENGTH_LONG).show();
+                    }
+                }
+            }.execute(new Void[]{});
         }catch (Exception e) {
-            Toast.makeText(NewFood.this, "Error! If the problem persists, please contact the developer", Toast.LENGTH_LONG).show();
+            Toast.makeText(NewFood.this, getString(R.string.error), Toast.LENGTH_LONG).show();
             Log.d("Save pic", e.toString());
         }
 
@@ -329,7 +376,7 @@ public class NewFood extends AppCompatActivity {
             @Override
             public Integer doInBackground(Void... voids) {
                 try {
-                    BackendlessCollection<Map> mapBackendlessCollection = Backendless.Persistence.of("Food").find(dataQuery);
+                    BackendlessCollection<Map> mapBackendlessCollection = Backendless.Persistence.of("foods").find(dataQuery);
                     final List<Map> maps = mapBackendlessCollection.getCurrentPage();
                     if (maps.size() != 0) {
                         for (int i = 0; i < maps.size(); i++) {
@@ -354,7 +401,7 @@ public class NewFood extends AppCompatActivity {
                 } else if (i == 1) {
                     Toast.makeText(NewFood.this, "Your search yields no results", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(NewFood.this, "Error: your search has failed, please contact the developer if the issue presists", Toast.LENGTH_LONG).show();
+                    Toast.makeText(NewFood.this, getString(R.string.error), Toast.LENGTH_LONG).show();
                 }
                 wait.dismiss();
             }

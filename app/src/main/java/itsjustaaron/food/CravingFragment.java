@@ -49,7 +49,7 @@ public class CravingFragment extends Fragment {
                 queryOptions.setOffset(0);
                 queryOptions.setPageSize(Data.loadCount);
                 backendlessDataQuery.setQueryOptions(queryOptions);
-                Data.collection = Backendless.Data.of("Craving").find(backendlessDataQuery);
+                Data.collection = Backendless.Data.of("cravings").find(backendlessDataQuery);
                 ArrayList<Map> temp = new ArrayList<>(Data.collection.getCurrentPage());
                 for (int i = 0; i < temp.size(); i++) {
                     Data.cravings.add(new Craving(temp.get(i)));

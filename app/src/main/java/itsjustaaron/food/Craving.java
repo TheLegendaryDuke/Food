@@ -43,7 +43,7 @@ public class Craving {
         }
         if (!found) {
             try {
-                food = new Food(Backendless.Persistence.of("Food").findById(foodID));
+                food = new Food(Backendless.Persistence.of("foods").findById(foodID));
                 final String imagePath = Data.fileDir + "/foods/" + food.image;
                 final File file = new File(imagePath);
                 final String path = "https://api.backendless.com/0020F1DC-E584-AD36-FF74-6D3E9E917400/v1/files/foods/" + food.image;
@@ -89,7 +89,7 @@ public class Craving {
         map.put("objectId", objectId);
         map.put("foodID", food.objectId);
         map.put("numFollowers", numFollowers);
-        Backendless.Persistence.of("Craving").save(map);
+        Backendless.Persistence.of("cravings").save(map);
     }
 
     public void followSwitch() {

@@ -47,7 +47,7 @@ public class CravingDetails extends AppCompatActivity {
 
             @Override
             public Void doInBackground(Void... voids) {
-                Map map = Backendless.Persistence.of("Craving").findById(cravingID);
+                Map map = Backendless.Persistence.of("cravings").findById(cravingID);
                 craving = new Craving(map);
                 return null;
             }

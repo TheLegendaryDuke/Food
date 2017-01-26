@@ -47,7 +47,7 @@ public class Searchable extends Activity {
                 Data.cravings.clear();
                 BackendlessDataQuery dataQuery = new BackendlessDataQuery();
                 dataQuery.setWhereClause(whereClause);
-                List<Map> maps = Backendless.Persistence.of("Food").find(dataQuery).getCurrentPage();
+                List<Map> maps = Backendless.Persistence.of("foods").find(dataQuery).getCurrentPage();
                 List<String> foodIDs = new ArrayList<String>();
                 if (maps.size() != 0) {
                     for (int i = 0; i < maps.size(); i++) {
@@ -63,7 +63,7 @@ public class Searchable extends Activity {
                     where = where + ")";
                     final BackendlessDataQuery backendlessDataQuery = new BackendlessDataQuery();
                     backendlessDataQuery.setWhereClause(where);
-                    Data.collection = Backendless.Persistence.of("Craving").find(backendlessDataQuery);
+                    Data.collection = Backendless.Persistence.of("cravings").find(backendlessDataQuery);
                     List<Map> mapResult = Data.collection.getCurrentPage();
                     for (int i = 0; i < mapResult.size(); i++) {
                         Map obj = mapResult.get(i);

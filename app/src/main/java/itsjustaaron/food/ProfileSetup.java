@@ -116,7 +116,7 @@ public class ProfileSetup extends AppCompatActivity {
                 if (i == 0) {
                     Toast.makeText(getApplicationContext(), "Update successful", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getApplicationContext(), "Update failed, if the problem persists, contact developer at z.aoran@gmail.com", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), getString(R.string.error), Toast.LENGTH_LONG).show();
                 }
                 startActivity(new Intent(ProfileSetup.this, Main.class));
                 finish();
@@ -157,7 +157,7 @@ public class ProfileSetup extends AppCompatActivity {
                         if (i == 0) {
                             Toast.makeText(getApplicationContext(), "Success, please check your email to set a new password", Toast.LENGTH_LONG).show();
                         } else {
-                            Toast.makeText(getApplicationContext(), "Reset failed, if the problem persists, contact developer at z.aoran@gmail.com", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), getString(R.string.error), Toast.LENGTH_LONG).show();
                         }
                     }
                 }.execute(new Void[]{});
