@@ -70,7 +70,6 @@ public class Searchable extends Activity {
                         final Craving craving = new Craving(obj);
                         Data.cravings.add(craving);
                     }
-                    finish();
                 }
                 return null;
             }
@@ -81,6 +80,7 @@ public class Searchable extends Activity {
                 if (Data.cravings.size() == 0) {
                     Toast.makeText(getApplicationContext(), "Your search yields no results", Toast.LENGTH_SHORT).show();
                 }
+                Data.cravingFragment.notifyChanges();
                 finish();
             }
         }.execute(new Void[]{});

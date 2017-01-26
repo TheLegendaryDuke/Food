@@ -19,6 +19,8 @@ public class Food {
     public String tags;
     public String description;
 
+    public Food(){}
+
     public Food(Map map) {
         this.objectId = map.get("objectId").toString();
         this.image = map.get("image").toString();
@@ -31,7 +33,8 @@ public class Food {
         String[] values = csv.split(",");
         List<String> tags = new ArrayList<String>();
         for (int i = 0; i < values.length; i++) {
-            tags.add(values[i]);
+            String strip = values[i].replaceAll(" ", "");
+            tags.add(strip);
         }
         return tags;
     }

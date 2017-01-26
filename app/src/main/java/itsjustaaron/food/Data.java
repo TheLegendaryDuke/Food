@@ -18,4 +18,5 @@ public class Data {
     public static CravingFragment cravingFragment;
     public static OfferFragment offerFragment;
     public static ArrayList<Food> foods;
+    public static String fileDir;
 }

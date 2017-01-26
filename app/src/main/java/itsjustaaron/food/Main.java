@@ -58,6 +58,7 @@ public class Main extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         Data.cravings = new ArrayList<>();
         Data.foods = new ArrayList<Food>();
+        Data.fileDir = getFilesDir().toString();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -91,7 +92,7 @@ public class Main extends AppCompatActivity
             ((TextView) navigationView.getHeaderView(0).findViewById(R.id.DrawerName)).setText((String) Data.user.getProperty("name"));
             if (Data.user.getProperty("portrait") != "") {
                 //download the user portrait if there is one
-                final File portrait = new File(getFilesDir() + "/" + Data.user.getProperty("portrait").toString());
+                final File portrait = new File(Data.fileDir + "/" + Data.user.getProperty("portrait").toString());
                 if (portrait.exists()) {
                     ((ImageView) navigationView.getHeaderView(0).findViewById(R.id.userPortrait)).setImageBitmap(BitmapFactory.decodeFile(portrait.getAbsolutePath()));
                 } else {
@@ -216,12 +217,11 @@ public class Main extends AppCompatActivity
         if (tabSelected == 0) {
             switch (id) {
                 case R.id.addNew:
-                    Intent next = new Intent(this, NewCraving.class);
+                    Intent next = new Intent(this, NewFood.class);
                     startActivity(next);
                     break;
                 case R.id.search:
                     onSearchRequested();
-                    TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
                     break;
                 case R.id.menu_refresh:
                     if (getSupportActionBar().getTitle() == "What others are craving") {

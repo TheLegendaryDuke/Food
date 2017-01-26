@@ -30,11 +30,47 @@ public class CravingFragment extends Fragment {
     private LinearLayoutManager mLayoutManager;
     private MyAdapter mAdapter;
 
-    private AsyncTask start;
+    private class start extends AsyncTask<Void, Void, Void> {
+        ProgressDialog wait;
+
+        @Override
+        public void onPreExecute() {
+            wait = new ProgressDialog(getActivity());
+            wait.setMessage("Please wait...");
+            wait.show();
+        }
+
+        @Override
+        public Void doInBackground(Void... voids) {
+            try {
+                Data.cravings.clear();
+                BackendlessDataQuery backendlessDataQuery = new BackendlessDataQuery();
+                QueryOptions queryOptions = new QueryOptions();
+                queryOptions.setOffset(0);
+                queryOptions.setPageSize(Data.loadCount);
+                backendlessDataQuery.setQueryOptions(queryOptions);
+                Data.collection = Backendless.Data.of("Craving").find(backendlessDataQuery);
+                ArrayList<Map> temp = new ArrayList<>(Data.collection.getCurrentPage());
+                for (int i = 0; i < temp.size(); i++) {
+                    Data.cravings.add(new Craving(temp.get(i)));
+                }
+            } catch (BackendlessException e) {
+                Log.d("backgroundless", e.toString());
+            }
+            return null;
+        }
+
+        @Override
+        public void onPostExecute(Void v) {
+            mAdapter.notifyDataSetChanged();
+            wait.dismiss();
+        }
+    };
 
     public void refresh(final SwipeRefreshLayout s) {
         if (Data.cravings.size() == 0) {
-            start.execute(new Void[]{});
+            s.setRefreshing(false);
+            new start().execute(new Void[]{});
         } else {
             new AsyncTask<Void, Void, Void>() {
                 ProgressDialog wait;
@@ -55,7 +91,6 @@ public class CravingFragment extends Fragment {
                     try {
                         Data.collection = Data.collection.getPage(Data.loadCount, 0);
                         ArrayList<Map> temp = new ArrayList<Map>(Data.collection.getCurrentPage());
-                        //TODO: reorganize retrieving logic here
                         for (int i = 0; i < temp.size(); i++) {
                             Map obj = temp.get(i);
                             Craving craving = new Craving(obj);
@@ -84,42 +119,6 @@ public class CravingFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Data.cravings = new ArrayList<Craving>();
-        start = new AsyncTask<Void, Void, Void>() {
-            ProgressDialog wait;
-
-            @Override
-            public void onPreExecute() {
-                wait = new ProgressDialog(getActivity());
-                wait.setMessage("Please wait...");
-                wait.show();
-            }
-
-            @Override
-            public Void doInBackground(Void... voids) {
-                try {
-                    Data.cravings.clear();
-                    BackendlessDataQuery backendlessDataQuery = new BackendlessDataQuery();
-                    QueryOptions queryOptions = new QueryOptions();
-                    queryOptions.setOffset(0);
-                    queryOptions.setPageSize(Data.loadCount);
-                    backendlessDataQuery.setQueryOptions(queryOptions);
-                    Data.collection = Backendless.Data.of("Craving").find(backendlessDataQuery);
-                    ArrayList<Map> temp = new ArrayList<>(Data.collection.getCurrentPage());
-                    for (int i = 0; i < temp.size(); i++) {
-                        Data.cravings.add(new Craving(temp.get(i)));
-                    }
-                } catch (BackendlessException e) {
-                    Log.d("backgroundless", e.toString());
-                }
-                return null;
-            }
-
-            @Override
-            public void onPostExecute(Void v) {
-                mAdapter.notifyDataSetChanged();
-                wait.dismiss();
-            }
-        };
     }
 
     @Override
@@ -141,7 +140,7 @@ public class CravingFragment extends Fragment {
             }
         });
 
-        start.execute(new Void[]{});
+        new start().execute(new Void[]{});
 
         final EndlessScroll endlessScroll = new EndlessScroll(mLayoutManager) {
             @Override
@@ -152,7 +151,6 @@ public class CravingFragment extends Fragment {
                         try {
                             Data.collection = Data.collection.nextPage();
                             ArrayList<Map> temp = new ArrayList<Map>(Data.collection.getCurrentPage());
-                            //TODO: reorganize retrieving logic here
                             for (int i = 0; i < temp.size(); i++) {
                                 Map obj = temp.get(i);
                                 Craving craving = new Craving(obj);

@@ -45,7 +45,7 @@ public class ProfileSetup extends AppCompatActivity {
         ((EditText) findViewById(R.id.profileName)).setText(Data.user.getProperty("name").toString());
         Object address = Data.user.getProperty("address");
         ((EditText) findViewById(R.id.profileAddress)).setText(address == null ? "" : address.toString());
-        final File portrait = new File(getFilesDir() + "/" + Data.user.getProperty("portrait").toString());
+        final File portrait = new File(Data.fileDir + "/" + Data.user.getProperty("portrait").toString());
         //portrait must be there for custom-portrait user since Main downloads it
         if (portrait.exists()) {
             ((ImageView) findViewById(R.id.profileImage)).setImageBitmap(BitmapFactory.decodeFile(portrait.getAbsolutePath()));
@@ -72,7 +72,7 @@ public class ProfileSetup extends AppCompatActivity {
             try {
                 imageUpdated = true;
                 Bitmap result = data.getExtras().getParcelable("data");
-                File dest = new File(getFilesDir() + "/" + Data.user.getProperty("portrait").toString());
+                File dest = new File(Data.fileDir + "/" + Data.user.getProperty("portrait").toString());
                 OutputStream out = new FileOutputStream(dest);
                 result.compress(Bitmap.CompressFormat.PNG, 100, out);
                 ((ImageView) findViewById(R.id.profileImage)).setImageBitmap(result);
@@ -98,7 +98,7 @@ public class ProfileSetup extends AppCompatActivity {
                 try {
                     Backendless.UserService.update(Data.user);
                     if (imageUpdated) {
-                        final File image = new File(getFilesDir() + "/" + Data.user.getProperty("portrait").toString());
+                        final File image = new File(Data.fileDir + "/" + Data.user.getProperty("portrait").toString());
                         Backendless.Files.upload(image, "users/" + Data.user.getEmail() + "/", true);
                     }
                 } catch (BackendlessException e) {

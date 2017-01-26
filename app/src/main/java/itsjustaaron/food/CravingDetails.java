@@ -66,7 +66,7 @@ public class CravingDetails extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         //poopulate form
         ImageView imageView = (ImageView) findViewById(R.id.detailImage);
-        imageView.setImageBitmap(BitmapFactory.decodeFile(getFilesDir() + "/foods/" + craving.food.image));
+        imageView.setImageBitmap(BitmapFactory.decodeFile(Data.fileDir + "/foods/" + craving.food.image));
         TextView name = (TextView) findViewById(R.id.detailName);
         name.setText(craving.food.name);
         List<String> tags = Food.csvToList(craving.food.tags);

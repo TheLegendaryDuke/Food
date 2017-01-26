@@ -1,5 +1,7 @@
 package itsjustaaron.food;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -8,6 +10,12 @@ import com.backendless.BackendlessCollection;
 import com.backendless.exceptions.BackendlessException;
 import com.backendless.persistence.BackendlessDataQuery;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +44,28 @@ public class Craving {
         if (!found) {
             try {
                 food = new Food(Backendless.Persistence.of("Food").findById(foodID));
+                final String imagePath = Data.fileDir + "/foods/" + food.image;
+                final File file = new File(imagePath);
+                final String path = "https://api.backendless.com/0020F1DC-E584-AD36-FF74-6D3E9E917400/v1/files/foods/" + food.image;
+                File dir = new File(Data.fileDir + "/foods/");
+                if(!dir.exists()) {
+                    dir.mkdir();
+                }
+                if(!file.exists()) {
+                    file.createNewFile();
+                    URL url = new URL(path);
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setDoInput(true);
+                    conn.connect();
+                    InputStream is = conn.getInputStream();
+                    Bitmap bm = BitmapFactory.decodeStream(is);
+                    FileOutputStream fos = new FileOutputStream(imagePath);
+                    ByteArrayOutputStream outstream = new ByteArrayOutputStream();
+                    bm.compress(Bitmap.CompressFormat.PNG, 100, outstream);
+                    byte[] byteArray = outstream.toByteArray();
+                    fos.write(byteArray);
+                    fos.close();
+                }
                 BackendlessDataQuery dataQuery = new BackendlessDataQuery();
                 dataQuery.setWhereClause("cravingID='" + objectId + "' and userID='" + Data.user.getEmail() + "'");
                 List<Map> maps = Backendless.Persistence.of("cravingFollowers").find(dataQuery).getCurrentPage();
@@ -47,6 +77,8 @@ public class Craving {
                 Data.foods.add(food);
             } catch (BackendlessException e) {
                 Log.d("backendless", e.toString());
+            } catch (Exception e) {
+                Log.d("download food pic", e.toString());
             }
         }
     }

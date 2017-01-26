@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -28,8 +27,7 @@ public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     public MyAdapter(ArrayList<T> myDataset, char s, Context context) {
         mDataset = myDataset;
         source = s;
-        //TODO: check if fileDir is the dir I want
-        this.fileDir = context.getFilesDir().toString();
+        this.fileDir = Data.fileDir.toString();
         this.context = context;
     }
 
@@ -43,7 +41,7 @@ public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             v = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.craving_list_item, parent, false);
         } else {
-            //TODO: to be filled in
+            //TODO: to be filled in after offer
             v = null;
         }
         ViewHolder vh = new ViewHolder(v);
@@ -54,8 +52,6 @@ public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         View v = holder.view;
-        // - get element from your dataset at this position
-        // - replace the contents of the view with that element
         if (source == 'c') {
             final ImageView image = (ImageView) v.findViewById(R.id.cravingItemImage);
             TextView description = (TextView) v.findViewById(R.id.cravingItemDescription);
@@ -64,7 +60,6 @@ public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             final TextView count = (TextView) v.findViewById(R.id.cravingFollowerCount);
             final Craving craving = (Craving) mDataset.get(position);
             final String imagePath = fileDir + "/foods/" + craving.food.image;
-            final File file = new File(imagePath);
             image.setImageBitmap(BitmapFactory.decodeFile(imagePath));
 
             description.setText(craving.food.name);
@@ -98,7 +93,6 @@ public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             image.setOnClickListener(listener);
             description.setOnClickListener(listener);
             count.setText(String.valueOf(craving.numFollowers));
-            image.setImageBitmap(BitmapFactory.decodeFile(imagePath));
         } else {
 
         }
