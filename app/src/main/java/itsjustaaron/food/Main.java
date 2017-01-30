@@ -1,10 +1,12 @@
 package itsjustaaron.food;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -44,6 +46,19 @@ public class Main extends AppCompatActivity
     private static ProgressDialog progressDialog;
     protected PagerAdapter adapter;
     private int tabSelected = 0;
+
+    public void checkUser(final Context context) {
+        if (Data.user == null) {
+            new AlertDialog.Builder(context).setTitle("Hello Guest").setMessage("Please log in!").setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    Intent goBack = new Intent(context, Welcome.class);
+                    context.startActivity(goBack);
+                    finish();
+                }
+            }).show();
+        }
+    }
 
     //helpers to implement wait
     public static void showWait() {
@@ -174,19 +189,9 @@ public class Main extends AppCompatActivity
     }
 
     public void ProfileSetup(View view) {
-        if (Data.user == null) {
-            new AlertDialog.Builder(this).setTitle("Hello Guest").setMessage("Please log in!").setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    Intent goBack = new Intent(Main.this, Welcome.class);
-                    startActivity(goBack);
-                    finish();
-                }
-            }).show();
-        } else {
-            Intent intent = new Intent(Main.this, ProfileSetup.class);
-            startActivity(intent);
-        }
+        checkUser(this);
+        Intent intent = new Intent(Main.this, ProfileSetup.class);
+        startActivity(intent);
     }
 
     @Override
@@ -217,6 +222,7 @@ public class Main extends AppCompatActivity
         if (tabSelected == 0) {
             switch (id) {
                 case R.id.addNew:
+                    checkUser(this);
                     Intent next = new Intent(this, NewFood.class);
                     startActivity(next);
                     break;
@@ -229,6 +235,7 @@ public class Main extends AppCompatActivity
                     } else {
                         //TODO: to be finished after offer
                     }
+                    break;
             }
         }
         return super.onOptionsItemSelected(item);
@@ -248,28 +255,40 @@ public class Main extends AppCompatActivity
                     finish();
                 }
             }).show();
-        }
+        }else {
 
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
+            // Handle navigation view item clicks here.
+            int id = item.getItemId();
 
-        switch (id) {
-            case R.id.logoff:
-                showWait();
-                Backendless.UserService.logout(new AsyncCallback<Void>() {
-                    @Override
-                    public void handleResponse(Void aVoid) {
-                        Data.user = null;
-                        Intent intent = new Intent(Main.this, Welcome.class);
-                        startActivity(intent);
-                        finish();
+            switch (id) {
+                case R.id.logoff:
+                    showWait();
+                    Backendless.UserService.logout(new AsyncCallback<Void>() {
+                        @Override
+                        public void handleResponse(Void aVoid) {
+                            Data.user = null;
+                            Intent intent = new Intent(Main.this, Welcome.class);
+                            startActivity(intent);
+                            finish();
+                        }
+
+                        @Override
+                        public void handleFault(BackendlessFault backendlessFault) {
+
+                        }
+                    });
+                    break;
+                case R.id.contactDev:
+                    Intent email = new Intent(Intent.ACTION_SENDTO);
+                    email.setData(Uri.parse("mailto:"));
+                    email.putExtra(Intent.EXTRA_EMAIL, new String[]{"z.aoran@gmail.com"});
+                    email.putExtra(Intent.EXTRA_SUBJECT, "To the developer of \"Food\"");
+                    email.putExtra(Intent.EXTRA_TEXT, "Please enter the message you want to send to me, any feedback is welcomed and appreciated :)");
+                    if (email.resolveActivity(getPackageManager()) != null) {
+                        startActivity(email);
                     }
-
-                    @Override
-                    public void handleFault(BackendlessFault backendlessFault) {
-
-                    }
-                });
+                    break;
+            }
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

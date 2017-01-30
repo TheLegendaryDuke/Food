@@ -14,6 +14,11 @@
             android:title="Settings" />
 
         <item
+            android:id="@+id/contactDev"
+            android:icon="@drawable/contact_dev"
+            android:title="Contact Developer" />
+
+        <item
             android:icon="@drawable/logoff"
             android:title="Log off"
             android:id="@+id/logoff" />
