@@ -32,6 +32,7 @@ import com.backendless.exceptions.BackendlessException;
 import com.backendless.persistence.BackendlessDataQuery;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ import java.util.Map;
 
 public class NewFood extends AppCompatActivity {
 
-    private boolean imageUpdated;
+    private boolean imageUpdated = false;
 
     private Bitmap pic;
 
@@ -81,6 +82,8 @@ public class NewFood extends AppCompatActivity {
                                 @Override
                                 public void onClick(final DialogInterface dialogInterface, int i) {
                                     new AsyncTask<Void, Void, Integer>() {
+                                        Food food;
+
                                         @Override
                                         public void onPreExecute() {
                                             dialogInterface.dismiss();
@@ -90,15 +93,24 @@ public class NewFood extends AppCompatActivity {
                                         @Override
                                         public Integer doInBackground(Void... voids) {
                                             try {
-                                                Map<String, String> craving = new HashMap<String, String>();
-                                                craving.put("foodID", values.get(position).objectId);
-                                                craving.put("numFollowers", "1");
-                                                craving.put("ownerID", Data.user.getEmail());
-                                                Map map = Backendless.Persistence.of("cravings").save(craving);
-                                                Map<String, String> cravingFollower = new HashMap<String, String>();
-                                                cravingFollower.put("userID", Data.user.getEmail());
-                                                cravingFollower.put("cravingID", map.get("objectId").toString());
-                                                Backendless.Persistence.of("cravingFollowers").save(cravingFollower);
+                                                food = values.get(position);
+                                                String whereC = "foodID = \'" + food.objectId + "\'";
+                                                BackendlessDataQuery dataQuery = new BackendlessDataQuery();
+                                                dataQuery.setWhereClause(whereC);
+                                                BackendlessCollection<Map> result = Backendless.Persistence.of("cravings").find(dataQuery);
+                                                if(result.getCurrentPage().size() != 0) {
+                                                    return 2;
+                                                }else {
+                                                    Map<String, String> craving = new HashMap<String, String>();
+                                                    craving.put("foodID", food.objectId);
+                                                    craving.put("numFollowers", "1");
+                                                    craving.put("ownerID", Data.user.getEmail());
+                                                    Map map = Backendless.Persistence.of("cravings").save(craving);
+                                                    Map<String, String> cravingFollower = new HashMap<String, String>();
+                                                    cravingFollower.put("userID", Data.user.getEmail());
+                                                    cravingFollower.put("cravingID", map.get("objectId").toString());
+                                                    Backendless.Persistence.of("cravingFollowers").save(cravingFollower);
+                                                }
                                             } catch (BackendlessException e) {
                                                 Log.d("backendless", e.toString());
                                                 return 1;
@@ -109,10 +121,21 @@ public class NewFood extends AppCompatActivity {
                                         @Override
                                         public void onPostExecute(Integer x) {
                                             if (x == 0) {
-                                                Toast.makeText(context, "Succeeded", Toast.LENGTH_SHORT).show();
-                                                //TODO: return through intent
-                                            } else {
+                                                Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show();
+                                                Intent ret = new Intent();
+                                                ret.putExtra("id", food.objectId);
+                                                setResult(RESULT_OK, ret);
+                                                finish();
+                                            } else if(x == 1) {
                                                 Toast.makeText(context, getString(R.string.error), Toast.LENGTH_LONG).show();
+                                            }else {
+                                                new AlertDialog.Builder(context).setMessage("A craving with this food already exists, you can find it by searching the food name or tags").setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        setResult(2);
+                                                        finish();
+                                                    }
+                                                }).show();
                                             }
                                             dialogInterface.dismiss();
                                             wait.dismiss();
@@ -293,38 +316,66 @@ public class NewFood extends AppCompatActivity {
                 startActivityForResult(cropIntent, 1);
             }
         } else {
-            imageUpdated = true;
-            pic = data.getExtras().getParcelable("data");
-            ((ImageView) findViewById(R.id.profileImage)).setImageBitmap(pic);
+            if(data != null) {
+                imageUpdated = true;
+                pic = data.getExtras().getParcelable("data");
+                ((ImageView) findViewById(R.id.createFoodImage)).setImageBitmap(pic);
+            }
         }
     }
 
     public void Create(View view) {
+        EditText nameView = (EditText)findViewById(R.id.createFoodName);
+        EditText descView = (EditText)findViewById(R.id.createFoodDesc);
+        if(nameView.getText() == null || nameView.getText().toString().length() == 0) {
+            Toast.makeText(NewFood.this, "Please enter a name for the food", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(descView.getText() == null || descView.getText().toString().length() == 0) {
+            Toast.makeText(NewFood.this, "Please enter a description for the food", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(!imageUpdated) {
+            Toast.makeText(NewFood.this, "Please select an image for the food", Toast.LENGTH_SHORT).show();
+            return;
+        }
         ProgressDialog pd = new ProgressDialog(NewFood.this);
         pd.setMessage("Please wait...");
         pd.show();
-        String name = ((EditText)findViewById(R.id.createFoodName)).getText().toString();
-        String desc = ((EditText)findViewById(R.id.createFoodDesc)).getText().toString();
+        final String name = nameView.getText().toString();
+        String desc = descView.getText().toString();
         try {
             final File dest = new File(Data.fileDir + "/foods/" + name + ".png");
             OutputStream out = new FileOutputStream(dest);
             pic.compress(Bitmap.CompressFormat.PNG, 100, out);
-            Food food = new Food();
             final HashMap<String, String> hashMap = new HashMap<>();
             hashMap.put("name", name);
             hashMap.put("description", desc);
             hashMap.put("image", name + ".png");
             hashMap.put("ownerId", Data.user.getEmail());
             new AsyncTask<Void,Void,Integer>() {
+
+                Food food = new Food();
+
                 @Override
                 public Integer doInBackground(Void... voids) {
                     try {
+                        String whereC = "name = \'" + name + "\'";
+                        BackendlessDataQuery dataQuery = new BackendlessDataQuery();
+                        dataQuery.setWhereClause(whereC);
+                        BackendlessCollection<Map> result = Backendless.Persistence.of("foods").find(dataQuery);
+                        if(result.getCurrentPage().size() != 0) {
+                            return 2;
+                        }
                         Backendless.Files.upload(dest, "foods/", false);
-                        Backendless.Persistence.of("foods").save(hashMap);
+                        food = new Food(Backendless.Persistence.of("foods").save(hashMap));
+                        Data.foods.add(food);
                         return 0;
                     } catch (BackendlessException e) {
+                        Log.d("backendless", e.toString());
                         return 1;
                     } catch (Exception e) {
+                        Log.d("otherExceptions", e.toString());
                         return 1;
                     }
                 }
@@ -333,13 +384,20 @@ public class NewFood extends AppCompatActivity {
                 public void onPostExecute(Integer i) {
                     if (i == 0) {
                         Toast.makeText(NewFood.this, "Created successfully.", Toast.LENGTH_SHORT).show();
-                        //TODO: return through intent
-                    } else {
+                        Intent ret = new Intent();
+                        ret.putExtra("id", food.objectId);
+                        setResult(RESULT_OK, ret);
+                        finish();
+                    } else if(i == 1){
                         Toast.makeText(NewFood.this, getString(R.string.error), Toast.LENGTH_LONG).show();
+                    }else {
+                        Toast.makeText(NewFood.this, "A craving with this food already exists, you can find it by searching the food name or tags", Toast.LENGTH_LONG).show();
+                        setResult(2);
+                        finish();
                     }
                 }
             }.execute(new Void[]{});
-        }catch (Exception e) {
+        }catch (FileNotFoundException e) {
             Toast.makeText(NewFood.this, getString(R.string.error), Toast.LENGTH_LONG).show();
             Log.d("Save pic", e.toString());
         }
@@ -349,7 +407,7 @@ public class NewFood extends AppCompatActivity {
     public void Search(View view) {
         searchResults.clear();
 
-        String search = ((EditText) findViewById(R.id.searchFoodBox)).getText().toString();
+        String search = ((EditText) findViewById(R.id.searchFoodBox)).getText().toString().toUpperCase();
         wait.show();
         List<String> tagResult = Food.csvToList(search);
         boolean tagCheck = true;
@@ -381,7 +439,18 @@ public class NewFood extends AppCompatActivity {
                     if (maps.size() != 0) {
                         for (int i = 0; i < maps.size(); i++) {
                             Map map = maps.get(i);
-                            searchResults.add(new Food(map));
+                            Food food = new Food(map);
+                            searchResults.add(food);
+                            boolean contains = false;
+                            for(Food f : Data.foods) {
+                                if(f.objectId == food.objectId) {
+                                    contains = true;
+                                    break;
+                                }
+                            }
+                            if(!contains) {
+                                Data.foods.add(food);
+                            }
                         }
                         return 0;
                     } else {
