@@ -1,9 +1,11 @@
 package itsjustaaron.food;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.support.v4.content.res.ResourcesCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +13,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * Created by aozhang on 1/18/2017.
@@ -42,7 +47,7 @@ public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                     .inflate(R.layout.craving_list_item, parent, false);
         } else {
             //TODO: to be filled in after offer
-            v = null;
+            v = LayoutInflater.from(parent.getContext()).inflate(R.layout.offer_list_item, parent, false);
         }
         ViewHolder vh = new ViewHolder(v);
         return vh;
@@ -61,8 +66,8 @@ public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             final Craving craving = (Craving) mDataset.get(position);
             final String imagePath = fileDir + "/foods/" + craving.food.image;
             image.setImageBitmap(BitmapFactory.decodeFile(imagePath));
-
-            description.setText(craving.food.name);
+            ((TextView)v.findViewById(R.id.cravingItemName)).setText(craving.food.name);
+            description.setText(craving.food.description);
             tags.setText(craving.food.tags);
             if (craving.following) {
                 likeOrNot.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), R.mipmap.favorite, null));
@@ -72,13 +77,22 @@ public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             likeOrNot.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    craving.followSwitch();
-                    if (craving.following) {
-                        likeOrNot.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), R.mipmap.favorite, null));
-                        count.setText(String.valueOf(Integer.parseInt(count.getText().toString()) + 1));
-                    } else {
-                        likeOrNot.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_favorite_border_black_48dp, null));
-                        count.setText(String.valueOf(Integer.parseInt(count.getText().toString()) - 1));
+                    if(Data.user != null) {
+                        craving.followSwitch();
+                        if (craving.following) {
+                            likeOrNot.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), R.mipmap.favorite, null));
+                            count.setText(String.valueOf(Integer.parseInt(count.getText().toString()) + 1));
+                        } else {
+                            likeOrNot.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_favorite_border_black_48dp, null));
+                            count.setText(String.valueOf(Integer.parseInt(count.getText().toString()) - 1));
+                        }
+                    }else {
+                        new AlertDialog.Builder(context).setMessage("Please login first!").setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
                     }
                 }
             });
@@ -94,7 +108,25 @@ public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             description.setOnClickListener(listener);
             count.setText(String.valueOf(craving.numFollowers));
         } else {
-
+            ImageView image = (ImageView) v.findViewById(R.id.offerFoodImage);
+            final FoodOffer foodOffer = (FoodOffer) mDataset.get(position);
+            ((TextView)v.findViewById(R.id.offerFoodOfferer)).setText(foodOffer.offerer);
+            ((TextView)v.findViewById(R.id.offerFoodName)).setText(foodOffer.food.name);
+            ((TextView)v.findViewById(R.id.offerFoodCity)).setText(foodOffer.city);
+            Date exp = foodOffer.expire;
+            TimeZone tz = TimeZone.getDefault();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy MMM dd");
+            sdf.setTimeZone(tz);
+            ((TextView)v.findViewById(R.id.offerFoodExpire)).setText("Expiring: " + sdf.format(exp));
+            image.setImageBitmap(BitmapFactory.decodeFile(fileDir + "/foods/" + foodOffer.food.image));
+            v.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent detail = new Intent(context, OfferDetails.class);
+                    detail.putExtra("offerID", foodOffer.offerID);
+                    context.startActivity(detail);
+                }
+            });
         }
 
     }

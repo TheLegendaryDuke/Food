@@ -10,9 +10,7 @@
         android:id="@+id/cravingItemImage"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_marginRight="6dip"
-        android:src="@mipmap/mystery" />
-
+        android:layout_marginRight="6dip" />
 
 
     <LinearLayout
@@ -37,37 +35,55 @@
 
     </LinearLayout>
 
-    <ScrollView
-        android:layout_width="wrap_content"
-        android:layout_height="70dp"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_toRightOf="@id/cravingItemImage"
         android:layout_toLeftOf="@id/internalID1"
-        android:id="@+id/internalID2"
-        >
+        android:orientation="vertical" >
 
-        <TextView
-            android:id="@+id/cravingItemDescription"
-            android:layout_width="wrap_content"
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:id="@+id/cravingItemName"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:text="Hambaobao"/>
+        </HorizontalScrollView>
+
+        <ScrollView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Description"
-            android:textStyle="bold"
-            android:textSize="20sp" />
+            android:layout_weight="1">
 
-    </ScrollView>
+            <TextView
+                android:id="@+id/cravingItemDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Description"
+                android:textSize="15sp" />
 
-    <HorizontalScrollView
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:layout_toRightOf="@id/cravingItemImage"
-        android:layout_toLeftOf="@id/internalID1"
-        android:layout_below="@id/internalID2"
-        >
+        </ScrollView>
 
+
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="something"
-            android:id="@+id/cravingItemTags"/>
+            android:id="@+id/cravingItemTags"
+            android:maxLines="1"/>
+        </HorizontalScrollView>
 
-    </HorizontalScrollView>
+
+    </LinearLayout>
+
+
 </RelativeLayout>

@@ -63,8 +63,8 @@ public class Searchable extends Activity {
                     where = where + ")";
                     final BackendlessDataQuery backendlessDataQuery = new BackendlessDataQuery();
                     backendlessDataQuery.setWhereClause(where);
-                    Data.collection = Backendless.Persistence.of("cravings").find(backendlessDataQuery);
-                    List<Map> mapResult = Data.collection.getCurrentPage();
+                    Data.cravingCollection = Backendless.Persistence.of("cravings").find(backendlessDataQuery);
+                    List<Map> mapResult = Data.cravingCollection.getCurrentPage();
                     for (int i = 0; i < mapResult.size(); i++) {
                         Map obj = mapResult.get(i);
                         final Craving craving = new Craving(obj);

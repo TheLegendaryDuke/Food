@@ -41,6 +41,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+
+//TODO: side nav actions, offer details, new offer, offer search, offer refresh, propose offer(from craving), guest restriction
 public class Main extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private static ProgressDialog progressDialog;
@@ -157,6 +159,7 @@ public class Main extends AppCompatActivity
                         return;
                     case 1:
                         tabSelected = 1;
+                        Data.offerFragment.start();
                         Main.this.getSupportActionBar().setTitle("What's available");
                         return;
                     default:

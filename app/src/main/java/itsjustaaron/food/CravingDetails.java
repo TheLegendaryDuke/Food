@@ -87,7 +87,7 @@ public class CravingDetails extends AppCompatActivity {
                 BackendlessDataQuery backendlessDataQuery = new BackendlessDataQuery();
                 String where = "foodID='" + craving.food.objectId + "'";
                 backendlessDataQuery.setWhereClause(where);
-                BackendlessCollection<Map> mapBackendlessCollection = Backendless.Persistence.of("foodOffer").find(backendlessDataQuery);
+                BackendlessCollection<Map> mapBackendlessCollection = Backendless.Persistence.of("foodOffers").find(backendlessDataQuery);
                 final List<Map> temp = mapBackendlessCollection.getCurrentPage();
                 if (temp.size() != 0) {
                     offerIDs = new ArrayList<String>();

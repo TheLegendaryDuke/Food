@@ -49,8 +49,8 @@ public class CravingFragment extends Fragment {
                 queryOptions.setOffset(0);
                 queryOptions.setPageSize(Data.loadCount);
                 backendlessDataQuery.setQueryOptions(queryOptions);
-                Data.collection = Backendless.Data.of("cravings").find(backendlessDataQuery);
-                ArrayList<Map> temp = new ArrayList<>(Data.collection.getCurrentPage());
+                Data.cravingCollection = Backendless.Data.of("cravings").find(backendlessDataQuery);
+                ArrayList<Map> temp = new ArrayList<>(Data.cravingCollection.getCurrentPage());
                 for (int i = 0; i < temp.size(); i++) {
                     Data.cravings.add(new Craving(temp.get(i)));
                 }
@@ -89,8 +89,8 @@ public class CravingFragment extends Fragment {
 
                     Data.cravings.clear();
                     try {
-                        Data.collection = Data.collection.getPage(Data.loadCount, 0);
-                        ArrayList<Map> temp = new ArrayList<Map>(Data.collection.getCurrentPage());
+                        Data.cravingCollection = Data.cravingCollection.getPage(Data.loadCount, 0);
+                        ArrayList<Map> temp = new ArrayList<Map>(Data.cravingCollection.getCurrentPage());
                         for (int i = 0; i < temp.size(); i++) {
                             Map obj = temp.get(i);
                             Craving craving = new Craving(obj);
@@ -149,8 +149,8 @@ public class CravingFragment extends Fragment {
                     @Override
                     public Void doInBackground(Void... voids) {
                         try {
-                            Data.collection = Data.collection.nextPage();
-                            ArrayList<Map> temp = new ArrayList<Map>(Data.collection.getCurrentPage());
+                            Data.cravingCollection = Data.cravingCollection.nextPage();
+                            ArrayList<Map> temp = new ArrayList<Map>(Data.cravingCollection.getCurrentPage());
                             for (int i = 0; i < temp.size(); i++) {
                                 Map obj = temp.get(i);
                                 Craving craving = new Craving(obj);

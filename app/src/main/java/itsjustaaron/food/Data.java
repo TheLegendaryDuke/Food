@@ -12,8 +12,9 @@ public class Data {
     public static int loadCount = 15;
     public static BackendlessUser user;
     public static ArrayList<Craving> cravings;
-    public static ArrayList<Offer> offers;
-    public static BackendlessCollection collection;
+    public static ArrayList<FoodOffer> foodOffers;
+    public static BackendlessCollection cravingCollection;
+    public static BackendlessCollection offerCollection;
     public static ArrayList<String> tags;
     public static CravingFragment cravingFragment;
     public static OfferFragment offerFragment;
