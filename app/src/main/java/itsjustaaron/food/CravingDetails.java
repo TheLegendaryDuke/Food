@@ -129,7 +129,7 @@ public class CravingDetails extends AppCompatActivity {
                         }
                     });
                 } else {
-                    findViewById(R.id.detailOffersContainer).setVisibility(View.GONE);
+                    findViewById(R.id.detailOffers).setVisibility(View.GONE);
                 }
                 Button propose = (Button) findViewById(R.id.proposeOffer);
                 propose.setOnClickListener(new View.OnClickListener() {

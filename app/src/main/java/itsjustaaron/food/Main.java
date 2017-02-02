@@ -42,14 +42,14 @@ import java.util.List;
 import java.util.Map;
 
 
-//TODO: side nav actions, offer details, new offer, offer search, offer refresh, propose offer(from craving), guest restriction
+//TODO: side nav actions, offer details, new offer, offer search, propose offer(from craving), guest restriction
 public class Main extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private static ProgressDialog progressDialog;
     protected PagerAdapter adapter;
     private int tabSelected = 0;
 
-    public void checkUser(final Context context) {
+    public boolean checkUser(final Context context) {
         if (Data.user == null) {
             new AlertDialog.Builder(context).setTitle("Hello Guest").setMessage("Please log in!").setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 @Override
@@ -59,7 +59,9 @@ public class Main extends AppCompatActivity
                     finish();
                 }
             }).show();
+            return false;
         }
+        return true;
     }
 
     //helpers to implement wait
@@ -192,9 +194,10 @@ public class Main extends AppCompatActivity
     }
 
     public void ProfileSetup(View view) {
-        checkUser(this);
-        Intent intent = new Intent(Main.this, ProfileSetup.class);
-        startActivity(intent);
+        if(checkUser(this)) {
+            Intent intent = new Intent(Main.this, ProfileSetup.class);
+            startActivity(intent);
+        }
     }
 
     @Override
@@ -225,10 +228,11 @@ public class Main extends AppCompatActivity
         if (tabSelected == 0) {
             switch (id) {
                 case R.id.addNew:
-                    checkUser(this);
-                    Intent next = new Intent(this, NewFood.class);
-                    startActivity(next);
-                    break;
+                    if(checkUser(this)) {
+                        Intent next = new Intent(this, NewFood.class);
+                        startActivity(next);
+                    }
+                        break;
                 case R.id.search:
                     onSearchRequested();
                     break;
