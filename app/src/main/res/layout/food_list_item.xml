@@ -1,31 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
-    android:gravity="center_vertical">
+    android:layout_height="100dp">
 
     <ImageView
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:id="@+id/foodImage"/>
 
+    <ScrollView
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:paddingLeft="5dp"
+        android:layout_alignParentRight="true"
+        android:id="@+id/internalID2">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/foodItemTags"
+            android:orientation="vertical">
+        </LinearLayout>
+    </ScrollView>
+
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
+        android:layout_toLeftOf="@id/internalID2"
+        android:layout_toRightOf="@id/foodImage"
         android:orientation="vertical">
-        <TextView
+        <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Name"
-            android:textSize="30sp"
-            android:id="@+id/foodName"/>
-        <TextView
+            android:scrollbars="none">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Name"
+                android:maxLines="1"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:id="@+id/foodName"/>
+        </HorizontalScrollView>
+
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Description"
-            android:textSize="15sp"
-            android:id="@+id/foodDescription"/>
+            android:layout_height="match_parent">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Description"
+                android:textSize="15sp"
+                android:id="@+id/foodDescription"/>
+        </ScrollView>
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>

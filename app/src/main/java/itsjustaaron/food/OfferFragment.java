@@ -49,7 +49,6 @@ public class OfferFragment extends Fragment {
                 ArrayList<Map> temp = new ArrayList<>(Data.offerCollection.getCurrentPage());
                 for (int i = 0; i < temp.size(); i++) {
                     Data.foodOffers.add(new FoodOffer(temp.get(i)));
-                    Log.d("date", String.valueOf(Data.foodOffers.get(i).expire.getTime()));
                 }
             } catch (BackendlessException e) {
                 Log.d("backgroundless", e.toString());

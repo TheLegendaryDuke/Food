@@ -73,6 +73,13 @@ public class NewFood extends AppCompatActivity {
             ((ImageView) rowView.findViewById(R.id.foodImage)).setImageBitmap(BitmapFactory.decodeFile(Data.fileDir + "/foods/" + values.get(position).image));
             ((TextView) rowView.findViewById(R.id.foodName)).setText(values.get(position).name);
             ((TextView) rowView.findViewById(R.id.foodDescription)).setText(values.get(position).description);
+            List<String> tags = Food.csvToList(values.get(position).tags);
+            LinearLayout cont = (LinearLayout) rowView.findViewById(R.id.foodItemTags);
+            for(String tag : tags) {
+                TextView textView = new TextView(context);
+                textView.setText(tag);
+                cont.addView(textView);
+            }
             rowView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
