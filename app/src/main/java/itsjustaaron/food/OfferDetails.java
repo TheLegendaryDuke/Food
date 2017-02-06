@@ -1,9 +1,12 @@
 package itsjustaaron.food;
 
 import android.app.ProgressDialog;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.backendless.Backendless;
 
@@ -39,11 +42,19 @@ public class OfferDetails extends AppCompatActivity {
             @Override
             public void onPostExecute(Void v) {
                 updateUI();
+                progress.dismiss();
             }
         }.execute(new Void[]{});
     }
 
     public void updateUI() {
-
+        ImageView image = (ImageView) findViewById(R.id.offerDetailFoodImage);
+        image.setImageBitmap(BitmapFactory.decodeFile(getFilesDir() + "/foods/" + offer.food.image));
+        ((TextView)findViewById(R.id.offerDetailFoodName)).setText(offer.food.name);
+        ((TextView)findViewById(R.id.offerDetailFoodDesc)).setText(offer.food.description);
+        ((TextView)findViewById(R.id.offerDetailFoodTags)).setText(offer.food.tags);
+        ((TextView)findViewById(R.id.offerDetailFoodComment)).setText(offer.comment);
+        ((TextView)findViewById(R.id.offerDetailFoodPrice)).setText(String.valueOf(offer.price));
+        ((TextView)findViewById(R.id.offerDetailFoodLocation)).setText(offer.address + "\n" + offer.city + "\n" + offer.zipCode);
     }
 }

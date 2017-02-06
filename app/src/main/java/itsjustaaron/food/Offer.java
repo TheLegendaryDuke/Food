@@ -18,12 +18,13 @@ public class Offer {
     public String comment;
     public Date expire;
     public String zipCode;
+    public double price;
 
     public Offer(Map map) {
         offerer = map.get("offerer").toString();
         objectId = map.get("objectId").toString();
-        for(Food f : Data.foods) {
-            if(f.objectId == map.get("foodID")) {
+        for (Food f : Data.foods) {
+            if (f.objectId.equals(map.get("foodID"))) {
                 food = f;
             }
         }
@@ -31,9 +32,9 @@ public class Offer {
         city = map.get("city").toString();
         comment = map.get("comment").toString();
         zipCode = map.get("zipCode").toString();
-        try{
+        try {
             expire = (new SimpleDateFormat("EEE MMM dd kk:mm:ss zzz yyyy")).parse(map.get("expire").toString());
-        }catch (Exception e) {
+        } catch (Exception e) {
             Log.d("dateParse", e.toString());
         }
 
