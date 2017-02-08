@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.backendless.Backendless;
 
+import java.text.SimpleDateFormat;
 import java.util.Map;
 
 public class OfferDetails extends AppCompatActivity {
@@ -54,7 +55,9 @@ public class OfferDetails extends AppCompatActivity {
         ((TextView)findViewById(R.id.offerDetailFoodDesc)).setText(offer.food.description);
         ((TextView)findViewById(R.id.offerDetailFoodTags)).setText(offer.food.tags);
         ((TextView)findViewById(R.id.offerDetailFoodComment)).setText(offer.comment);
-        ((TextView)findViewById(R.id.offerDetailFoodPrice)).setText(String.valueOf(offer.price));
+        ((TextView)findViewById(R.id.offerDetailFoodPrice)).setText(String.valueOf("$" + offer.price));
+        ((TextView)findViewById(R.id.offerDetailOfferer)).setText(offer.offerer);
         ((TextView)findViewById(R.id.offerDetailFoodLocation)).setText(offer.address + "\n" + offer.city + "\n" + offer.zipCode);
+        ((TextView)findViewById(R.id.offerDetailFoodExpire)).setText(new SimpleDateFormat("EEE MMM dd hh:mm aa").format(offer.expire));
     }
 }

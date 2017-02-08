@@ -46,6 +46,9 @@ public class NewFood extends AppCompatActivity {
 
     private boolean imageUpdated = false;
 
+    //TODO: separate the code for different scenarios
+    private boolean onCraving;
+
     private Bitmap pic;
 
     private List<Food> searchResults;
@@ -173,6 +176,7 @@ public class NewFood extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_food);
         searchResults = new ArrayList<>();
+        onCraving = getIntent().getBooleanExtra("onCraving", true);
         ListView listView = (ListView) findViewById(R.id.searchFoodResult);
         foodAdapter adapter = new foodAdapter(this, searchResults);
         listView.setAdapter(adapter);

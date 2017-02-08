@@ -32,6 +32,7 @@ public class Offer {
         city = map.get("city").toString();
         comment = map.get("comment").toString();
         zipCode = map.get("zipCode").toString();
+        price = Double.parseDouble(map.get("price").toString());
         try {
             expire = (new SimpleDateFormat("EEE MMM dd kk:mm:ss zzz yyyy")).parse(map.get("expire").toString());
         } catch (Exception e) {

@@ -46,7 +46,6 @@ public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             v = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.craving_list_item, parent, false);
         } else {
-            //TODO: to be filled in after offer
             v = LayoutInflater.from(parent.getContext()).inflate(R.layout.offer_list_item, parent, false);
         }
         ViewHolder vh = new ViewHolder(v);
@@ -113,6 +112,7 @@ public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             ((TextView)v.findViewById(R.id.offerFoodOfferer)).setText(foodOffer.offerer);
             ((TextView)v.findViewById(R.id.offerFoodName)).setText(foodOffer.food.name);
             ((TextView)v.findViewById(R.id.offerFoodCity)).setText(foodOffer.city);
+            ((TextView)v.findViewById(R.id.offerFoodPrice)).setText(String.valueOf(foodOffer.price));
             Date exp = foodOffer.expire;
             TimeZone tz = TimeZone.getDefault();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy MMM dd");
@@ -128,7 +128,6 @@ public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                 }
             });
         }
-
     }
 
     // Return the size of your dataset (invoked by the layout manager)

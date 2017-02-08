@@ -42,7 +42,7 @@ import java.util.List;
 import java.util.Map;
 
 
-//TODO: side nav actions, offer details, new offer, offer search, propose offer(from craving), guest restriction
+//TODO: side nav actions, new offer, offer search, propose offer(from craving), guest restriction
 public class Main extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private static ProgressDialog progressDialog;
@@ -224,23 +224,29 @@ public class Main extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        boolean onCraving = getSupportActionBar().getTitle() == "What others are craving";
 
         if (tabSelected == 0) {
             switch (id) {
                 case R.id.addNew:
                     if(checkUser(this)) {
                         Intent next = new Intent(this, NewFood.class);
-                        startActivity(next);
+                        next.putExtra("onCraving", onCraving);
+                        if(onCraving) {
+                            startActivity(next);
+                        }else {
+                            startActivityForResult(next, 0);
+                        }
                     }
                         break;
                 case R.id.search:
                     onSearchRequested();
                     break;
                 case R.id.menu_refresh:
-                    if (getSupportActionBar().getTitle() == "What others are craving") {
+                    if (onCraving) {
                         Data.cravingFragment.refresh(null);
                     } else {
-                        //TODO: to be finished after offer
+                        Data.offerFragment.refresh(null);
                     }
                     break;
             }
