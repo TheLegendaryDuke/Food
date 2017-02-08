@@ -42,7 +42,7 @@ import java.util.List;
 import java.util.Map;
 
 
-//TODO: side nav actions, new offer, propose offer(from craving), guest restriction
+//TODO: side nav actions, new offer, guest restriction
 //not so urgent TODO: caching Data
 //future add-ons: in-app communication, in-app payment
 public class Main extends AppCompatActivity

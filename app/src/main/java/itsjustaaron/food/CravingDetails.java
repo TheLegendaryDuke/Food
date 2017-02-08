@@ -77,6 +77,15 @@ public class CravingDetails extends AppCompatActivity {
         ((TextView) findViewById(R.id.detailTags)).setText(list);
         ((TextView) findViewById(R.id.detailDescription)).setText(craving.food.description);
 
+        Button propose = (Button) findViewById(R.id.proposeOffer);
+        propose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent next = new Intent(getApplicationContext(), NewOffer.class);
+                next.putExtra("foodID", craving.food.objectId);
+                startActivity(next);
+            }
+        });
         new AsyncTask<Void, Void, Void>() {
             List<String> offers;
             List<String> offerIDs;
@@ -131,15 +140,6 @@ public class CravingDetails extends AppCompatActivity {
                 } else {
                     findViewById(R.id.detailOffers).setVisibility(View.GONE);
                 }
-                Button propose = (Button) findViewById(R.id.proposeOffer);
-                propose.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent next = new Intent(getApplicationContext(), NewOffer.class);
-                        next.putExtra("foodID", craving.food.objectId);
-                        startActivity(next);
-                    }
-                });
                 progress.dismiss();
             }
         }.execute(new Void[]{});

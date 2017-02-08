@@ -1,7 +1,10 @@
 package itsjustaaron.food;
 
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 public class NewOffer extends AppCompatActivity {
     private Food food;
@@ -17,6 +20,10 @@ public class NewOffer extends AppCompatActivity {
                 break;
             }
         }
-
+        ImageView image = (ImageView) findViewById(R.id.newOfferFoodImage);
+        image.setImageBitmap(BitmapFactory.decodeFile(getFilesDir() + "/foods/" + food.image));
+        ((TextView)findViewById(R.id.newofferFoodName)).setText(food.name);
+        ((TextView)findViewById(R.id.newofferFoodDesc)).setText(food.description);
+        ((TextView)findViewById(R.id.newofferFoodTags)).setText(food.tags);
     }
 }
