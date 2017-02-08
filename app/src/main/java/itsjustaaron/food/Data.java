@@ -20,4 +20,5 @@ public class Data {
     public static OfferFragment offerFragment;
     public static ArrayList<Food> foods;
     public static String fileDir;
+    public static boolean onCraving;
 }

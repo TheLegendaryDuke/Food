@@ -42,12 +42,13 @@ import java.util.List;
 import java.util.Map;
 
 
-//TODO: side nav actions, new offer, offer search, propose offer(from craving), guest restriction
+//TODO: side nav actions, new offer, propose offer(from craving), guest restriction
+//not so urgent TODO: caching Data
+//future add-ons: in-app communication, in-app payment
 public class Main extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private static ProgressDialog progressDialog;
     protected PagerAdapter adapter;
-    private int tabSelected = 0;
 
     public boolean checkUser(final Context context) {
         if (Data.user == null) {
@@ -156,11 +157,9 @@ public class Main extends AppCompatActivity
                 int position = tab.getPosition();
                 switch (position) {
                     case 0:
-                        tabSelected = 0;
                         Main.this.getSupportActionBar().setTitle("What others are craving");
                         return;
                     case 1:
-                        tabSelected = 1;
                         Data.offerFragment.start();
                         Main.this.getSupportActionBar().setTitle("What's available");
                         return;
@@ -225,33 +224,44 @@ public class Main extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         boolean onCraving = getSupportActionBar().getTitle() == "What others are craving";
-
-        if (tabSelected == 0) {
-            switch (id) {
-                case R.id.addNew:
-                    if(checkUser(this)) {
-                        Intent next = new Intent(this, NewFood.class);
-                        next.putExtra("onCraving", onCraving);
-                        if(onCraving) {
-                            startActivity(next);
-                        }else {
-                            startActivityForResult(next, 0);
-                        }
-                    }
-                        break;
-                case R.id.search:
-                    onSearchRequested();
-                    break;
-                case R.id.menu_refresh:
-                    if (onCraving) {
+        switch (id) {
+            case R.id.addNew:
+                if(checkUser(this)) {
+                    Intent next = new Intent(this, NewFood.class);
+                    next.putExtra("onCraving", onCraving);
+                    if(onCraving) {
+                        startActivity(next);
                         Data.cravingFragment.refresh(null);
-                    } else {
-                        Data.offerFragment.refresh(null);
+                    }else {
+                        startActivityForResult(next, 0);
                     }
+                }
                     break;
-            }
+            case R.id.search:
+                Data.onCraving = onCraving;
+                onSearchRequested();
+                break;
+            case R.id.menu_refresh:
+                if (onCraving) {
+                    Data.cravingFragment.refresh(null);
+                } else {
+                    Data.offerFragment.refresh(null);
+                }
+                break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == 0) {
+            if(resultCode == RESULT_OK) {
+                String id = data.getStringExtra("id");
+                Intent intent = new Intent(this, NewOffer.class);
+                intent.putExtra("food", id);
+                startActivity(intent);
+            }
+        }
     }
 
     //Side drawer actions

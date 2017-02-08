@@ -46,7 +46,6 @@ public class NewFood extends AppCompatActivity {
 
     private boolean imageUpdated = false;
 
-    //TODO: separate the code for different scenarios
     private boolean onCraving;
 
     private Bitmap pic;
@@ -54,6 +53,8 @@ public class NewFood extends AppCompatActivity {
     private List<Food> searchResults;
 
     private ProgressDialog wait;
+
+    private ArrayList<Boolean> tagChecks = new ArrayList<>();
 
     private class foodAdapter extends ArrayAdapter<Food> {
         public List<Food> values;
@@ -91,66 +92,73 @@ public class NewFood extends AppCompatActivity {
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(final DialogInterface dialogInterface, int i) {
-                                    new AsyncTask<Void, Void, Integer>() {
-                                        Food food;
+                                    if(onCraving) {
+                                        new AsyncTask<Void, Void, Integer>() {
+                                            Food food;
 
-                                        @Override
-                                        public void onPreExecute() {
-                                            dialogInterface.dismiss();
-                                            wait.show();
-                                        }
-
-                                        @Override
-                                        public Integer doInBackground(Void... voids) {
-                                            try {
-                                                food = values.get(position);
-                                                String whereC = "foodID = \'" + food.objectId + "\'";
-                                                BackendlessDataQuery dataQuery = new BackendlessDataQuery();
-                                                dataQuery.setWhereClause(whereC);
-                                                BackendlessCollection<Map> result = Backendless.Persistence.of("cravings").find(dataQuery);
-                                                if(result.getCurrentPage().size() != 0) {
-                                                    return 2;
-                                                }else {
-                                                    Map<String, String> craving = new HashMap<String, String>();
-                                                    craving.put("foodID", food.objectId);
-                                                    craving.put("numFollowers", "1");
-                                                    craving.put("ownerID", Data.user.getEmail());
-                                                    Map map = Backendless.Persistence.of("cravings").save(craving);
-                                                    Map<String, String> cravingFollower = new HashMap<String, String>();
-                                                    cravingFollower.put("userID", Data.user.getEmail());
-                                                    cravingFollower.put("cravingID", map.get("objectId").toString());
-                                                    Backendless.Persistence.of("cravingFollowers").save(cravingFollower);
-                                                }
-                                            } catch (BackendlessException e) {
-                                                Log.d("backendless", e.toString());
-                                                return 1;
+                                            @Override
+                                            public void onPreExecute() {
+                                                dialogInterface.dismiss();
+                                                wait.show();
                                             }
-                                            return 0;
-                                        }
 
-                                        @Override
-                                        public void onPostExecute(Integer x) {
-                                            if (x == 0) {
-                                                Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show();
-                                                Intent ret = new Intent();
-                                                ret.putExtra("id", food.objectId);
-                                                setResult(RESULT_OK, ret);
-                                                finish();
-                                            } else if(x == 1) {
-                                                Toast.makeText(context, getString(R.string.error), Toast.LENGTH_LONG).show();
-                                            }else {
-                                                new AlertDialog.Builder(context).setMessage("A craving with this food already exists, you can find it by searching the food name or tags").setNeutralButton("OK", new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(DialogInterface dialog, int which) {
-                                                        setResult(2);
-                                                        finish();
+                                            @Override
+                                            public Integer doInBackground(Void... voids) {
+                                                try {
+                                                    food = values.get(position);
+                                                    String whereC = "foodID = \'" + food.objectId + "\'";
+                                                    BackendlessDataQuery dataQuery = new BackendlessDataQuery();
+                                                    dataQuery.setWhereClause(whereC);
+                                                    BackendlessCollection<Map> result = Backendless.Persistence.of("cravings").find(dataQuery);
+                                                    if (result.getCurrentPage().size() != 0) {
+                                                        return 2;
+                                                    } else {
+                                                        Map<String, String> craving = new HashMap<String, String>();
+                                                        craving.put("foodID", food.objectId);
+                                                        craving.put("numFollowers", "1");
+                                                        craving.put("ownerID", Data.user.getEmail());
+                                                        Map map = Backendless.Persistence.of("cravings").save(craving);
+                                                        Map<String, String> cravingFollower = new HashMap<String, String>();
+                                                        cravingFollower.put("userID", Data.user.getEmail());
+                                                        cravingFollower.put("cravingID", map.get("objectId").toString());
+                                                        Backendless.Persistence.of("cravingFollowers").save(cravingFollower);
                                                     }
-                                                }).show();
+                                                } catch (BackendlessException e) {
+                                                    Log.d("backendless", e.toString());
+                                                    return 1;
+                                                }
+                                                return 0;
                                             }
-                                            dialogInterface.dismiss();
-                                            wait.dismiss();
-                                        }
-                                    }.execute(new Void[]{});
+
+                                            @Override
+                                            public void onPostExecute(Integer x) {
+                                                if (x == 0) {
+                                                    Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show();
+                                                    Intent ret = new Intent();
+                                                    ret.putExtra("id", food.objectId);
+                                                    setResult(RESULT_OK, ret);
+                                                    finish();
+                                                } else if (x == 1) {
+                                                    Toast.makeText(context, getString(R.string.error), Toast.LENGTH_LONG).show();
+                                                } else {
+                                                    new AlertDialog.Builder(context).setMessage("A craving with this food already exists, you can find it by searching the food name or tags").setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialog, int which) {
+                                                            setResult(2);
+                                                            finish();
+                                                        }
+                                                    }).show();
+                                                }
+                                                dialogInterface.dismiss();
+                                                wait.dismiss();
+                                            }
+                                        }.execute(new Void[]{});
+                                    }else {
+                                        Intent ret = new Intent();
+                                        ret.putExtra("id", values.get(position).objectId);
+                                        setResult(RESULT_OK, ret);
+                                        finish();
+                                    }
                                 }
                             })
                             .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -182,7 +190,9 @@ public class NewFood extends AppCompatActivity {
         listView.setAdapter(adapter);
         wait = new ProgressDialog(this);
         wait.setMessage("Please Wait...");
-        new AlertDialog.Builder(this).setTitle("Do you want to select a existing food or create a new one?")
+        new AlertDialog.Builder(this)
+                .setCancelable(false)
+                .setTitle("Do you want to select a existing food or create a new one?")
                 .setPositiveButton("Select", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -223,15 +233,18 @@ public class NewFood extends AppCompatActivity {
                     if(checkedTextView.isChecked()) {
                         checkedTextView.setCheckMarkDrawable(null);
                         checkedTextView.setChecked(false);
+                        tagChecks.set(checkedTextView.getId(), false);
                     }else {
                         checkedTextView.setCheckMarkDrawable(ContextCompat.getDrawable(NewFood.this, R.drawable.ic_check));
                         checkedTextView.setChecked(true);
+                        tagChecks.set(checkedTextView.getId(), true);
                     }
                 }
             });
             checkedTextView.setChecked(false);
             checkedTextView.setId(i);
             container.addView(checkedTextView);
+            tagChecks.add(i, false);
         }
         final Button button = new Button(this);
         button.setText("Add");
@@ -291,6 +304,7 @@ public class NewFood extends AppCompatActivity {
                                             }
                                         });
                                         container.addView(ctv, container.getChildCount() - 1);
+                                        tagChecks.add(ctv.getId(), true);
                                     }else {
                                         Toast.makeText(NewFood.this, getString(R.string.error), Toast.LENGTH_LONG).show();
                                     }
@@ -364,6 +378,13 @@ public class NewFood extends AppCompatActivity {
             hashMap.put("description", desc);
             hashMap.put("image", name + ".png");
             hashMap.put("ownerId", Data.user.getEmail());
+            ArrayList<String> tags = new ArrayList<>();
+            for(int i = 0; i < Data.tags.size(); i++) {
+                if(tagChecks.get(i)) {
+                    tags.add(Data.tags.get(i));
+                }
+            }
+            hashMap.put("tags", Food.listToCsv(tags));
             new AsyncTask<Void,Void,Integer>() {
 
                 Food food = new Food();
@@ -378,9 +399,20 @@ public class NewFood extends AppCompatActivity {
                         if(result.getCurrentPage().size() != 0) {
                             return 2;
                         }
-                        Backendless.Files.upload(dest, "foods/", false);
+                        Backendless.Files.upload(dest, "foods/", true);
                         food = new Food(Backendless.Persistence.of("foods").save(hashMap));
                         Data.foods.add(food);
+                        if(onCraving) {
+                            Map<String, String> craving = new HashMap<String, String>();
+                            craving.put("foodID", food.objectId);
+                            craving.put("numFollowers", "1");
+                            craving.put("ownerId", Data.user.getEmail());
+                            Map map = Backendless.Persistence.of("cravings").save(craving);
+                            Map<String, String> cravingFollower = new HashMap<String, String>();
+                            cravingFollower.put("userID", Data.user.getEmail());
+                            cravingFollower.put("cravingID", map.get("objectId").toString());
+                            Backendless.Persistence.of("cravingFollowers").save(cravingFollower);
+                        }
                         return 0;
                     } catch (BackendlessException e) {
                         Log.d("backendless", e.toString());
@@ -393,17 +425,24 @@ public class NewFood extends AppCompatActivity {
 
                 @Override
                 public void onPostExecute(Integer i) {
-                    if (i == 0) {
-                        Toast.makeText(NewFood.this, "Created successfully.", Toast.LENGTH_SHORT).show();
+                    if(onCraving) {
+                        if (i == 0) {
+                            Toast.makeText(NewFood.this, "Created successfully.", Toast.LENGTH_SHORT).show();
+                            Intent ret = new Intent();
+                            ret.putExtra("id", food.objectId);
+                            setResult(RESULT_OK, ret);
+                            finish();
+                        } else if (i == 1) {
+                            Toast.makeText(NewFood.this, getString(R.string.error), Toast.LENGTH_LONG).show();
+                        } else if (i == 2) {
+                            Toast.makeText(NewFood.this, "A food with the same name already exists, you can find it by searching the food name or tags", Toast.LENGTH_LONG).show();
+                            setResult(2);
+                            finish();
+                        }
+                    }else {
                         Intent ret = new Intent();
                         ret.putExtra("id", food.objectId);
                         setResult(RESULT_OK, ret);
-                        finish();
-                    } else if(i == 1){
-                        Toast.makeText(NewFood.this, getString(R.string.error), Toast.LENGTH_LONG).show();
-                    }else {
-                        Toast.makeText(NewFood.this, "A craving with this food already exists, you can find it by searching the food name or tags", Toast.LENGTH_LONG).show();
-                        setResult(2);
                         finish();
                     }
                 }

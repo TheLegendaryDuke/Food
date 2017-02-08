@@ -44,7 +44,6 @@ public class Searchable extends Activity {
         new AsyncTask<Void, Void, Void>() {
             @Override
             public Void doInBackground(Void... voids) {
-                Data.cravings.clear();
                 BackendlessDataQuery dataQuery = new BackendlessDataQuery();
                 dataQuery.setWhereClause(whereClause);
                 List<Map> maps = Backendless.Persistence.of("foods").find(dataQuery).getCurrentPage();
@@ -63,12 +62,24 @@ public class Searchable extends Activity {
                     where = where + ")";
                     final BackendlessDataQuery backendlessDataQuery = new BackendlessDataQuery();
                     backendlessDataQuery.setWhereClause(where);
-                    Data.cravingCollection = Backendless.Persistence.of("cravings").find(backendlessDataQuery);
-                    List<Map> mapResult = Data.cravingCollection.getCurrentPage();
-                    for (int i = 0; i < mapResult.size(); i++) {
-                        Map obj = mapResult.get(i);
-                        final Craving craving = new Craving(obj);
-                        Data.cravings.add(craving);
+                    if(Data.onCraving) {
+                        Data.cravings.clear();
+                        Data.cravingCollection = Backendless.Persistence.of("cravings").find(backendlessDataQuery);
+                        List<Map> mapResult = Data.cravingCollection.getCurrentPage();
+                        for (int i = 0; i < mapResult.size(); i++) {
+                            Map obj = mapResult.get(i);
+                            final Craving craving = new Craving(obj);
+                            Data.cravings.add(craving);
+                        }
+                    }else {
+                        Data.foodOffers.clear();
+                        Data.offerCollection = Backendless.Persistence.of("foodOffers").find(backendlessDataQuery);
+                        List<Map> mapResult = Data.offerCollection.getCurrentPage();
+                        for (int i = 0; i < mapResult.size(); i++) {
+                            Map obj = mapResult.get(i);
+                            final FoodOffer foodOffer = new FoodOffer(obj);
+                            Data.foodOffers.add(foodOffer);
+                        }
                     }
                 }
                 return null;
@@ -76,11 +87,17 @@ public class Searchable extends Activity {
 
             @Override
             public void onPostExecute(Void v) {
-                Data.cravingFragment.notifyChanges();
-                if (Data.cravings.size() == 0) {
-                    Toast.makeText(getApplicationContext(), "Your search yields no results", Toast.LENGTH_SHORT).show();
+                if(Data.onCraving) {
+                    if (Data.cravings.size() == 0) {
+                        Toast.makeText(getApplicationContext(), "Your search yields no results", Toast.LENGTH_SHORT).show();
+                    }
+                    Data.cravingFragment.notifyChanges();
+                }else {
+                    if (Data.foodOffers.size() == 0) {
+                        Toast.makeText(getApplicationContext(), "Your search yields no results", Toast.LENGTH_SHORT).show();
+                    }
+                    Data.offerFragment.notifyChanges();
                 }
-                Data.cravingFragment.notifyChanges();
                 finish();
             }
         }.execute(new Void[]{});

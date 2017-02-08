@@ -115,6 +115,8 @@ public class OfferFragment extends Fragment {
         }
     }
 
+    public void notifyChanges() {myAdapter.notifyDataSetChanged();}
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

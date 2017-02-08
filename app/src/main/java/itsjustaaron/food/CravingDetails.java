@@ -90,11 +90,11 @@ public class CravingDetails extends AppCompatActivity {
                 BackendlessCollection<Map> mapBackendlessCollection = Backendless.Persistence.of("foodOffers").find(backendlessDataQuery);
                 final List<Map> temp = mapBackendlessCollection.getCurrentPage();
                 if (temp.size() != 0) {
-                    offerIDs = new ArrayList<String>();
+                    offerIDs = new ArrayList<>();
                     for (int i = 0; i < temp.size(); i++) {
                         offerIDs.add(temp.get(i).get("offerID").toString());
                     }
-                    offers = new ArrayList<String>();
+                    offers = new ArrayList<>();
                     for (int i = 0; i < offerIDs.size(); i++) {
                         try {
                             Map offer = Backendless.Persistence.of("Offer").findById(offerIDs.get(i));
