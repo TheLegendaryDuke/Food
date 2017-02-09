@@ -40,6 +40,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 
 //TODO: side nav actions, new offer, guest restriction
@@ -86,6 +87,10 @@ public class Main extends AppCompatActivity
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Please wait...");
+
+
+        TimeZone tz = TimeZone.getDefault();
+        Data.standardDateFormat.setTimeZone(tz);
 
         Data.tags = new ArrayList<String>();
         new AsyncTask<Void, Void, Void>() {

@@ -3,6 +3,7 @@ package itsjustaaron.food;
 import com.backendless.BackendlessCollection;
 import com.backendless.BackendlessUser;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 /**
@@ -21,4 +22,6 @@ public class Data {
     public static ArrayList<Food> foods;
     public static String fileDir;
     public static boolean onCraving;
+    public static SimpleDateFormat serverDateFormat = new SimpleDateFormat("EEE MMM dd kk:mm:ss zzz yyyy");
+    public static SimpleDateFormat standardDateFormat = new SimpleDateFormat("yyyy MMM dd");
 }

@@ -106,13 +106,13 @@ public class CravingDetails extends AppCompatActivity {
                     offers = new ArrayList<>();
                     for (int i = 0; i < offerIDs.size(); i++) {
                         try {
-                            Map offer = Backendless.Persistence.of("Offer").findById(offerIDs.get(i));
+                            Map offer = Backendless.Persistence.of("offers").findById(offerIDs.get(i));
                             StringBuilder newS = new StringBuilder();
-                            newS.append(offer.get("name"));
+                            newS.append(offer.get("offerer"));
                             newS.append(": $");
                             newS.append(offer.get("price"));
-                            newS.append("\n");
-                            newS.append(offer.get("address"));
+                            newS.append(" at ");
+                            newS.append(offer.get("city"));
                             offers.add(i, newS.toString());
                         } catch (Exception e) {
                             Log.d(e.getMessage(), "handleResponse: ");
@@ -125,8 +125,8 @@ public class CravingDetails extends AppCompatActivity {
             @Override
             public void onPostExecute(Void v) {
                 if (offers != null) {
-                    ListView offerList = (ListView) findViewById(R.id.detailOffers);
-                    ArrayAdapter adapter = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_list_item_1, offers);
+                    ListView offerList = (ListView) findViewById(R.id.detailCravingOffers);
+                    ArrayAdapter adapter = new ArrayAdapter(getApplicationContext(), R.layout.my_simple_list_item, offers);
                     offerList.setAdapter(adapter);
                     offerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
@@ -138,7 +138,7 @@ public class CravingDetails extends AppCompatActivity {
                         }
                     });
                 } else {
-                    findViewById(R.id.detailOffers).setVisibility(View.GONE);
+                    findViewById(R.id.detailCravingOffers).setVisibility(View.GONE);
                 }
                 progress.dismiss();
             }

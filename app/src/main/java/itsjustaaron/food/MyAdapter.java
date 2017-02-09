@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.TimeZone;
@@ -114,10 +113,7 @@ public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             ((TextView)v.findViewById(R.id.offerFoodCity)).setText(foodOffer.city);
             ((TextView)v.findViewById(R.id.offerFoodPrice)).setText(String.valueOf(foodOffer.price));
             Date exp = foodOffer.expire;
-            TimeZone tz = TimeZone.getDefault();
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy MMM dd");
-            sdf.setTimeZone(tz);
-            ((TextView)v.findViewById(R.id.offerFoodExpire)).setText("Expiring: " + sdf.format(exp));
+            ((TextView)v.findViewById(R.id.offerFoodExpire)).setText("Expiring: " + Data.standardDateFormat.format(exp));
             image.setImageBitmap(BitmapFactory.decodeFile(fileDir + "/foods/" + foodOffer.food.image));
             v.setOnClickListener(new View.OnClickListener() {
                 @Override

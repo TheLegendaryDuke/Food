@@ -58,6 +58,6 @@ public class OfferDetails extends AppCompatActivity {
         ((TextView)findViewById(R.id.offerDetailFoodPrice)).setText(String.valueOf("$" + offer.price));
         ((TextView)findViewById(R.id.offerDetailOfferer)).setText(offer.offerer);
         ((TextView)findViewById(R.id.offerDetailFoodLocation)).setText(offer.address + "\n" + offer.city + "\n" + offer.zipCode);
-        ((TextView)findViewById(R.id.offerDetailFoodExpire)).setText(new SimpleDateFormat("EEE MMM dd hh:mm aa").format(offer.expire));
+        ((TextView)findViewById(R.id.offerDetailFoodExpire)).setText(Data.standardDateFormat.format(offer.expire));
     }
 }

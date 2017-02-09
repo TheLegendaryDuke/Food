@@ -91,6 +91,8 @@ public class ProfileSetup extends AppCompatActivity {
 
         Data.user.setProperty("name", name);
         Data.user.setProperty("address", address);
+        Data.user.setProperty("city", ((EditText)findViewById(R.id.profileCity)).getText().toString());
+        Data.user.setProperty("zipCode", ((EditText)findViewById(R.id.profileZip)).getText().toString());
 
         new AsyncTask<Void, Void, Integer>() {
             @Override

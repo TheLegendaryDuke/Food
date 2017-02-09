@@ -493,7 +493,7 @@ public class NewFood extends AppCompatActivity {
                             searchResults.add(food);
                             boolean contains = false;
                             for(Food f : Data.foods) {
-                                if(f.objectId == food.objectId) {
+                                if(f.objectId.equals(food.objectId)) {
                                     contains = true;
                                     break;
                                 }

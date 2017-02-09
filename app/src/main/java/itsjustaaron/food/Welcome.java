@@ -207,10 +207,9 @@ public class Welcome extends AppCompatActivity {
                                             @Override
                                             public void onClick(DialogInterface dialogInterface, int i) {
                                                 dialogInterface.dismiss();
+                                                Proceed();
                                             }
-                                        }).setTitle("Your account has been created!").setMessage("Please check your email to activate your account").show();
-                                        //Go to next activity
-                                        Proceed();
+                                        }).setTitle("Your account has been created!").setMessage("Please check your email to activate your account or you won't be able to login next time").show();
                                     } else {
                                         wait.dismiss();
                                         new AlertDialog.Builder(Welcome.this).setTitle("Error").setMessage(message).setPositiveButton("OK", new DialogInterface.OnClickListener() {

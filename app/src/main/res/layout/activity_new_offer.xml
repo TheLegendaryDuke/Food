@@ -10,56 +10,175 @@
     android:orientation="vertical"
     tools:context="itsjustaaron.food.NewOffer">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="You are offering:"
-        android:textSize="25sp"
-        android:textStyle="bold"/>
-
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <ImageView
-            android:layout_width="130dp"
-            android:layout_height="130dp"
-            android:id="@+id/newOfferFoodImage"/>
+        android:layout_height="match_parent">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="You are offering:"
+                android:textSize="25sp"
+                android:textStyle="bold"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="130dp"
+                    android:layout_height="130dp"
+                    android:id="@+id/newOfferFoodImage"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/newOfferFoodName"
+                            android:textStyle="bold"
+                            android:textSize="25sp"/>
+                    </HorizontalScrollView>
+
+                    <ScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="85dp">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/newOfferFoodDesc"
+                            android:textSize="15sp"/>
+                    </ScrollView>
+                </LinearLayout>
+            </LinearLayout>
+
             <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/newofferFoodName"
-                    android:textStyle="bold"
-                    android:textSize="25sp"/>
+                    android:textSize="20sp"
+                    android:id="@+id/newOfferFoodTags"/>
             </HorizontalScrollView>
 
-            <ScrollView
-                android:layout_width="match_parent"
-                android:layout_height="85dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Please enter a price: "/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
                 <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="$"/>
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+                    android:id="@+id/newOfferPrice"/>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Please select an expiry date:"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/newOfferExpire"
+                    android:inputType="date"
+                    android:textSize="20sp"/>
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="change"
+                    android:id="@+id/newOfferChangeExpire"/>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Please select an address for this offer"/>
+
+            <RadioGroup
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Use your default address\n(the one in your profile)"
+                    android:checked="true"
+                    android:id="@+id/newOfferDefault"/>
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Enter a different address"
+                    android:id="@+id/newOfferSelectOther"/>
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/newofferFoodDesc"
-                    android:textSize="15sp"/>
-            </ScrollView>
+                    android:orientation="vertical"
+                    android:id="@+id/newOfferOtherAddress"
+                    android:visibility="gone">
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dp"
+                        android:text="address"
+                        android:id="@+id/newOfferAddress"
+                        android:textSize="13sp" />
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dp"
+                        android:id="@+id/newOfferCity"
+                        android:textSize="13sp"
+                        android:text="city"/>
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dp"
+                        android:text="zip code"
+                        android:id="@+id/newOfferZip"
+                        android:textSize="13sp"/>
+
+                </LinearLayout>
+
+            </RadioGroup>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Please enter any additional information about this offer: \n(delivery method, means of contact, etc.)"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:id="@+id/newOfferComment"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="submit"
+                android:id="@+id/newOfferSubmit"
+                android:onClick="Submit"/>
+
         </LinearLayout>
-    </LinearLayout>
-
-    <HorizontalScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:id="@+id/newofferFoodTags"/>
-    </HorizontalScrollView>
-
+    </ScrollView>
 </LinearLayout>

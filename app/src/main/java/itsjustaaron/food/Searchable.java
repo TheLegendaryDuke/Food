@@ -41,9 +41,9 @@ public class Searchable extends Activity {
         } else {
             whereClause = "name LIKE '%" + query + "%'";
         }
-        new AsyncTask<Void, Void, Void>() {
+        new AsyncTask<Void, Void, Integer>() {
             @Override
-            public Void doInBackground(Void... voids) {
+            public Integer doInBackground(Void... voids) {
                 BackendlessDataQuery dataQuery = new BackendlessDataQuery();
                 dataQuery.setWhereClause(whereClause);
                 List<Map> maps = Backendless.Persistence.of("foods").find(dataQuery).getCurrentPage();
@@ -63,40 +63,52 @@ public class Searchable extends Activity {
                     final BackendlessDataQuery backendlessDataQuery = new BackendlessDataQuery();
                     backendlessDataQuery.setWhereClause(where);
                     if(Data.onCraving) {
-                        Data.cravings.clear();
                         Data.cravingCollection = Backendless.Persistence.of("cravings").find(backendlessDataQuery);
                         List<Map> mapResult = Data.cravingCollection.getCurrentPage();
-                        for (int i = 0; i < mapResult.size(); i++) {
-                            Map obj = mapResult.get(i);
-                            final Craving craving = new Craving(obj);
-                            Data.cravings.add(craving);
+                        if(mapResult.size() == 0) {
+                            return 1;
+                        }else {
+                            Data.cravings.clear();
+                            for (int i = 0; i < mapResult.size(); i++) {
+                                Map obj = mapResult.get(i);
+                                final Craving craving = new Craving(obj);
+                                Data.cravings.add(craving);
+                            }
                         }
                     }else {
-                        Data.foodOffers.clear();
                         Data.offerCollection = Backendless.Persistence.of("foodOffers").find(backendlessDataQuery);
                         List<Map> mapResult = Data.offerCollection.getCurrentPage();
-                        for (int i = 0; i < mapResult.size(); i++) {
-                            Map obj = mapResult.get(i);
-                            final FoodOffer foodOffer = new FoodOffer(obj);
-                            Data.foodOffers.add(foodOffer);
+                        if(mapResult.size() == 0) {
+                            return 1;
+                        }else {
+                            for (int i = 0; i < mapResult.size(); i++) {
+                                Map obj = mapResult.get(i);
+                                final FoodOffer foodOffer = new FoodOffer(obj);
+                                Data.foodOffers.add(foodOffer);
+                            }
+                            Data.foodOffers.clear();
                         }
                     }
+                }else {
+                    return 1;
                 }
-                return null;
+                return 0;
             }
 
             @Override
-            public void onPostExecute(Void v) {
+            public void onPostExecute(Integer v) {
                 if(Data.onCraving) {
-                    if (Data.cravings.size() == 0) {
+                    if (v == 1) {
                         Toast.makeText(getApplicationContext(), "Your search yields no results", Toast.LENGTH_SHORT).show();
+                    }else {
+                        Data.cravingFragment.notifyChanges();
                     }
-                    Data.cravingFragment.notifyChanges();
                 }else {
-                    if (Data.foodOffers.size() == 0) {
+                    if (v == 1) {
                         Toast.makeText(getApplicationContext(), "Your search yields no results", Toast.LENGTH_SHORT).show();
+                    }else {
+                        Data.offerFragment.notifyChanges();
                     }
-                    Data.offerFragment.notifyChanges();
                 }
                 finish();
             }

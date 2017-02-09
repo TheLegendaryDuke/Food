@@ -13,7 +13,6 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
@@ -35,7 +34,7 @@ public class FoodOffer {
         this.price = Double.parseDouble(map.get("price").toString());
         this.offerer = map.get("offerer").toString();
         try {
-            this.expire = (new SimpleDateFormat("EEE MMM dd kk:mm:ss zzz yyyy")).parse(map.get("expire").toString());
+            this.expire = (Data.serverDateFormat).parse(map.get("expire").toString());
         }catch (Exception e) {
             Log.d("dateParsing", e.toString());
         }
@@ -43,7 +42,7 @@ public class FoodOffer {
         final String foodID = map.get("foodID").toString();
         boolean found = false;
         for (int i = 0; i < Data.foods.size(); i++) {
-            if (Data.foods.get(i).objectId == foodID) {
+            if (Data.foods.get(i).objectId.equals(foodID)) {
                 this.food = Data.foods.get(i);
                 found = true;
                 break;

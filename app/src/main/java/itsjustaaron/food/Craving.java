@@ -35,7 +35,7 @@ public class Craving {
         final String foodID = map.get("foodID").toString();
         boolean found = false;
         for (int i = 0; i < Data.foods.size(); i++) {
-            if (Data.foods.get(i).objectId == foodID) {
+            if (Data.foods.get(i).objectId.equals(foodID)) {
                 this.food = Data.foods.get(i);
                 found = true;
                 break;

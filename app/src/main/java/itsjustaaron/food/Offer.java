@@ -2,7 +2,6 @@ package itsjustaaron.food;
 
 import android.util.Log;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
@@ -34,7 +33,7 @@ public class Offer {
         zipCode = map.get("zipCode").toString();
         price = Double.parseDouble(map.get("price").toString());
         try {
-            expire = (new SimpleDateFormat("EEE MMM dd kk:mm:ss zzz yyyy")).parse(map.get("expire").toString());
+            expire = Data.serverDateFormat.parse(map.get("expire").toString());
         } catch (Exception e) {
             Log.d("dateParse", e.toString());
         }
