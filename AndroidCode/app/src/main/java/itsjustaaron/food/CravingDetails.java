@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.backendless.Backendless;
 import com.backendless.BackendlessCollection;
@@ -81,9 +82,13 @@ public class CravingDetails extends AppCompatActivity {
         propose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent next = new Intent(getApplicationContext(), NewOffer.class);
-                next.putExtra("food", craving.food.objectId);
-                startActivity(next);
+                if(Data.user != null) {
+                    Intent next = new Intent(getApplicationContext(), NewOffer.class);
+                    next.putExtra("food", craving.food.objectId);
+                    startActivity(next);
+                }else {
+                    Toast.makeText(CravingDetails.this, "Please login first!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         new AsyncTask<Void, Void, Void>() {

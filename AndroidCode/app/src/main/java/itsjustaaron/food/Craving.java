@@ -68,14 +68,17 @@ public class Craving {
                 }
                 Data.foods.add(food);
             }
-
-            BackendlessDataQuery dataQuery = new BackendlessDataQuery();
-            dataQuery.setWhereClause("cravingID='" + objectId + "' and userID='" + Data.user.getObjectId() + "'");
-            List<Map> maps = Backendless.Persistence.of("cravingFollowers").find(dataQuery).getCurrentPage();
-            if (maps == null || maps.size() == 0) {
+            if(Data.user != null) {
+                BackendlessDataQuery dataQuery = new BackendlessDataQuery();
+                dataQuery.setWhereClause("cravingID='" + objectId + "' and userID='" + Data.user.getObjectId() + "'");
+                List<Map> maps = Backendless.Persistence.of("cravingFollowers").find(dataQuery).getCurrentPage();
+                if (maps == null || maps.size() == 0) {
+                    following = false;
+                } else {
+                    following = true;
+                }
+            }else {
                 following = false;
-            } else {
-                following = true;
             }
         } catch (BackendlessException e) {
             Log.d("backendless", e.toString());

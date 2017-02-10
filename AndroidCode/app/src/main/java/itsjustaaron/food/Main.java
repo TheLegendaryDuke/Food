@@ -244,7 +244,7 @@ public class Main extends AppCompatActivity
                         startActivityForResult(next, 0);
                     }
                 }
-                    break;
+                break;
             case R.id.search:
                 Data.onCraving = onCraving;
                 onSearchRequested();
