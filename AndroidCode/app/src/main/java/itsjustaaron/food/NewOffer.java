@@ -95,7 +95,7 @@ public class NewOffer extends AppCompatActivity {
     public void Submit(View v) {
         offer.put("price", ((EditText)findViewById(R.id.newOfferPrice)).getText().toString());
         offer.put("expire", String.valueOf(date.getTime()));
-        offer.put("ownerId", Data.user.getEmail());
+        offer.put("ownerId", Data.user.getObjectId());
         String city,address,zip;
         if(defaultAddress) {
             city = Data.user.getProperty("city").toString();
@@ -131,7 +131,7 @@ public class NewOffer extends AppCompatActivity {
                     foodOffer.put("offerer", offer.get("offerer"));
                     foodOffer.put("offerID", o.get("objectId").toString());
                     foodOffer.put("price", offer.get("price"));
-                    foodOffer.put("ownerId", Data.user.getEmail());
+                    foodOffer.put("ownerId", Data.user.getObjectId());
                     Backendless.Persistence.of("foodOffers").save(foodOffer);
                     return 0;
                 }catch (BackendlessException e) {

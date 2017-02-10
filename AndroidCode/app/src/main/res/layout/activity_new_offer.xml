@@ -139,7 +139,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="30dp"
-                        android:text="address"
+                        android:hint="address"
                         android:id="@+id/newOfferAddress"
                         android:textSize="13sp" />
                     <EditText
@@ -148,12 +148,12 @@
                         android:layout_marginLeft="30dp"
                         android:id="@+id/newOfferCity"
                         android:textSize="13sp"
-                        android:text="city"/>
+                        android:hint="city"/>
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="30dp"
-                        android:text="zip code"
+                        android:hint="zip code"
                         android:id="@+id/newOfferZip"
                         android:textSize="13sp"/>
 

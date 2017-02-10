@@ -32,7 +32,7 @@ public class MyCravings extends AppCompatActivity {
 
             @Override
             public Void doInBackground(Void... voids) {
-                String where = "userID = " + Data.user.getEmail();
+                String where = "userID = '" + Data.user.getObjectId() + "'";
                 BackendlessDataQuery backendlessDataQuery = new BackendlessDataQuery();
                 backendlessDataQuery.setWhereClause(where);
                 BackendlessCollection<Map> result = Backendless.Persistence.of("cravingFollowers").find(backendlessDataQuery);
@@ -53,6 +53,7 @@ public class MyCravings extends AppCompatActivity {
                 }
                 BasicFoodAdapter foodAdapter = new BasicFoodAdapter(MyCravings.this, cravings);
                 listView.setAdapter(foodAdapter);
+                progressDialog.dismiss();
             }
         }.execute(new Void[]{});
     }

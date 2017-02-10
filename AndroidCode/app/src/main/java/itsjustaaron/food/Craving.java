@@ -41,17 +41,17 @@ public class Craving {
                 break;
             }
         }
-        if (!found) {
-            try {
+        try {
+            if (!found) {
                 food = new Food(Backendless.Persistence.of("foods").findById(foodID));
                 final String imagePath = Data.fileDir + "/foods/" + food.image;
                 final File file = new File(imagePath);
                 final String path = "https://api.backendless.com/0020F1DC-E584-AD36-FF74-6D3E9E917400/v1/files/foods/" + food.image;
                 File dir = new File(Data.fileDir + "/foods/");
-                if(!dir.exists()) {
+                if (!dir.exists()) {
                     dir.mkdir();
                 }
-                if(!file.exists()) {
+                if (!file.exists()) {
                     file.createNewFile();
                     URL url = new URL(path);
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -66,22 +66,24 @@ public class Craving {
                     fos.write(byteArray);
                     fos.close();
                 }
-                BackendlessDataQuery dataQuery = new BackendlessDataQuery();
-                dataQuery.setWhereClause("cravingID='" + objectId + "' and userID='" + Data.user.getEmail() + "'");
-                List<Map> maps = Backendless.Persistence.of("cravingFollowers").find(dataQuery).getCurrentPage();
-                if (maps == null || maps.size() == 0) {
-                    following = false;
-                } else {
-                    following = true;
-                }
                 Data.foods.add(food);
-            } catch (BackendlessException e) {
-                Log.d("backendless", e.toString());
-            } catch (Exception e) {
-                Log.d("download food pic", e.toString());
             }
+
+            BackendlessDataQuery dataQuery = new BackendlessDataQuery();
+            dataQuery.setWhereClause("cravingID='" + objectId + "' and userID='" + Data.user.getObjectId() + "'");
+            List<Map> maps = Backendless.Persistence.of("cravingFollowers").find(dataQuery).getCurrentPage();
+            if (maps == null || maps.size() == 0) {
+                following = false;
+            } else {
+                following = true;
+            }
+        } catch (BackendlessException e) {
+            Log.d("backendless", e.toString());
+        } catch (Exception e) {
+            Log.d("download food pic", e.toString());
         }
     }
+
 
 
     public void save() {
@@ -100,7 +102,7 @@ public class Craving {
                 if (following) {
                     HashMap map = new HashMap();
                     map.put("cravingID", objectId);
-                    map.put("userID", Data.user.getEmail());
+                    map.put("userID", Data.user.getObjectId());
                     numFollowers++;
                     save();
                     Backendless.Persistence.of("cravingFollowers").save(map);
@@ -108,7 +110,7 @@ public class Craving {
                     numFollowers--;
                     save();
                     BackendlessDataQuery backendlessDataQuery = new BackendlessDataQuery();
-                    backendlessDataQuery.setWhereClause("cravingID='" + objectId + "' and userID='" + Data.user.getEmail() + "'");
+                    backendlessDataQuery.setWhereClause("cravingID='" + objectId + "' and userID='" + Data.user.getObjectId() + "'");
                     BackendlessCollection<Map> result = Backendless.Persistence.of("cravingFollowers").find(backendlessDataQuery);
                     Backendless.Persistence.of("cravingFollowers").remove(result.getCurrentPage().get(0));
                 }

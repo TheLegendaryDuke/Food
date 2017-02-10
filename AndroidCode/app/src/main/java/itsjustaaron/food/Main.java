@@ -127,7 +127,7 @@ public class Main extends AppCompatActivity
                     new AsyncTask<Void, Void, Void>() {
                         @Override
                         public Void doInBackground(Void... voids) {
-                            String path = "https://api.backendless.com/0020F1DC-E584-AD36-FF74-6D3E9E917400/v1/files/users/" + Data.user.getEmail() + "/" + Data.user.getProperty("portrait");
+                            String path = "https://api.backendless.com/0020F1DC-E584-AD36-FF74-6D3E9E917400/v1/files/users/" + Data.user.getObjectId() + "/" + Data.user.getProperty("portrait");
                             try {
                                 URL url = new URL(path);
                                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -248,13 +248,6 @@ public class Main extends AppCompatActivity
             case R.id.search:
                 Data.onCraving = onCraving;
                 onSearchRequested();
-                break;
-            case R.id.menu_refresh:
-                if (onCraving) {
-                    Data.cravingFragment.refresh(null);
-                } else {
-                    Data.offerFragment.refresh(null);
-                }
                 break;
         }
         return super.onOptionsItemSelected(item);

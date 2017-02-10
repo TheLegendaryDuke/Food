@@ -116,10 +116,10 @@ public class NewFood extends AppCompatActivity {
                                                         Map<String, String> craving = new HashMap<String, String>();
                                                         craving.put("foodID", food.objectId);
                                                         craving.put("numFollowers", "1");
-                                                        craving.put("ownerID", Data.user.getEmail());
+                                                        craving.put("ownerID", Data.user.getObjectId());
                                                         Map map = Backendless.Persistence.of("cravings").save(craving);
                                                         Map<String, String> cravingFollower = new HashMap<String, String>();
-                                                        cravingFollower.put("userID", Data.user.getEmail());
+                                                        cravingFollower.put("userID", Data.user.getObjectId());
                                                         cravingFollower.put("cravingID", map.get("objectId").toString());
                                                         Backendless.Persistence.of("cravingFollowers").save(cravingFollower);
                                                     }
@@ -274,7 +274,7 @@ public class NewFood extends AppCompatActivity {
                                 public Integer doInBackground(Void... voids) {
                                     HashMap<String, String> tagMap = new HashMap<String, String>();
                                     tagMap.put("tag", tag);
-                                    tagMap.put("ownerId", Data.user.getEmail());
+                                    tagMap.put("ownerId", Data.user.getObjectId());
                                     try{
                                         Backendless.Persistence.of("tags").save(tagMap);
                                         return 0;
@@ -377,7 +377,7 @@ public class NewFood extends AppCompatActivity {
             hashMap.put("name", name);
             hashMap.put("description", desc);
             hashMap.put("image", name + ".png");
-            hashMap.put("ownerId", Data.user.getEmail());
+            hashMap.put("ownerId", Data.user.getObjectId());
             ArrayList<String> tags = new ArrayList<>();
             for(int i = 0; i < Data.tags.size(); i++) {
                 if(tagChecks.get(i)) {
@@ -406,10 +406,10 @@ public class NewFood extends AppCompatActivity {
                             Map<String, String> craving = new HashMap<String, String>();
                             craving.put("foodID", food.objectId);
                             craving.put("numFollowers", "1");
-                            craving.put("ownerId", Data.user.getEmail());
+                            craving.put("ownerId", Data.user.getObjectId());
                             Map map = Backendless.Persistence.of("cravings").save(craving);
                             Map<String, String> cravingFollower = new HashMap<String, String>();
-                            cravingFollower.put("userID", Data.user.getEmail());
+                            cravingFollower.put("userID", Data.user.getObjectId());
                             cravingFollower.put("cravingID", map.get("objectId").toString());
                             Backendless.Persistence.of("cravingFollowers").save(cravingFollower);
                         }

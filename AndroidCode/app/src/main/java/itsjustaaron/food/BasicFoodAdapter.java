@@ -23,7 +23,7 @@ public class BasicFoodAdapter<T> extends ArrayAdapter<T> {
     Context context;
     ArrayList<T> data;
     boolean forCraving;
-    ArrayList<Food> foods;
+    ArrayList<Food> foods = new ArrayList<>();
 
     public BasicFoodAdapter(Context context, ArrayList<T> data) {
         super(context, -1, data);

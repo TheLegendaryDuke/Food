@@ -101,7 +101,7 @@ public class ProfileSetup extends AppCompatActivity {
                     Backendless.UserService.update(Data.user);
                     if (imageUpdated) {
                         final File image = new File(Data.fileDir + "/" + Data.user.getProperty("portrait").toString());
-                        Backendless.Files.upload(image, "users/" + Data.user.getEmail() + "/", true);
+                        Backendless.Files.upload(image, "users/" + Data.user.getObjectId() + "/", true);
                     }
                 } catch (BackendlessException e) {
                     Log.d("backendless", e.toString());
