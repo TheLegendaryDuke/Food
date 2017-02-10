@@ -304,7 +304,7 @@ public class Main extends AppCompatActivity
                 case R.id.contactDev:
                     Intent email = new Intent(Intent.ACTION_SENDTO);
                     email.setData(Uri.parse("mailto:"));
-                    email.putExtra(Intent.EXTRA_EMAIL, new String[]{"z.aoran@gmail.com"});
+                    email.putExtra(Intent.EXTRA_EMAIL, new String[]{"contactfoodapp@gmail.com"});
                     email.putExtra(Intent.EXTRA_SUBJECT, "To the developer of \"Food\"");
                     email.putExtra(Intent.EXTRA_TEXT, "Please enter the message you want to send to me, any feedback is welcomed and appreciated :)");
                     if (email.resolveActivity(getPackageManager()) != null) {

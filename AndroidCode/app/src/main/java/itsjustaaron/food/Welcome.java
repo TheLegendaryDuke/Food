@@ -117,16 +117,15 @@ public class Welcome extends AppCompatActivity {
                                         return 0;
                                     } catch (BackendlessException e) {
                                         String errorCode = e.getCode();
-                                        final boolean reset;
                                         if (errorCode.equals("3003")) {
-                                            message = "Invalid login or password! Please check your email address and try again.";
+                                            message = "Invalid login or password! Please try again.";
                                         } else if (errorCode.equals("3006")) {
                                             message = "Please enter your email and password!";
                                         } else if (errorCode.equals("3036")) {
                                             message = "Too many failed attempts, account is reset! Check your entered email for new password";
                                             Backendless.UserService.restorePassword(email);
                                         } else {
-                                            message = "Error code " + errorCode + ", please contact developer at z.aoran@gmail.com";
+                                            message = "Error code " + errorCode + ", please contact developer at contactfoodapp@gmail.com";
                                         }
                                         return 1;
                                     }
@@ -208,7 +207,7 @@ public class Welcome extends AppCompatActivity {
                                         } else if (errorCode.equals("3040")) {
                                             message = "Please enter a valid email address.";
                                         } else {
-                                            message = "Error code" + errorCode + ", please contact z.aoran@gmail.com";
+                                            message = "Error code" + errorCode + ", please contact contactfoodapp@gmail.com";
                                         }
                                         return 1;
                                     }

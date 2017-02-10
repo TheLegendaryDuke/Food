@@ -79,7 +79,7 @@
         jumboMode="true"
         optimize="true"
         revision="24.0.2"
-        sha1="f040663d0817a8c9b11550bf9e875c018721b8b8">
+        sha1="5eaa5c2190a35bc36a3c39eb056565a45910803f">
         <dex dex="C:\Users\aozhang\Documents\GitHub\Food\AndroidCode\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run-bootstrap_d0475374ba336511c38f43d61a081487540d9f97\classes.dex" />
     </item>
     <item
@@ -88,7 +88,7 @@
         jumboMode="true"
         optimize="true"
         revision="24.0.2"
-        sha1="8d8ddd0c501f4312e7d2e86694018d3495384137">
+        sha1="1c2a67903a241468bc9b4da1215f9084e4fd5854">
         <dex dex="C:\Users\aozhang\Documents\GitHub\Food\AndroidCode\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run_22b9fd67e8bac13f4b2ac6486a680e714daa0968\classes.dex" />
     </item>
     <item
