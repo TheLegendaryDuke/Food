@@ -56,6 +56,8 @@
             android:parentActivityName=".Main" />
         <activity android:name=".NewOffer" />
         <activity android:name=".OfferDetails" />
+        <activity android:name=".MyCravings" />
+        <activity android:name=".MyOffers"></activity>
     </application>
 
 </manifest>

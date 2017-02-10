@@ -194,12 +194,12 @@ public class NewFood extends AppCompatActivity {
                 .setCancelable(false)
                 .setTitle("Do you want to select a existing food or create a new one?")
                 .setPositiveButton("Select", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                findViewById(R.id.searchFood).setVisibility(View.VISIBLE);
-                dialogInterface.dismiss();
-            }
-        }).setNegativeButton("Create", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        findViewById(R.id.searchFood).setVisibility(View.VISIBLE);
+                        dialogInterface.dismiss();
+                    }
+                }).setNegativeButton("Create", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 new AlertDialog.Builder(NewFood.this)

@@ -43,7 +43,7 @@ import java.util.Map;
 import java.util.TimeZone;
 
 
-//TODO: side nav actions, new offer, guest restriction
+//TODO: side nav actions, guest restriction
 
 //not so urgent TODO: caching Data
 
@@ -287,7 +287,6 @@ public class Main extends AppCompatActivity
                 }
             }).show();
         }else {
-
             // Handle navigation view item clicks here.
             int id = item.getItemId();
 
@@ -318,6 +317,16 @@ public class Main extends AppCompatActivity
                     if (email.resolveActivity(getPackageManager()) != null) {
                         startActivity(email);
                     }
+                    break;
+
+                case R.id.drawerFavorites:
+                    Intent myCravings = new Intent(this, MyCravings.class);
+                    startActivity(myCravings);
+                    break;
+
+                case R.id.drawerOffer:
+                    Intent myOffers = new Intent(this, MyOffers.class);
+                    startActivity(myOffers);
                     break;
             }
         }

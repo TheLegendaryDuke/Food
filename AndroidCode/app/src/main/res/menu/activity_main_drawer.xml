@@ -9,6 +9,11 @@
             android:id="@+id/drawerFavorites" />
 
         <item
+            android:icon="@drawable/hamburger"
+            android:title="My Offers"
+            android:id="@+id/drawerOffer" />
+
+        <item
             android:id="@+id/nav_manage"
             android:icon="@drawable/ic_menu_manage"
             android:title="Settings" />
