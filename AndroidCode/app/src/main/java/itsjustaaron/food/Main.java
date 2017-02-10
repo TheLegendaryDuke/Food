@@ -44,8 +44,11 @@ import java.util.TimeZone;
 
 
 //TODO: side nav actions, new offer, guest restriction
+
 //not so urgent TODO: caching Data
+
 //future add-ons: in-app communication, in-app payment
+
 public class Main extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private static ProgressDialog progressDialog;

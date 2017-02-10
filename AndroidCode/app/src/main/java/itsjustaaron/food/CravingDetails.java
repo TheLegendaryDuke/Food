@@ -82,7 +82,7 @@ public class CravingDetails extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent next = new Intent(getApplicationContext(), NewOffer.class);
-                next.putExtra("foodID", craving.food.objectId);
+                next.putExtra("food", craving.food.objectId);
                 startActivity(next);
             }
         });
