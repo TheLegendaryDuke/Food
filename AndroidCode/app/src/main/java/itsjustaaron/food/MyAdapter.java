@@ -112,7 +112,7 @@ public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             ((TextView)v.findViewById(R.id.offerFoodOfferer)).setText(foodOffer.offerer);
             ((TextView)v.findViewById(R.id.offerFoodName)).setText(foodOffer.food.name);
             ((TextView)v.findViewById(R.id.offerFoodCity)).setText(foodOffer.city);
-            ((TextView)v.findViewById(R.id.offerFoodPrice)).setText(String.valueOf(foodOffer.price));
+            ((TextView)v.findViewById(R.id.offerFoodPrice)).setText("$" + String.valueOf(foodOffer.price));
             Date exp = foodOffer.expire;
             ((TextView)v.findViewById(R.id.offerFoodExpire)).setText("Expiring: " + Data.standardDateFormat.format(exp));
             image.setImageBitmap(BitmapFactory.decodeFile(fileDir + "/foods/" + foodOffer.food.image));
