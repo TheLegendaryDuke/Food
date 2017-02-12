@@ -273,7 +273,10 @@ public class Main extends AppCompatActivity
         }else {
             criteriaContainer = (LinearLayout) findViewById(R.id.oSearchCriterias);
         }
+<<<<<<< HEAD
         criteriaContainer.removeAllViews();
+=======
+>>>>>>> d4d40cacc9e823bcc14072b4155c8b8e9eade2b0
         final ArrayList<String> searchCriteria;
         if(Data.onCraving) {
             searchCriteria = Data.cSearchCriteria;
