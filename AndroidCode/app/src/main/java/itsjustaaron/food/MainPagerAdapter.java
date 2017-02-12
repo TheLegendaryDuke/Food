@@ -4,6 +4,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import itsjustaaron.food.Back.Data;
+
 /**
  * Created by Aaron-Work on 8/7/2016.
  */

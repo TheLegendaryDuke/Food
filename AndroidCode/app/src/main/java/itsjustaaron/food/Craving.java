@@ -20,6 +20,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import itsjustaaron.food.Back.Back;
+import itsjustaaron.food.Back.Data;
+
 /**
  * Created by Aaron-Work on 8/17/2016.
  */
@@ -43,7 +46,7 @@ public class Craving {
         }
         try {
             if (!found) {
-                food = new Food(Backendless.Persistence.of("foods").findById(foodID));
+                food = (Food) Back.getObjectByID(foodID, Back.object.food);
                 final String imagePath = Data.fileDir + "/foods/" + food.image;
                 final File file = new File(imagePath);
                 final String path = "https://api.backendless.com/0020F1DC-E584-AD36-FF74-6D3E9E917400/v1/files/foods/" + food.image;
@@ -66,12 +69,11 @@ public class Craving {
                     fos.write(byteArray);
                     fos.close();
                 }
-                Data.foods.add(food);
             }
+            Data.foods.add(food);
             if(Data.user != null) {
-                BackendlessDataQuery dataQuery = new BackendlessDataQuery();
-                dataQuery.setWhereClause("cravingID='" + objectId + "' and userID='" + Data.user.getObjectId() + "'");
-                List<Map> maps = Backendless.Persistence.of("cravingFollowers").find(dataQuery).getCurrentPage();
+                String whereClause = "cravingID='" + objectId + "' and userID='" + Data.user.getObjectId() + "'";
+                List<Map> maps = Back.findObjectByWhere(whereClause, Back.object.cravingfollower).getCurrentPage();
                 if (maps == null || maps.size() == 0) {
                     following = false;
                 } else {
@@ -80,8 +82,6 @@ public class Craving {
             }else {
                 following = false;
             }
-        } catch (BackendlessException e) {
-            Log.d("backendless", e.toString());
         } catch (Exception e) {
             Log.d("download food pic", e.toString());
         }

@@ -1,10 +1,16 @@
-package itsjustaaron.food;
+package itsjustaaron.food.Back;
 
 import com.backendless.BackendlessCollection;
 import com.backendless.BackendlessUser;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+
+import itsjustaaron.food.Craving;
+import itsjustaaron.food.CravingFragment;
+import itsjustaaron.food.Food;
+import itsjustaaron.food.FoodOffer;
+import itsjustaaron.food.OfferFragment;
 
 /**
  * Created by Aaron-Work on 8/4/2016.

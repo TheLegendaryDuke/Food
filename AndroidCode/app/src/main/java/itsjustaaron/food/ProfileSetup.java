@@ -25,6 +25,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 
+import itsjustaaron.food.Back.Data;
+
 
 public class ProfileSetup extends AppCompatActivity {
     protected boolean imageUpdated;

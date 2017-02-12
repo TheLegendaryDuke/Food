@@ -16,6 +16,8 @@ import com.backendless.persistence.BackendlessDataQuery;
 import java.util.ArrayList;
 import java.util.Map;
 
+import itsjustaaron.food.Back.Data;
+
 public class MyOffers extends AppCompatActivity {
 
     ArrayList<FoodOffer> foodOffers = new ArrayList<>();

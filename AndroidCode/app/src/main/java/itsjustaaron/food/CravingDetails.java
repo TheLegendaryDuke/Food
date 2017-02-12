@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import itsjustaaron.food.Back.Data;
+
 public class CravingDetails extends AppCompatActivity {
 
     private Craving craving;

@@ -1,0 +1,40 @@
+[DEBUG]2017-02-12 18:06:58,048::TimersLogger::Message processor - 0::MessageDispatcher::On message received. APP_ID::0020F1DC-E584-AD36-FF74-6D3E9E917400 ThreadID::19 Timer::{'startDate':1486702800000,'frequency':{'schedule':'custom','repeat':{'every':60}},'timername':'daily'}
+
+[DEBUG]2017-02-12 18:06:58,055::TimersLogger::Message processor - 0::CodeExecutor::InvokeEvent. APP_ID::0020F1DC-E584-AD36-FF74-6D3E9E917400 Timer::{'startDate':1486702800000,'frequency':{'schedule':'custom','repeat':{'every':60}},'timername':'daily'} ThreadID::19
+
+[DEBUG]2017-02-12 18:06:58,060::TimersLogger::Message processor - 0::CodeExecutor::InvokeEvent. Execute Task. APP_ID::0020F1DC-E584-AD36-FF74-6D3E9E917400 ThreadID::19 Task::InvocationTask[ appId:0020F1DC-E584-AD36-FF74-6D3E9E917400 versionId:6E975A1C-85F0-6C59-FF01-7B2BD8481400 ] Timer::{'startDate':1486702800000,'frequency':{'schedule':'custom','repeat':{'every':60}},'timername':'daily'}
+
+[DEBUG]2017-02-12 18:06:58,064::TimersLogger::Worker Child::EventInvocationTask::CodeRunner starts timer execution, should be log about success::0020F1DC-E584-AD36-FF74-6D3E9E917400::{'startDate':1486702800000,'frequency':{'schedule':'custom','repeat':{'every':60}},'timername':'daily'}
+
+[DEBUG]2017-02-12 18:07:01,020::TimersLogger::Worker Child::EventInvocationTask::CodeRunner successfully finished timer execution::0020F1DC-E584-AD36-FF74-6D3E9E917400::{'startDate':1486702800000,'frequency':{'schedule':'custom','repeat':{'every':60}},'timername':'daily'}
+
+[DEBUG]2017-02-12 18:07:57,901::TimersLogger::Message processor - 0::MessageDispatcher::On message received. APP_ID::0020F1DC-E584-AD36-FF74-6D3E9E917400 ThreadID::19 Timer::{'startDate':1486702800000,'frequency':{'schedule':'custom','repeat':{'every':60}},'timername':'daily'}
+
+[DEBUG]2017-02-12 18:07:57,901::TimersLogger::Message processor - 0::CodeExecutor::InvokeEvent. APP_ID::0020F1DC-E584-AD36-FF74-6D3E9E917400 Timer::{'startDate':1486702800000,'frequency':{'schedule':'custom','repeat':{'every':60}},'timername':'daily'} ThreadID::19
+
+[DEBUG]2017-02-12 18:07:57,901::TimersLogger::Message processor - 0::CodeExecutor::InvokeEvent. Execute Task. APP_ID::0020F1DC-E584-AD36-FF74-6D3E9E917400 ThreadID::19 Task::InvocationTask[ appId:0020F1DC-E584-AD36-FF74-6D3E9E917400 versionId:6E975A1C-85F0-6C59-FF01-7B2BD8481400 ] Timer::{'startDate':1486702800000,'frequency':{'schedule':'custom','repeat':{'every':60}},'timername':'daily'}
+
+[DEBUG]2017-02-12 18:07:57,901::TimersLogger::Worker Child::EventInvocationTask::CodeRunner starts timer execution, should be log about success::0020F1DC-E584-AD36-FF74-6D3E9E917400::{'startDate':1486702800000,'frequency':{'schedule':'custom','repeat':{'every':60}},'timername':'daily'}
+
+[DEBUG]2017-02-12 18:08:02,990::TimersLogger::Worker Child::EventInvocationTask::CodeRunner successfully finished timer execution::0020F1DC-E584-AD36-FF74-6D3E9E917400::{'startDate':1486702800000,'frequency':{'schedule':'custom','repeat':{'every':60}},'timername':'daily'}
+
+[DEBUG]2017-02-12 18:08:57,805::TimersLogger::Message processor - 0::MessageDispatcher::On message received. APP_ID::0020F1DC-E584-AD36-FF74-6D3E9E917400 ThreadID::19 Timer::{'startDate':1486702800000,'frequency':{'schedule':'custom','repeat':{'every':60}},'timername':'daily'}
+
+[DEBUG]2017-02-12 18:08:57,806::TimersLogger::Message processor - 0::CodeExecutor::InvokeEvent. APP_ID::0020F1DC-E584-AD36-FF74-6D3E9E917400 Timer::{'startDate':1486702800000,'frequency':{'schedule':'custom','repeat':{'every':60}},'timername':'daily'} ThreadID::19
+
+[DEBUG]2017-02-12 18:08:57,806::TimersLogger::Message processor - 0::CodeExecutor::InvokeEvent. Execute Task. APP_ID::0020F1DC-E584-AD36-FF74-6D3E9E917400 ThreadID::19 Task::InvocationTask[ appId:0020F1DC-E584-AD36-FF74-6D3E9E917400 versionId:6E975A1C-85F0-6C59-FF01-7B2BD8481400 ] Timer::{'startDate':1486702800000,'frequency':{'schedule':'custom','repeat':{'every':60}},'timername':'daily'}
+
+[DEBUG]2017-02-12 18:08:57,806::TimersLogger::Worker Child::EventInvocationTask::CodeRunner starts timer execution, should be log about success::0020F1DC-E584-AD36-FF74-6D3E9E917400::{'startDate':1486702800000,'frequency':{'schedule':'custom','repeat':{'every':60}},'timername':'daily'}
+
+[DEBUG]2017-02-12 18:09:06,379::TimersLogger::Worker Child::EventInvocationTask::CodeRunner successfully finished timer execution::0020F1DC-E584-AD36-FF74-6D3E9E917400::{'startDate':1486702800000,'frequency':{'schedule':'custom','repeat':{'every':60}},'timername':'daily'}
+
+[DEBUG]2017-02-12 18:09:57,941::TimersLogger::Message processor - 0::MessageDispatcher::On message received. APP_ID::0020F1DC-E584-AD36-FF74-6D3E9E917400 ThreadID::19 Timer::{'startDate':1486702800000,'frequency':{'schedule':'custom','repeat':{'every':60}},'timername':'daily'}
+
+[DEBUG]2017-02-12 18:09:57,941::TimersLogger::Message processor - 0::CodeExecutor::InvokeEvent. APP_ID::0020F1DC-E584-AD36-FF74-6D3E9E917400 Timer::{'startDate':1486702800000,'frequency':{'schedule':'custom','repeat':{'every':60}},'timername':'daily'} ThreadID::19
+
+[DEBUG]2017-02-12 18:09:57,941::TimersLogger::Message processor - 0::CodeExecutor::InvokeEvent. Execute Task. APP_ID::0020F1DC-E584-AD36-FF74-6D3E9E917400 ThreadID::19 Task::InvocationTask[ appId:0020F1DC-E584-AD36-FF74-6D3E9E917400 versionId:6E975A1C-85F0-6C59-FF01-7B2BD8481400 ] Timer::{'startDate':1486702800000,'frequency':{'schedule':'custom','repeat':{'every':60}},'timername':'daily'}
+
+[DEBUG]2017-02-12 18:09:57,942::TimersLogger::Worker Child::EventInvocationTask::CodeRunner starts timer execution, should be log about success::0020F1DC-E584-AD36-FF74-6D3E9E917400::{'startDate':1486702800000,'frequency':{'schedule':'custom','repeat':{'every':60}},'timername':'daily'}
+
+[DEBUG]2017-02-12 18:10:00,457::TimersLogger::Worker Child::EventInvocationTask::CodeRunner successfully finished timer execution::0020F1DC-E584-AD36-FF74-6D3E9E917400::{'startDate':1486702800000,'frequency':{'schedule':'custom','repeat':{'every':60}},'timername':'daily'}
+
