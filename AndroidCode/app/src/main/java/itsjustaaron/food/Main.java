@@ -1,6 +1,7 @@
 package itsjustaaron.food;
 
 import android.app.ProgressDialog;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,6 +12,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -20,10 +22,13 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.backendless.Backendless;
@@ -82,6 +87,7 @@ public class Main extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Data.main = this;
         Data.cravings = new ArrayList<>();
         Data.foods = new ArrayList<Food>();
         Data.fileDir = getFilesDir().toString();
@@ -168,10 +174,16 @@ public class Main extends AppCompatActivity
                 switch (position) {
                     case 0:
                         Main.this.getSupportActionBar().setTitle("What others are craving");
+                        findViewById(R.id.oSearchCriterias).setVisibility(View.GONE);
+                        findViewById(R.id.cSearchCriterias).setVisibility(View.VISIBLE);
+                        Data.onCraving = true;
                         return;
                     case 1:
                         Data.offerFragment.start();
                         Main.this.getSupportActionBar().setTitle("What's available");
+                        findViewById(R.id.cSearchCriterias).setVisibility(View.GONE);
+                        findViewById(R.id.oSearchCriterias).setVisibility(View.VISIBLE);
+                        Data.onCraving = false;
                         return;
                     default:
                         return;
@@ -233,7 +245,7 @@ public class Main extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        boolean onCraving = getSupportActionBar().getTitle() == "What others are craving";
+        final boolean onCraving = getSupportActionBar().getTitle() == "What others are craving";
         switch (id) {
             case R.id.addNew:
                 if(checkUser(this)) {
@@ -248,11 +260,64 @@ public class Main extends AppCompatActivity
                 }
                 break;
             case R.id.search:
-                Data.onCraving = onCraving;
                 onSearchRequested();
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void searchCallBack() {
+        final LinearLayout criteriaContainer;
+        if(Data.onCraving) {
+            criteriaContainer = (LinearLayout) findViewById(R.id.cSearchCriterias);
+        }else {
+            criteriaContainer = (LinearLayout) findViewById(R.id.oSearchCriterias);
+        }
+        criteriaContainer.removeAllViews();
+        final ArrayList<String> searchCriteria;
+        if(Data.onCraving) {
+            searchCriteria = Data.cSearchCriteria;
+        }else {
+            searchCriteria = Data.oSearchCriteria;
+        }
+        for(final String c : searchCriteria) {
+            TextView textView = new TextView(this);
+            final LinearLayout smaller = new LinearLayout(this);
+            smaller.setOrientation(LinearLayout.HORIZONTAL);
+            smaller.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            smaller.setBackground(ContextCompat.getDrawable(this, R.drawable.search_criteria_rectangle));
+            smaller.setGravity(Gravity.CENTER);
+            textView.setText(c);
+            ImageView imageView = new ImageView(this);
+            imageView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.remove));
+            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+            imageView.setLayoutParams(new ViewGroup.LayoutParams(Math.round(textView.getTextSize()) + 20, Math.round(textView.getTextSize())));
+            imageView.setPadding(20, 0, 0, 0);
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    searchCriteria.remove(c);
+                    if(searchCriteria.size() == 0) {
+                        if(Data.onCraving) {
+                            Data.cravings.clear();
+                            Data.cravingFragment.refresh(null);
+                        }else {
+                            Data.foodOffers.clear();
+                            Data.offerFragment.refresh(null);
+                        }
+                    }else {
+                        String query = Food.listToCsv(searchCriteria);
+                        Intent search = new Intent(Main.this, Searchable.class);
+                        search.putExtra(SearchManager.QUERY, query);
+                        startActivity(search);
+                    }
+                    criteriaContainer.removeAllViews();
+                }
+            });
+            smaller.addView(textView);
+            smaller.addView(imageView);
+            criteriaContainer.addView(smaller);
+        }
     }
 
     @Override

@@ -24,7 +24,14 @@ public class Searchable extends Activity {
     private String whereClause;
 
     private void doMySearch(String query) {
-        List<String> tagResult = Food.csvToList(query);
+        ArrayList searchCriteria;
+        if(Data.onCraving) {
+            searchCriteria = Data.cSearchCriteria;
+        }else {
+            searchCriteria = Data.oSearchCriteria;
+        }
+        searchCriteria.clear();
+        List<String> tagResult = Food.csvToList(query.toUpperCase());
         boolean tagCheck = true;
         for (int i = 0; i < tagResult.size(); i++) {
             if (!Data.tags.contains(tagResult.get(i))) {
@@ -34,6 +41,7 @@ public class Searchable extends Activity {
         }
         whereClause = "";
         if (tagCheck) {
+            searchCriteria.addAll(tagResult);
             for (int i = 0; i < tagResult.size(); i++) {
                 whereClause = whereClause + "tags LIKE '%" + tagResult.get(i) + "%'";
                 if (i != tagResult.size() - 1) {
@@ -41,6 +49,7 @@ public class Searchable extends Activity {
                 }
             }
         } else {
+            searchCriteria.add(query);
             whereClause = "name LIKE '%" + query + "%'";
         }
         new AsyncTask<Void, Void, Integer>() {
@@ -83,12 +92,12 @@ public class Searchable extends Activity {
                         if(mapResult.size() == 0) {
                             return 1;
                         }else {
+                            Data.foodOffers.clear();
                             for (int i = 0; i < mapResult.size(); i++) {
                                 Map obj = mapResult.get(i);
                                 final FoodOffer foodOffer = new FoodOffer(obj);
                                 Data.foodOffers.add(foodOffer);
                             }
-                            Data.foodOffers.clear();
                         }
                     }
                 }else {
@@ -103,12 +112,14 @@ public class Searchable extends Activity {
                     if (v == 1) {
                         Toast.makeText(getApplicationContext(), "Your search yields no results", Toast.LENGTH_SHORT).show();
                     }else {
+                        Data.main.searchCallBack();
                         Data.cravingFragment.notifyChanges();
                     }
                 }else {
                     if (v == 1) {
                         Toast.makeText(getApplicationContext(), "Your search yields no results", Toast.LENGTH_SHORT).show();
                     }else {
+                        Data.main.searchCallBack();
                         Data.offerFragment.notifyChanges();
                     }
                 }
@@ -123,11 +134,9 @@ public class Searchable extends Activity {
 
         setContentView(R.layout.wait);
 
-        // Get the intent, verify the action and get the query
+        // Get the intent, verify the action and get the query(ommitted since custom usage)
         Intent intent = getIntent();
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            String query = intent.getStringExtra(SearchManager.QUERY);
-            doMySearch(query);
-        }
+        String query = intent.getStringExtra(SearchManager.QUERY);
+        doMySearch(query);
     }
 }

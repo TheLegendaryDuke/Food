@@ -71,7 +71,6 @@ public class CravingFragment extends Fragment {
 
     public void refresh(final SwipeRefreshLayout s) {
         if (Data.cravings.size() == 0) {
-            s.setRefreshing(false);
             new start().execute(new Void[]{});
         } else {
             new AsyncTask<Void, Void, Void>() {
