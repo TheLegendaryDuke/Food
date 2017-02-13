@@ -24,6 +24,8 @@ public class Back {
         switch (object) {
             case food:
                 return new Food(Backendless.Persistence.of("foods").findById(id));
+            case craving:
+                return new Craving(Backendless.Persistence.of("cravings").findById(id));
         }
         return null;
     }
@@ -36,5 +38,22 @@ public class Back {
                 return Backendless.Persistence.of("cravingFollowers").find(dataQuery);
         }
         return null;
+    }
+
+    public static void store(Map map, object object) {
+        switch (object) {
+            case craving:
+                Backendless.Persistence.of("cravings").save(map);
+                break;
+            case cravingfollower:
+                Backendless.Persistence.of("cravingFollowers").save(map);
+        }
+    }
+
+    public static void remove(Map map, object object) {
+        switch (object) {
+            case cravingfollower:
+                Backendless.Persistence.of("cravingFollowers").remove(map);
+        }
     }
 }

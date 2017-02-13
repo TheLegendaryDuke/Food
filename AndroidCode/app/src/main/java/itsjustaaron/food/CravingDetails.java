@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
 
 public class CravingDetails extends AppCompatActivity {
@@ -50,8 +51,7 @@ public class CravingDetails extends AppCompatActivity {
 
             @Override
             public Void doInBackground(Void... voids) {
-                Map map = Backendless.Persistence.of("cravings").findById(cravingID);
-                craving = new Craving(map);
+                craving = (Craving) Back.getObjectByID(cravingID, Back.object.craving);
                 return null;
             }
 

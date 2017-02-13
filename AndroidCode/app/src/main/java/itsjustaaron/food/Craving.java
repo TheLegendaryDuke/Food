@@ -94,7 +94,7 @@ public class Craving {
         map.put("objectId", objectId);
         map.put("foodID", food.objectId);
         map.put("numFollowers", numFollowers);
-        Backendless.Persistence.of("cravings").save(map);
+        Back.store(map, Back.object.craving);
     }
 
     public void followSwitch() {
@@ -108,14 +108,13 @@ public class Craving {
                     map.put("userID", Data.user.getObjectId());
                     numFollowers++;
                     save();
-                    Backendless.Persistence.of("cravingFollowers").save(map);
+                    Back.store(map, Back.object.cravingfollower);;
                 } else {
                     numFollowers--;
                     save();
-                    BackendlessDataQuery backendlessDataQuery = new BackendlessDataQuery();
-                    backendlessDataQuery.setWhereClause("cravingID='" + objectId + "' and userID='" + Data.user.getObjectId() + "'");
-                    BackendlessCollection<Map> result = Backendless.Persistence.of("cravingFollowers").find(backendlessDataQuery);
-                    Backendless.Persistence.of("cravingFollowers").remove(result.getCurrentPage().get(0));
+                    String whereC = "cravingID='" + objectId + "' and userID='" + Data.user.getObjectId() + "'";
+                    BackendlessCollection<Map> collection = Back.findObjectByWhere(whereC, Back.object.cravingfollower);
+                    Back.remove(collection.getCurrentPage().get(0), Back.object.cravingfollower);
                 }
                 return null;
             }

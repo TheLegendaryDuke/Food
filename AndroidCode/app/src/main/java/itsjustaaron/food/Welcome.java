@@ -148,6 +148,7 @@ public class Welcome extends AppCompatActivity {
                         @Override
                         public void onPostExecute(Integer result) {
                             if (result == 0) {
+                                wait.dismiss();
                                 Proceed();
                             } else {
                                 error.setText(message);
