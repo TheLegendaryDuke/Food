@@ -11,56 +11,70 @@
         android:layout_height="match_parent"
         tools:context=".Welcome">
 
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/start_screen"/>
 
-        <TextView
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Welcome to Food!"
-            android:textSize="40sp"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="16dp"
-            android:layout_centerHorizontal="true"
-            android:id="@+id/textView" />
+            android:orientation="vertical"
+            android:id="@+id/welcomeRegister"
+            android:onClick="Register"
+            android:layout_alignParentBottom="true">
 
+            <ImageView
+                android:layout_width="120dp"
+                android:layout_height="50dp"
+                android:src="@mipmap/register"/>
 
+            <ImageView
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:src="@mipmap/spoon" />
+        </LinearLayout>
 
-        <Button
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:gravity="center">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:onClick="Login"
+                android:id="@+id/WelcomeLogin">
+                <ImageView
+                    android:layout_width="120dp"
+                    android:layout_height="50dp"
+                    android:src="@mipmap/login" />
+
+                <ImageView
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:src="@mipmap/fork"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Log In"
-            android:id="@+id/LoginBtn"
-            android:layout_below="@+id/textView"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="100dp"
-            android:textSize="30sp"
-            android:padding="20dp"
-            android:onClick="Login" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Register"
-            android:id="@+id/RegisterBtn"
-            android:layout_below="@+id/LoginBtn"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="60dp"
-            android:textSize="30sp"
-            android:padding="20dp"
-            android:onClick="Register" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Enter as guest"
-            android:layout_below="@+id/RegisterBtn"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="60dp"
-            android:textSize="30sp"
-            android:padding="20dp"
-            android:nestedScrollingEnabled="false"
-            android:onClick="Guest" />
-
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:onClick="Guest"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_width="120dp"
+                android:layout_height="50dp"
+                android:src="@mipmap/enter_as_guest"/>
+            <ImageView
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:src="@mipmap/chopsticks"/>
+        </LinearLayout>
     </RelativeLayout>
 
     <ImageView
@@ -68,6 +82,7 @@
         android:layout_height="match_parent"
         android:foreground="#ffffff"
         android:id="@+id/WelcomeBG"
+        android:visibility="gone"
         android:forceHasOverlappingRendering="false" />
 
     <ImageView
@@ -75,6 +90,7 @@
         android:layout_height="match_parent"
         android:id="@+id/CoverImage"
         android:layout_alignParentStart="true"
+        android:visibility="gone"
         android:src="@mipmap/opening" />
 
 </FrameLayout>
