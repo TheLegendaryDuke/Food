@@ -107,14 +107,17 @@ public class Welcome extends AppCompatActivity {
         proceed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                wait.show();
                 final String email = ((TextView) dialog.findViewById(R.id.loginEmail)).getText().toString();
                 final String password = ((TextView) dialog.findViewById(R.id.loginPassword)).getText().toString();
                 final TextView error = (TextView) dialog.findViewById(R.id.loginError);
-                if (email.equals("") || password.equals("")) {
-                    error.setText("Please enter your email and password!");
+                if (email.equals("")) {
+                    error.setText("The email seems missing");
                     error.setVisibility(View.VISIBLE);
-                } else {
+                } else if (password.equals("")) {
+                    error.setText("The password seems missing");
+                    error.setVisibility(View.VISIBLE);
+                }else{
+                    wait.show();
                     error.setVisibility(View.INVISIBLE);
                     final boolean stayLogged = ((CheckBox) dialog.findViewById(R.id.loginRemember)).isChecked();
                     new AsyncTask<Void, Void, Integer>() {
