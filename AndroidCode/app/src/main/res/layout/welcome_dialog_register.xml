@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:id="@+id/welcomeRegisterDialog"
+    android:background="@color/darkWhite"
+    android:padding="20dp">
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/dialog_rectangle_light_orange"
+        android:hint="Your email goes here"
+        android:textStyle="bold"
+        android:id="@+id/registerEmail"
+        android:textColorHint="@color/darkOrange"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/dialog_rectangle_light_orange"
+        android:hint="Enter a password"
+        android:textStyle="bold"
+        android:id="@+id/registerPassword"
+        android:layout_marginTop="10dp"
+        android:textColorHint="@color/darkOrange"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/dialog_rectangle_light_orange"
+        android:hint="Re-enter the password"
+        android:textStyle="bold"
+        android:id="@+id/registerPasswordAgain"
+        android:layout_marginTop="10dp"
+        android:textColorHint="@color/darkOrange"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/dialog_rectangle_light_orange"
+        android:hint="Pick a nickname"
+        android:textStyle="bold"
+        android:id="@+id/registerName"
+        android:layout_marginTop="10dp"
+        android:textColorHint="@color/darkOrange"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/red"
+        android:layout_marginTop="10dp"
+        android:id="@+id/registerError"
+        android:text="Error"
+        android:visibility="invisible"
+        android:layout_marginStart="10dp"
+        android:textSize="20sp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/dialog_rectangle_dark_orange"
+            android:text="register"
+            android:textSize="24sp"
+            android:textScaleX="1"
+            android:layout_weight="1"
+            android:layout_marginEnd="10dp"
+            android:textColor="#ffffff"
+            android:id="@+id/welcomeDialogRegister"
+            android:padding="10dp"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/dialog_rectangle_dark_orange"
+            android:text="cancel"
+            android:layout_weight="1"
+            android:textSize="25sp"
+            android:layout_marginStart="10dp"
+            android:id="@+id/welcomeDialogRegisterCancel"
+            android:textColor="#ffffff"
+            android:padding="10dp"/>
+    </LinearLayout>
+
+</LinearLayout>

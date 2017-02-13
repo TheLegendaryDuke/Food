@@ -1,9 +1,11 @@
 package itsjustaaron.food;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Point;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -11,9 +13,14 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -87,164 +94,173 @@ public class Welcome extends AppCompatActivity {
     }
 
     public void Login(View view) {
-        //create a really big form as an alertdialog(not sure what other option is available without starting a new activity)
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = getLayoutInflater();
-        final View popup = inflater.inflate(R.layout.login, null);
-        popup.findViewById(R.id.loginName).setVisibility(View.GONE);
-        builder.setView(popup)
-                .setPositiveButton("Proceed", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        wait.show();
-                        final String email = ((TextView) popup.findViewById(R.id.loginEmail)).getText().toString();
-                        final String password = ((TextView) popup.findViewById(R.id.loginPassword)).getText().toString();
-                        if (email.equals("") || password.equals("")) {
-                            new AlertDialog.Builder(Welcome.this).setTitle("Error").setMessage("Please enter your email and password!").setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    dialogInterface.dismiss();
-                                }
-                            }).show();
-                        } else {
-                            final boolean stayLogged = ((CheckBox) popup.findViewById(R.id.stayLogged)).isChecked();
-                            new AsyncTask<Void, Void, Integer>() {
-                                String message;
-
-                                @Override
-                                //0 is success, 1 is failure
-                                public Integer doInBackground(Void... voids) {
-                                    try {
-                                        Data.user = Backendless.UserService.login(email, password, stayLogged);
-                                        return 0;
-                                    } catch (BackendlessException e) {
-                                        String errorCode = e.getCode();
-                                        if (errorCode.equals("3003")) {
-                                            message = "Invalid login or password! Please try again.";
-                                        } else if (errorCode.equals("3006")) {
-                                            message = "Please enter your email and password!";
-                                        } else if (errorCode.equals("3036")) {
-                                            message = "Too many failed attempts, account is reset! Check your entered email for new password";
-                                            Backendless.UserService.restorePassword(email);
-                                        } else {
-                                            message = "Error code " + errorCode + ", please contact developer at contactfoodapp@gmail.com";
-                                        }
-                                        return 1;
-                                    }
-                                }
-
-                                @Override
-                                public void onPostExecute(Integer result) {
-                                    if (result == 0) {
-                                        Proceed();
-                                    } else {
-                                        new AlertDialog.Builder(Welcome.this)
-                                                .setTitle(message)
-                                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                                        dialogInterface.dismiss();
-                                                    }
-                                                }).show();
-                                        wait.dismiss();
-                                    }
-                                }
-                            }.execute(new Void[]{});
-                        }
-                    }
-                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;
+        final Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.welcome_dialog_login);
+        LinearLayout container = (LinearLayout)dialog.findViewById(R.id.welcomeLoginDialog);
+        dialog.setCancelable(true);
+        container.setLayoutParams(new FrameLayout.LayoutParams((int)Math.round(width * 0.9), ViewGroup.LayoutParams.WRAP_CONTENT));
+        Button proceed = (Button)dialog.findViewById(R.id.welcomeDialogLogin);
+        proceed.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
+            public void onClick(View v) {
+                wait.show();
+                final String email = ((TextView) dialog.findViewById(R.id.loginEmail)).getText().toString();
+                final String password = ((TextView) dialog.findViewById(R.id.loginPassword)).getText().toString();
+                final TextView error = (TextView) dialog.findViewById(R.id.loginError);
+                if (email.equals("") || password.equals("")) {
+                    error.setText("Please enter your email and password!");
+                    error.setVisibility(View.VISIBLE);
+                } else {
+                    error.setVisibility(View.INVISIBLE);
+                    final boolean stayLogged = ((CheckBox) dialog.findViewById(R.id.loginRemember)).isChecked();
+                    new AsyncTask<Void, Void, Integer>() {
+                        String message;
+
+                        @Override
+                        //0 is success, 1 is failure
+                        public Integer doInBackground(Void... voids) {
+                            try {
+                                Data.user = Backendless.UserService.login(email, password, stayLogged);
+                                return 0;
+                            } catch (BackendlessException e) {
+                                String errorCode = e.getCode();
+                                if (errorCode.equals("3003")) {
+                                    message = "Invalid login or password! Please try again.";
+                                } else if (errorCode.equals("3006")) {
+                                    message = "Please enter your email and password!";
+                                } else if (errorCode.equals("3036")) {
+                                    message = "Too many failed attempts, account is reset! Check your entered email for new password";
+                                    Backendless.UserService.restorePassword(email);
+                                } else {
+                                    message = "Error code " + errorCode + ", please contact developer at contactfoodapp@gmail.com";
+                                }
+                                return 1;
+                            }
+                        }
+
+                        @Override
+                        public void onPostExecute(Integer result) {
+                            if (result == 0) {
+                                Proceed();
+                            } else {
+                                error.setText(message);
+                                error.setVisibility(View.VISIBLE);
+                                wait.dismiss();
+                            }
+                        }
+                    }.execute(new Void[]{});
+                }
             }
         });
-        builder.show();
+        dialog.findViewById(R.id.welcomeDialogLoginCancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 
     public void Register(View view) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = getLayoutInflater();
-        final View popup = inflater.inflate(R.layout.login, null);
-        popup.findViewById(R.id.stayLogged).setVisibility(View.GONE);
-        builder.setView(popup)
-                .setPositiveButton("Register", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        final ProgressDialog wait = new ProgressDialog(Welcome.this);
-                        wait.setMessage("Loading...");
-                        wait.show();
-                        final String email = ((TextView) popup.findViewById(R.id.loginEmail)).getText().toString();
-                        String password = ((TextView) popup.findViewById(R.id.loginPassword)).getText().toString();
-                        String name = ((TextView) popup.findViewById(R.id.loginName)).getText().toString();
-                        if (email.equals("") || password.equals("") || name.equals("")) {
-                            new AlertDialog.Builder(Welcome.this).setTitle("Try Again").setMessage("Please fill all the text boxes!").setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    dialogInterface.dismiss();
-                                }
-                            }).show();
-                            wait.dismiss();
-                        } else {
-                            final BackendlessUser user = new BackendlessUser();
-                            user.setEmail(email);
-                            user.setPassword(password);
-                            user.setProperty("name", name);
-                            user.setProperty("portrait", "");
-                            new AsyncTask<Void, Void, Integer>() {
-                                String message;
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;
+        final Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.welcome_dialog_register);
+        LinearLayout container = (LinearLayout)dialog.findViewById(R.id.welcomeRegisterDialog);
+        dialog.setCancelable(true);
+        container.setLayoutParams(new FrameLayout.LayoutParams((int)Math.round(width * 0.9), ViewGroup.LayoutParams.WRAP_CONTENT));
+        Button proceed = (Button) dialog.findViewById(R.id.welcomeDialogRegister);
+        proceed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final ProgressDialog wait = new ProgressDialog(Welcome.this);
+                wait.setMessage("Loading...");
+                final String email = ((TextView) dialog.findViewById(R.id.registerEmail)).getText().toString();
+                String password = ((TextView) dialog.findViewById(R.id.registerPassword)).getText().toString();
+                String name = ((TextView) dialog.findViewById(R.id.registerName)).getText().toString();
+                String passwordAgain = ((TextView) dialog.findViewById(R.id.registerPasswordAgain)).getText().toString();
+                final TextView error = (TextView) dialog.findViewById(R.id.registerError);
+                if (email.equals("")) {
+                    error.setText("The email seems missing");
+                    error.setVisibility(View.VISIBLE);
+                } else if (password.equals("")) {
+                    error.setText("The password seems missing");
+                    error.setVisibility(View.VISIBLE);
+                } else if (name.equals("")) {
+                    error.setText("The nickname seems missing");
+                    error.setVisibility(View.VISIBLE);
+                } else if (passwordAgain.equals("")) {
+                    error.setText("Please enter the password again in the second box");
+                    error.setVisibility(View.VISIBLE);
+                } else if (!passwordAgain.equals(password)) {
+                    error.setText("The two passwords entered didn't match");
+                    error.setVisibility(View.VISIBLE);
+                } else {
+                    error.setVisibility(View.INVISIBLE);
+                    wait.show();
+                    final BackendlessUser user = new BackendlessUser();
+                    user.setEmail(email);
+                    user.setPassword(password);
+                    user.setProperty("name", name);
+                    user.setProperty("portrait", "");
+                    new AsyncTask<Void, Void, Integer>() {
+                        String message;
 
-                                @Override
-                                public Integer doInBackground(Void... voids) {
-                                    try {
-                                        Data.user = Backendless.UserService.register(user);
-                                        return 0;
-                                    } catch (BackendlessException e) {
-                                        String errorCode = e.getCode();
-                                        if (errorCode.equals("3011")) {
-                                            message = "Please enter a password.";
-                                        } else if (errorCode.equals("3013")) {
-                                            message = "Please enter your email.";
-                                        } else if (errorCode.equals("3033")) {
-                                            message = "This email address is already taken.";
-                                        } else if (errorCode.equals("3040")) {
-                                            message = "Please enter a valid email address.";
-                                        } else {
-                                            message = "Error code" + errorCode + ", please contact contactfoodapp@gmail.com";
-                                        }
-                                        return 1;
-                                    }
+                        @Override
+                        public Integer doInBackground(Void... voids) {
+                            try {
+                                Data.user = Backendless.UserService.register(user);
+                                return 0;
+                            } catch (BackendlessException e) {
+                                String errorCode = e.getCode();
+                                if (errorCode.equals("3011")) {
+                                    message = "Please enter a password.";
+                                } else if (errorCode.equals("3013")) {
+                                    message = "Please enter your email.";
+                                } else if (errorCode.equals("3033")) {
+                                    message = "This email address is already taken.";
+                                } else if (errorCode.equals("3040")) {
+                                    message = "Please enter a valid email address.";
+                                } else {
+                                    message = "Error code" + errorCode + ", please contact contactfoodapp@gmail.com";
                                 }
-
-                                @Override
-                                public void onPostExecute(Integer result) {
-                                    if (result == 0) {
-                                        new AlertDialog.Builder(Welcome.this).setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialogInterface, int i) {
-                                                dialogInterface.dismiss();
-                                                Proceed();
-                                            }
-                                        }).setTitle("Your account has been created!").setMessage("Please check your email to activate your account or you won't be able to login next time").show();
-                                    } else {
-                                        wait.dismiss();
-                                        new AlertDialog.Builder(Welcome.this).setTitle("Error").setMessage(message).setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialogInterface, int i) {
-                                                dialogInterface.dismiss();
-                                            }
-                                        }).show();
-                                    }
-                                }
-                            }.execute(new Void[]{});
+                                return 1;
+                            }
                         }
-                    }
-                })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
-                    }
-                }).show();
+
+                        @Override
+                        public void onPostExecute(Integer result) {
+                            if (result == 0) {
+                                new AlertDialog.Builder(Welcome.this).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        dialogInterface.dismiss();
+                                        Proceed();
+                                    }
+                                }).setTitle("Your account has been created!").setMessage("Please check your email to activate your account or you won't be able to login next time").show();
+                            } else {
+                                wait.dismiss();
+                                error.setText(message);
+                                error.setVisibility(View.VISIBLE);
+                            }
+                        }
+                    }.execute(new Void[]{});
+                }
+            }
+        });
+        dialog.findViewById(R.id.welcomeDialogRegisterCancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 
     public void Guest(View view) {
