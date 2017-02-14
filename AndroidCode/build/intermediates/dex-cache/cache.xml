@@ -3,6 +3,51 @@
 
     <item
         is-multidex="true"
+        jar="C:\Users\aozhang\Documents\GitHub\Food\AndroidCode\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\24.1.1\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="24.0.2"
+        sha1="1256c10604bb098490eab070d76754ac5ceab35c">
+        <dex dex="C:\Users\aozhang\Documents\GitHub\Food\AndroidCode\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-appcompat-v7-24.1.1_e9206a200c6d764a348aca403b11a29363c35d7e\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\aozhang\Documents\GitHub\Food\AndroidCode\app\build\intermediates\exploded-aar\com.android.support\support-v4\24.1.1\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="24.0.2"
+        sha1="6d7d803871e3203465f71a163e7af104f807b446">
+        <dex dex="C:\Users\aozhang\Documents\GitHub\Food\AndroidCode\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-v4-24.1.1_12496a39ab04ae9d64405ce766c826fb22c7a0b7\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\aozhang\Documents\GitHub\Food\AndroidCode\app\build\intermediates\exploded-aar\com.android.support\support-vector-drawable\24.1.1\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="24.0.2"
+        sha1="f62e763609f65e47dc6c498760a4accf02776788">
+        <dex dex="C:\Users\aozhang\Documents\GitHub\Food\AndroidCode\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-vector-drawable-24.1.1_99e76b6125ccf65e69d1c542175c3413f66fd9ea\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\aozhang\Documents\GitHub\Food\AndroidCode\app\build\intermediates\exploded-aar\com.android.support\animated-vector-drawable\24.1.1\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="24.0.2"
+        sha1="c936c1bd42f0c018c18920c7bec619ef056b24f8">
+        <dex dex="C:\Users\aozhang\Documents\GitHub\Food\AndroidCode\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-animated-vector-drawable-24.1.1_158400c022c2fa3113495c72da91a3997318d992\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\aozhang\Documents\GitHub\Food\AndroidCode\app\build\intermediates\exploded-aar\com.android.support\design\24.1.1\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="24.0.2"
+        sha1="e195bd694d5389acfba27ff4fdfa64c4c65b2c05">
+        <dex dex="C:\Users\aozhang\Documents\GitHub\Food\AndroidCode\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-design-24.1.1_1bf970d3d42b29fcc126c8f0941ed8e0a6d6d1ab\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
         jar="C:\Users\aozhang\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\24.1.1\support-annotations-24.1.1.jar"
         jumboMode="true"
         optimize="true"
@@ -34,17 +79,8 @@
         jumboMode="true"
         optimize="true"
         revision="24.0.2"
-        sha1="1ed0d8ea9b1e5c2f03744073f1ac4592c8fe9a47">
+        sha1="f5555b62ac8a97c376bbe8c89f9a3dd4367fb366">
         <dex dex="C:\Users\aozhang\Documents\GitHub\Food\AndroidCode\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run-bootstrap_d0475374ba336511c38f43d61a081487540d9f97\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="C:\Users\aozhang\Documents\GitHub\Food\AndroidCode\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\24.1.1\jars\classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="24.0.2"
-        sha1="1256c10604bb098490eab070d76754ac5ceab35c">
-        <dex dex="C:\Users\aozhang\Documents\GitHub\Food\AndroidCode\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-appcompat-v7-24.1.1_e9206a200c6d764a348aca403b11a29363c35d7e\classes.dex" />
     </item>
     <item
         is-multidex="true"
@@ -52,7 +88,7 @@
         jumboMode="true"
         optimize="true"
         revision="24.0.2"
-        sha1="07822f17d49fee118e5315137b1eaeb0e357d843">
+        sha1="5df930b659cb2d60867de84aec21443dc3acf14e">
         <dex dex="C:\Users\aozhang\Documents\GitHub\Food\AndroidCode\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run_22b9fd67e8bac13f4b2ac6486a680e714daa0968\classes.dex" />
     </item>
     <item
@@ -66,48 +102,12 @@
     </item>
     <item
         is-multidex="true"
-        jar="C:\Users\aozhang\Documents\GitHub\Food\AndroidCode\app\build\intermediates\exploded-aar\com.android.support\support-v4\24.1.1\jars\classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="24.0.2"
-        sha1="6d7d803871e3203465f71a163e7af104f807b446">
-        <dex dex="C:\Users\aozhang\Documents\GitHub\Food\AndroidCode\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-v4-24.1.1_12496a39ab04ae9d64405ce766c826fb22c7a0b7\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="C:\Users\aozhang\Documents\GitHub\Food\AndroidCode\app\build\intermediates\exploded-aar\com.android.support\support-vector-drawable\24.1.1\jars\classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="24.0.2"
-        sha1="f62e763609f65e47dc6c498760a4accf02776788">
-        <dex dex="C:\Users\aozhang\Documents\GitHub\Food\AndroidCode\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-vector-drawable-24.1.1_99e76b6125ccf65e69d1c542175c3413f66fd9ea\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
         jar="C:\Users\aozhang\Documents\GitHub\Food\AndroidCode\app\build\intermediates\exploded-aar\com.android.volley\volley\1.0.0\jars\classes.jar"
         jumboMode="true"
         optimize="true"
         revision="24.0.2"
         sha1="2cd4b982617e544728de0782d718a58ce1b06e3f">
         <dex dex="C:\Users\aozhang\Documents\GitHub\Food\AndroidCode\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.volley-volley-1.0.0_fceb8c5145cf6eb9ef817b757a89359f7cc326e0\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="C:\Users\aozhang\Documents\GitHub\Food\AndroidCode\app\build\intermediates\exploded-aar\com.android.support\animated-vector-drawable\24.1.1\jars\classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="24.0.2"
-        sha1="c936c1bd42f0c018c18920c7bec619ef056b24f8">
-        <dex dex="C:\Users\aozhang\Documents\GitHub\Food\AndroidCode\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-animated-vector-drawable-24.1.1_158400c022c2fa3113495c72da91a3997318d992\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="C:\Users\aozhang\Documents\GitHub\Food\AndroidCode\app\build\intermediates\exploded-aar\com.android.support\design\24.1.1\jars\classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="24.0.2"
-        sha1="e195bd694d5389acfba27ff4fdfa64c4c65b2c05">
-        <dex dex="C:\Users\aozhang\Documents\GitHub\Food\AndroidCode\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-design-24.1.1_1bf970d3d42b29fcc126c8f0941ed8e0a6d6d1ab\classes.dex" />
     </item>
 
 </items>

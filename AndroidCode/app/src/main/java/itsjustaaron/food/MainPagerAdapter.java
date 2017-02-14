@@ -10,8 +10,11 @@ import itsjustaaron.food.Back.Data;
  * Created by Aaron-Work on 8/7/2016.
  */
 public class MainPagerAdapter extends FragmentPagerAdapter {
-    public MainPagerAdapter(FragmentManager fm) {
+    private Main main;
+
+    public MainPagerAdapter(FragmentManager fm, Main main) {
         super(fm);
+        this.main = main;
     }
 
     @Override
@@ -19,11 +22,11 @@ public class MainPagerAdapter extends FragmentPagerAdapter {
         switch (position) {
             case 0:
                 CravingFragment cravingFragment = new CravingFragment();
-                Data.cravingFragment = cravingFragment;
+                main.cravingFragment = cravingFragment;
                 return cravingFragment;
             case 1:
                 OfferFragment offerFragment = new OfferFragment();
-                Data.offerFragment = offerFragment;
+                main.offerFragment = offerFragment;
                 return offerFragment;
             default:
                 return null;

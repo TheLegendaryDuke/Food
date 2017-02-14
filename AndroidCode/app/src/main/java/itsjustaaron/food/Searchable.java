@@ -114,14 +114,12 @@ public class Searchable extends Activity {
                         Toast.makeText(getApplicationContext(), "Your search yields no results", Toast.LENGTH_SHORT).show();
                     }else {
                         Data.main.searchCallBack();
-                        Data.cravingFragment.notifyChanges();
                     }
                 }else {
                     if (v == 1) {
                         Toast.makeText(getApplicationContext(), "Your search yields no results", Toast.LENGTH_SHORT).show();
                     }else {
                         Data.main.searchCallBack();
-                        Data.offerFragment.notifyChanges();
                     }
                 }
                 finish();

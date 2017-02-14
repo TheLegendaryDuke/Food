@@ -27,8 +27,6 @@ public class Data {
     public static PagedList<Map> cravingPaged;
     public static BackendlessCollection offerCollection;
     public static ArrayList<String> tags;
-    public static CravingFragment cravingFragment;
-    public static OfferFragment offerFragment;
     public static ArrayList<Food> foods;
     public static String fileDir;
     public static boolean onCraving;

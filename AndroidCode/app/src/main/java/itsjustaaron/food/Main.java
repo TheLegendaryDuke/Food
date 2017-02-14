@@ -59,6 +59,9 @@ import itsjustaaron.food.Back.Data;
 
 public class Main extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    public CravingFragment cravingFragment;
+    public OfferFragment offerFragment;
+
     private static ProgressDialog progressDialog;
     protected PagerAdapter adapter;
 
@@ -92,6 +95,7 @@ public class Main extends AppCompatActivity
         Data.cravings = new ArrayList<>();
         Data.foods = new ArrayList<Food>();
         Data.fileDir = getFilesDir().toString();
+        offerFragment = new OfferFragment();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -176,7 +180,7 @@ public class Main extends AppCompatActivity
                         Data.onCraving = true;
                         return;
                     case 1:
-                        Data.offerFragment.start();
+                        offerFragment.start();
                         Main.this.getSupportActionBar().setTitle("What's available");
                         findViewById(R.id.cSearchCriterias).setVisibility(View.GONE);
                         findViewById(R.id.oSearchCriterias).setVisibility(View.VISIBLE);
@@ -199,7 +203,7 @@ public class Main extends AppCompatActivity
         });
 
         final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
-        adapter = new MainPagerAdapter(getSupportFragmentManager());
+        adapter = new MainPagerAdapter(getSupportFragmentManager(), this);
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
 
@@ -250,7 +254,7 @@ public class Main extends AppCompatActivity
                     next.putExtra("onCraving", onCraving);
                     if(onCraving) {
                         startActivity(next);
-                        Data.cravingFragment.refresh(null);
+                        cravingFragment.refresh(null);
                     }else {
                         startActivityForResult(next, 0);
                     }
@@ -274,8 +278,10 @@ public class Main extends AppCompatActivity
         final ArrayList<String> searchCriteria;
         if(Data.onCraving) {
             searchCriteria = Data.cSearchCriteria;
+            cravingFragment.notifyChanges();
         }else {
             searchCriteria = Data.oSearchCriteria;
+            offerFragment.notifyChanges();
         }
         for(final String c : searchCriteria) {
             TextView textView = new TextView(this);
@@ -297,10 +303,10 @@ public class Main extends AppCompatActivity
                     if(searchCriteria.size() == 0) {
                         if(Data.onCraving) {
                             Data.cravings.clear();
-                            Data.cravingFragment.refresh(null);
+                            cravingFragment.refresh(null);
                         }else {
                             Data.foodOffers.clear();
-                            Data.offerFragment.refresh(null);
+                            offerFragment.refresh(null);
                         }
                     }else {
                         String query = Food.listToCsv(searchCriteria);

@@ -47,15 +47,11 @@ public class CravingFragment extends Fragment {
 
         @Override
         public Void doInBackground(Void... voids) {
-            try {
                 Data.cravings.clear();
                 ArrayList<Map> temp = new ArrayList<>(Back.getAll(Back.object.craving).getCurPage());
                 for (int i = 0; i < temp.size(); i++) {
                     Data.cravings.add(new Craving(temp.get(i)));
                 }
-            } catch (BackendlessException e) {
-                Log.d("backgroundless", e.toString());
-            }
             return null;
         }
 
@@ -86,14 +82,10 @@ public class CravingFragment extends Fragment {
                 public Void doInBackground(Void... voids) {
 
                     Data.cravings.clear();
-                    try {
                         String query = Food.listToCsv(Data.cSearchCriteria);
                         Intent search = new Intent(getActivity(), Searchable.class);
                         search.putExtra(SearchManager.QUERY, query);
                         startActivity(search);
-                    } catch (BackendlessException e) {
-                        Log.d("backendless", e.toString());
-                    }
                     return null;
                 }
 
@@ -143,7 +135,6 @@ public class CravingFragment extends Fragment {
                 new AsyncTask<Void, Void, Void>() {
                     @Override
                     public Void doInBackground(Void... voids) {
-                        try {
                             Data.cravingPaged.nextPage();
                             ArrayList<Map> temp = new ArrayList<Map>(Data.cravingPaged.getCurPage());
                             for (int i = 0; i < temp.size(); i++) {
@@ -151,9 +142,6 @@ public class CravingFragment extends Fragment {
                                 Craving craving = new Craving(obj);
                                 Data.cravings.add(craving);
                             }
-                        } catch (BackendlessException e) {
-                            Log.d("backendless", e.toString());
-                        }
                         return null;
                     }
 
