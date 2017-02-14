@@ -18,4 +18,8 @@ public class PagedList<T> {
     public ArrayList<T> getCurPage() {
         return new ArrayList(data.getCurrentPage());
     }
+
+    public void nextPage() {
+        data = data.nextPage();
+    }
 }

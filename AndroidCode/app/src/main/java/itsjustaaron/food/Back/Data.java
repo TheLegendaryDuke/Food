@@ -7,6 +7,7 @@ import com.backendless.BackendlessUser;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Map;
 
 import itsjustaaron.food.Craving;
 import itsjustaaron.food.CravingFragment;
@@ -23,7 +24,7 @@ public class Data {
     public static BackendlessUser user;
     public static ArrayList<Craving> cravings;
     public static ArrayList<FoodOffer> foodOffers;
-    public static BackendlessCollection cravingCollection;
+    public static PagedList<Map> cravingPaged;
     public static BackendlessCollection offerCollection;
     public static ArrayList<String> tags;
     public static CravingFragment cravingFragment;

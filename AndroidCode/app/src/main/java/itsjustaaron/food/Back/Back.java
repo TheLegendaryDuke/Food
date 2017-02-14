@@ -53,6 +53,8 @@ public class Back {
         switch (object) {
             case cravingfollower:
                 return new PagedList<Map>(Backendless.Persistence.of("cravingFollowers").find(dataQuery));
+            case craving:
+                return new PagedList<Map>(Backendless.Persistence.of("cravings").find(dataQuery));
         }
         return null;
     }
@@ -105,7 +107,8 @@ public class Back {
         backendlessDataQuery.setQueryOptions(queryOptions);
         switch (object) {
             case craving:
-            return new PagedList<Map>(Backendless.Data.of("cravings").find(backendlessDataQuery));
+                Data.cravingPaged = new PagedList<Map>(Backendless.Data.of("cravings").find(backendlessDataQuery));
+                return Data.cravingPaged;
         }
         return null;
     }

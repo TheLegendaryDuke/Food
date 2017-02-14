@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
 
 /**
@@ -74,8 +75,8 @@ public class Searchable extends Activity {
                     final BackendlessDataQuery backendlessDataQuery = new BackendlessDataQuery();
                     backendlessDataQuery.setWhereClause(where);
                     if(Data.onCraving) {
-                        Data.cravingCollection = Backendless.Persistence.of("cravings").find(backendlessDataQuery);
-                        List<Map> mapResult = Data.cravingCollection.getCurrentPage();
+                        Data.cravingPaged = Back.findObjectByWhere(where, Back.object.craving);
+                        List<Map> mapResult = Data.cravingPaged.getCurPage();
                         if(mapResult.size() == 0) {
                             return 1;
                         }else {

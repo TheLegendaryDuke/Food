@@ -1,6 +1,8 @@
 package itsjustaaron.food;
 
 import android.app.ProgressDialog;
+import android.app.SearchManager;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -85,14 +87,10 @@ public class CravingFragment extends Fragment {
 
                     Data.cravings.clear();
                     try {
-                        //TODO: change the way this works
-                        Data.cravingCollection = Data.cravingCollection.getPage(Data.loadCount, 0);
-                        ArrayList<Map> temp = new ArrayList<Map>(Data.cravingCollection.getCurrentPage());
-                        for (int i = 0; i < temp.size(); i++) {
-                            Map obj = temp.get(i);
-                            Craving craving = new Craving(obj);
-                            Data.cravings.add(craving);
-                        }
+                        String query = Food.listToCsv(Data.cSearchCriteria);
+                        Intent search = new Intent(getActivity(), Searchable.class);
+                        search.putExtra(SearchManager.QUERY, query);
+                        startActivity(search);
                     } catch (BackendlessException e) {
                         Log.d("backendless", e.toString());
                     }
@@ -146,8 +144,8 @@ public class CravingFragment extends Fragment {
                     @Override
                     public Void doInBackground(Void... voids) {
                         try {
-                            Data.cravingCollection = Data.cravingCollection.nextPage();
-                            ArrayList<Map> temp = new ArrayList<Map>(Data.cravingCollection.getCurrentPage());
+                            Data.cravingPaged.nextPage();
+                            ArrayList<Map> temp = new ArrayList<Map>(Data.cravingPaged.getCurPage());
                             for (int i = 0; i < temp.size(); i++) {
                                 Map obj = temp.get(i);
                                 Craving craving = new Craving(obj);
