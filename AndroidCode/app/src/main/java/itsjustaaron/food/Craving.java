@@ -5,11 +5,6 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.backendless.Backendless;
-import com.backendless.BackendlessCollection;
-import com.backendless.exceptions.BackendlessException;
-import com.backendless.persistence.BackendlessDataQuery;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -22,6 +17,7 @@ import java.util.Map;
 
 import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
+import itsjustaaron.food.Back.PagedList;
 
 /**
  * Created by Aaron-Work on 8/17/2016.
@@ -49,31 +45,19 @@ public class Craving {
                 food = (Food) Back.getObjectByID(foodID, Back.object.food);
                 final String imagePath = Data.fileDir + "/foods/" + food.image;
                 final File file = new File(imagePath);
-                final String path = "https://api.backendless.com/0020F1DC-E584-AD36-FF74-6D3E9E917400/v1/files/foods/" + food.image;
                 File dir = new File(Data.fileDir + "/foods/");
                 if (!dir.exists()) {
                     dir.mkdir();
                 }
                 if (!file.exists()) {
-                    file.createNewFile();
-                    URL url = new URL(path);
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setDoInput(true);
-                    conn.connect();
-                    InputStream is = conn.getInputStream();
-                    Bitmap bm = BitmapFactory.decodeStream(is);
-                    FileOutputStream fos = new FileOutputStream(imagePath);
-                    ByteArrayOutputStream outstream = new ByteArrayOutputStream();
-                    bm.compress(Bitmap.CompressFormat.PNG, 100, outstream);
-                    byte[] byteArray = outstream.toByteArray();
-                    fos.write(byteArray);
-                    fos.close();
+                    String path = "/foods/" + food.image;
+                    Back.downloadToLocal(path);
                 }
             }
             Data.foods.add(food);
             if(Data.user != null) {
                 String whereClause = "cravingID='" + objectId + "' and userID='" + Data.user.getObjectId() + "'";
-                List<Map> maps = Back.findObjectByWhere(whereClause, Back.object.cravingfollower).getCurrentPage();
+                List<Map> maps = Back.findObjectByWhere(whereClause, Back.object.cravingfollower).getCurPage();
                 if (maps == null || maps.size() == 0) {
                     following = false;
                 } else {
@@ -113,8 +97,8 @@ public class Craving {
                     numFollowers--;
                     save();
                     String whereC = "cravingID='" + objectId + "' and userID='" + Data.user.getObjectId() + "'";
-                    BackendlessCollection<Map> collection = Back.findObjectByWhere(whereC, Back.object.cravingfollower);
-                    Back.remove(collection.getCurrentPage().get(0), Back.object.cravingfollower);
+                    PagedList<Map> pagedList = Back.findObjectByWhere(whereC, Back.object.cravingfollower);
+                    Back.remove(pagedList.getCurPage().get(0), Back.object.cravingfollower);
                 }
                 return null;
             }

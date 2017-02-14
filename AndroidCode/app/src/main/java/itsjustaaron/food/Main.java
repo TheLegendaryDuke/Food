@@ -47,6 +47,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
+import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
 
 
@@ -128,30 +129,26 @@ public class Main extends AppCompatActivity
             ((TextView) navigationView.getHeaderView(0).findViewById(R.id.DrawerName)).setText((String) Data.user.getProperty("name"));
             if (Data.user.getProperty("portrait") != "") {
                 //download the user portrait if there is one
-                final File portrait = new File(Data.fileDir + "/" + Data.user.getProperty("portrait").toString());
+                final File portrait = new File(Data.fileDir + "/users/" + Data.user .getObjectId() + "/" + Data.user.getProperty("portrait").toString());
                 if (portrait.exists()) {
                     ((ImageView) navigationView.getHeaderView(0).findViewById(R.id.userPortrait)).setImageBitmap(BitmapFactory.decodeFile(portrait.getAbsolutePath()));
                 } else {
+
+                    File dir = new File(Data.fileDir + "/users/");
+                    if (!dir.exists()) {
+                        dir.mkdir();
+                    }
+
+                    File subDir = new File(Data.fileDir + "/users/" + Data.user.getObjectId() + "/");
+                    if(!subDir.exists()) {
+                        subDir.mkdir();
+                    }
+
                     new AsyncTask<Void, Void, Void>() {
                         @Override
                         public Void doInBackground(Void... voids) {
-                            String path = "https://api.backendless.com/0020F1DC-E584-AD36-FF74-6D3E9E917400/v1/files/users/" + Data.user.getObjectId() + "/" + Data.user.getProperty("portrait");
-                            try {
-                                URL url = new URL(path);
-                                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                                conn.setDoInput(true);
-                                conn.connect();
-                                InputStream is = conn.getInputStream();
-                                Bitmap bm = BitmapFactory.decodeStream(is);
-                                FileOutputStream fos = new FileOutputStream(portrait);
-                                ByteArrayOutputStream outstream = new ByteArrayOutputStream();
-                                bm.compress(Bitmap.CompressFormat.PNG, 100, outstream);
-                                byte[] byteArray = outstream.toByteArray();
-                                fos.write(byteArray);
-                                fos.close();
-                            } catch (Exception e) {
-                                Log.d("downloadPortrait", e.toString());
-                            }
+                            String path = "/users/" + Data.user.getObjectId() + "/" + Data.user.getProperty("portrait");
+                            Back.downloadToLocal(path);
                             return null;
                         }
 

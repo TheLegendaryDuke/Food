@@ -9,13 +9,13 @@ import java.util.ArrayList;
  */
 
 //TODO: use this to replace all BackendlessCollections
-public class BackendQuery<T> {
+public class PagedList<T> {
     private BackendlessCollection<T> data;
-    public BackendQuery(BackendlessCollection<T> data){
+    public PagedList(BackendlessCollection<T> data){
         this.data = data;
     }
 
-    public ArrayList getCurPage() {
+    public ArrayList<T> getCurPage() {
         return new ArrayList(data.getCurrentPage());
     }
 }

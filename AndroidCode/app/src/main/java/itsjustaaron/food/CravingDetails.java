@@ -17,16 +17,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.backendless.Backendless;
-import com.backendless.BackendlessCollection;
-import com.backendless.persistence.BackendlessDataQuery;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
+import itsjustaaron.food.Back.PagedList;
 
 public class CravingDetails extends AppCompatActivity {
 
@@ -100,11 +97,9 @@ public class CravingDetails extends AppCompatActivity {
             @Override
             public Void doInBackground(Void... voids) {
                 offers = null;
-                BackendlessDataQuery backendlessDataQuery = new BackendlessDataQuery();
                 String where = "foodID='" + craving.food.objectId + "'";
-                backendlessDataQuery.setWhereClause(where);
-                BackendlessCollection<Map> mapBackendlessCollection = Backendless.Persistence.of("foodOffers").find(backendlessDataQuery);
-                final List<Map> temp = mapBackendlessCollection.getCurrentPage();
+                PagedList result = Back.findObjectByWhere(where, Back.object.foodoffer);
+                final List<Map> temp = result.getCurPage();
                 if (temp.size() != 0) {
                     offerIDs = new ArrayList<>();
                     for (int i = 0; i < temp.size(); i++) {
@@ -113,13 +108,13 @@ public class CravingDetails extends AppCompatActivity {
                     offers = new ArrayList<>();
                     for (int i = 0; i < offerIDs.size(); i++) {
                         try {
-                            Map offer = Backendless.Persistence.of("offers").findById(offerIDs.get(i));
+                            Offer offer = (Offer) Back.getObjectByID(offerIDs.get(i), Back.object.offer);
                             StringBuilder newS = new StringBuilder();
-                            newS.append(offer.get("offerer"));
+                            newS.append(offer.offerer);
                             newS.append(": $");
-                            newS.append(offer.get("price"));
+                            newS.append(offer.price);
                             newS.append(" at ");
-                            newS.append(offer.get("city"));
+                            newS.append(offer.city);
                             offers.add(i, newS.toString());
                         } catch (Exception e) {
                             Log.d(e.getMessage(), "handleResponse: ");

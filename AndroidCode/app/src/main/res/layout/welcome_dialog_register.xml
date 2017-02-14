@@ -23,6 +23,7 @@
         android:hint="Enter a password"
         android:textStyle="bold"
         android:id="@+id/registerPassword"
+        android:inputType="textPassword"
         android:layout_marginTop="10dp"
         android:textColorHint="@color/darkOrange"/>
 
@@ -32,6 +33,7 @@
         android:background="@drawable/dialog_rectangle_light_orange"
         android:hint="Re-enter the password"
         android:textStyle="bold"
+        android:inputType="textPassword"
         android:id="@+id/registerPasswordAgain"
         android:layout_marginTop="10dp"
         android:textColorHint="@color/darkOrange"/>
@@ -67,25 +69,26 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/ripple_effect"
-            android:text="REGISTER"
-            android:textSize="24sp"
+            android:text="CANCEL"
             android:layout_weight="1"
+            android:textSize="25sp"
             android:layout_marginEnd="10dp"
+            android:id="@+id/welcomeDialogRegisterCancel"
             android:textColor="#ffffff"
-            android:id="@+id/welcomeDialogRegister"
             android:padding="10dp"/>
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/ripple_effect"
-            android:text="CANCEL"
+            android:text="REGISTER"
+            android:textSize="24sp"
             android:layout_weight="1"
-            android:textSize="25sp"
             android:layout_marginStart="10dp"
-            android:id="@+id/welcomeDialogRegisterCancel"
             android:textColor="#ffffff"
+            android:id="@+id/welcomeDialogRegister"
             android:padding="10dp"/>
+
     </LinearLayout>
 
 </LinearLayout>

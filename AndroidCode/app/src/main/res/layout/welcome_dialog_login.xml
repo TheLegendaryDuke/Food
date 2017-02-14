@@ -20,8 +20,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/dialog_rectangle_light_orange"
-        android:hint="Enter your password"
         android:textStyle="bold"
+        android:inputType="textPassword"
+        android:hint="Enter your password"
         android:id="@+id/loginPassword"
         android:layout_marginTop="10dp"
         android:textColorHint="@color/darkOrange"/>
@@ -69,24 +70,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/ripple_effect"
-            android:text="LOGIN"
-            android:textSize="25sp"
+            android:text="CANCEL"
             android:layout_weight="1"
+            android:textSize="25sp"
             android:layout_marginEnd="10dp"
+            android:id="@+id/welcomeDialogLoginCancel"
             android:textColor="#ffffff"
-            android:id="@+id/welcomeDialogLogin"
             android:padding="10dp"/>
-
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/ripple_effect"
-            android:text="CANCEL"
-            android:layout_weight="1"
+            android:text="LOGIN"
             android:textSize="25sp"
+            android:layout_weight="1"
             android:layout_marginStart="10dp"
-            android:id="@+id/welcomeDialogLoginCancel"
             android:textColor="#ffffff"
+            android:id="@+id/welcomeDialogLogin"
             android:padding="10dp"/>
     </LinearLayout>
 

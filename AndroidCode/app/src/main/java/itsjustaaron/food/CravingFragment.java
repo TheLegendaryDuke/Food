@@ -20,6 +20,7 @@ import com.backendless.persistence.QueryOptions;
 import java.util.ArrayList;
 import java.util.Map;
 
+import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
 
 /**
@@ -46,13 +47,7 @@ public class CravingFragment extends Fragment {
         public Void doInBackground(Void... voids) {
             try {
                 Data.cravings.clear();
-                BackendlessDataQuery backendlessDataQuery = new BackendlessDataQuery();
-                QueryOptions queryOptions = new QueryOptions();
-                queryOptions.setOffset(0);
-                queryOptions.setPageSize(Data.loadCount);
-                backendlessDataQuery.setQueryOptions(queryOptions);
-                Data.cravingCollection = Backendless.Data.of("cravings").find(backendlessDataQuery);
-                ArrayList<Map> temp = new ArrayList<>(Data.cravingCollection.getCurrentPage());
+                ArrayList<Map> temp = new ArrayList<>(Back.getAll(Back.object.craving).getCurPage());
                 for (int i = 0; i < temp.size(); i++) {
                     Data.cravings.add(new Craving(temp.get(i)));
                 }
@@ -90,6 +85,7 @@ public class CravingFragment extends Fragment {
 
                     Data.cravings.clear();
                     try {
+                        //TODO: change the way this works
                         Data.cravingCollection = Data.cravingCollection.getPage(Data.loadCount, 0);
                         ArrayList<Map> temp = new ArrayList<Map>(Data.cravingCollection.getCurrentPage());
                         for (int i = 0; i < temp.size(); i++) {

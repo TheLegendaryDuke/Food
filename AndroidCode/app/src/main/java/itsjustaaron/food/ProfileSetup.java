@@ -47,7 +47,7 @@ public class ProfileSetup extends AppCompatActivity {
         ((EditText) findViewById(R.id.profileName)).setText(Data.user.getProperty("name").toString());
         Object address = Data.user.getProperty("address");
         ((EditText) findViewById(R.id.profileAddress)).setText(address == null ? "" : address.toString());
-        final File portrait = new File(Data.fileDir + "/" + Data.user.getProperty("portrait").toString());
+        final File portrait = new File(Data.fileDir + "/users/" + Data.user.getObjectId() + "/" + Data.user.getProperty("portrait").toString());
         //portrait must be there for custom-portrait user since Main downloads it
         if (portrait.exists()) {
             ((ImageView) findViewById(R.id.profileImage)).setImageBitmap(BitmapFactory.decodeFile(portrait.getAbsolutePath()));
