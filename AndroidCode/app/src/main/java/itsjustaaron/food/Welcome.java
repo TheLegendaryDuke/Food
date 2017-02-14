@@ -149,6 +149,7 @@ public class Welcome extends AppCompatActivity {
                         public void onPostExecute(Integer result) {
                             if (result == 0) {
                                 wait.dismiss();
+                                dialog.dismiss();
                                 Proceed();
                             } else {
                                 error.setText(message);
@@ -245,6 +246,7 @@ public class Welcome extends AppCompatActivity {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
                                         dialogInterface.dismiss();
+                                        dialog.dismiss();
                                         Proceed();
                                     }
                                 }).setTitle("Your account has been created!").setMessage("Please check your email to activate your account or you won't be able to login next time").show();
