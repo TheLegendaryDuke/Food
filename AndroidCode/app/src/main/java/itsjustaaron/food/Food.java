@@ -1,13 +1,10 @@
 package itsjustaaron.food;
 
-import com.backendless.Backendless;
-import com.backendless.async.callback.AsyncCallback;
-import com.backendless.exceptions.BackendlessFault;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 
 /**
  * Created by Aaron-Work on 8/17/2016.
@@ -48,25 +45,5 @@ public class Food {
             }
         }
         return csv.toString();
-    }
-
-    public void save() {
-        HashMap map = new HashMap();
-        map.put("objectId", objectId);
-        map.put("image", image);
-        map.put("name", name);
-        map.put("tags", tags);
-        map.put("description", description);
-        Backendless.Persistence.of("foods").save(map, new AsyncCallback<Map>() {
-            @Override
-            public void handleResponse(Map map) {
-
-            }
-
-            @Override
-            public void handleFault(BackendlessFault backendlessFault) {
-
-            }
-        });
     }
 }

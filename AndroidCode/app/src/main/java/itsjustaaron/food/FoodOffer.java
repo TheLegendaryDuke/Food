@@ -1,21 +1,12 @@
 package itsjustaaron.food;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.util.Log;
 
-import com.backendless.Backendless;
-import com.backendless.exceptions.BackendlessException;
-
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Date;
 import java.util.Map;
 
+import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
 
 /**
@@ -51,36 +42,18 @@ public class FoodOffer {
             }
         }
         if (!found) {
-            try {
-                food = new Food(Backendless.Persistence.of("foods").findById(foodID));
-                final String imagePath = Data.fileDir + "/foods/" + food.image;
-                final File file = new File(imagePath);
-                final String path = "https://api.backendless.com/0020F1DC-E584-AD36-FF74-6D3E9E917400/v1/files/foods/" + food.image;
-                File dir = new File(Data.fileDir + "/foods/");
-                if(!dir.exists()) {
-                    dir.mkdir();
-                }
-                if(!file.exists()) {
-                    file.createNewFile();
-                    URL url = new URL(path);
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setDoInput(true);
-                    conn.connect();
-                    InputStream is = conn.getInputStream();
-                    Bitmap bm = BitmapFactory.decodeStream(is);
-                    FileOutputStream fos = new FileOutputStream(imagePath);
-                    ByteArrayOutputStream outstream = new ByteArrayOutputStream();
-                    bm.compress(Bitmap.CompressFormat.PNG, 100, outstream);
-                    byte[] byteArray = outstream.toByteArray();
-                    fos.write(byteArray);
-                    fos.close();
-                }
-                Data.foods.add(food);
-            } catch (BackendlessException e) {
-                Log.d("backendless", e.toString());
-            } catch (Exception e) {
-                Log.d("download food pic", e.toString());
+            food = (Food) Back.getObjectByID(foodID, Back.object.food);
+            final String imagePath = Data.fileDir + "/foods/" + food.image;
+            final File file = new File(imagePath);
+            File dir = new File(Data.fileDir + "/foods/");
+            if(!dir.exists()) {
+                dir.mkdir();
             }
+            if(!file.exists()) {
+                String path = "/foods/" + food.image;
+                Back.downloadToLocal(path);
+            }
+            Data.foods.add(food);
         }
     }
 }

@@ -16,8 +16,6 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.backendless.Backendless;
-import com.backendless.exceptions.BackendlessException;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -27,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
 
+import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
 
 public class NewOffer extends AppCompatActivity {
@@ -39,6 +38,7 @@ public class NewOffer extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_offer);
+        Data.UI = this;
         String foodId = getIntent().getStringExtra("food");
         for(int i = 0; i < Data.foods.size(); i++) {
             if(Data.foods.get(i).objectId.equals(foodId)) {
@@ -122,35 +122,23 @@ public class NewOffer extends AppCompatActivity {
 
             @Override
             public Integer doInBackground(Void... voids) {
-                try {
-                    Map o = Backendless.Persistence.of("offers").save(offer);
-                    HashMap<String, String> foodOffer = new HashMap<>();
-                    foodOffer.put("city", offer.get("city"));
-                    foodOffer.put("expire", offer.get("expire"));
-                    foodOffer.put("foodID", offer.get("foodID"));
-                    foodOffer.put("offerer", offer.get("offerer"));
-                    foodOffer.put("offerID", o.get("objectId").toString());
-                    foodOffer.put("price", offer.get("price"));
-                    foodOffer.put("ownerId", Data.user.getObjectId());
-                    Backendless.Persistence.of("foodOffers").save(foodOffer);
-                    return 0;
-                }catch (BackendlessException e) {
-                    Log.d("backendless", e.toString());
-                    return 1;
-                }catch (Exception e) {
-                    Log.d("food", e.toString());
-                    return 1;
-                }
+                Map o = Back.store(offer, Back.object.offer);
+                HashMap<String, String> foodOffer = new HashMap<>();
+                foodOffer.put("city", offer.get("city"));
+                foodOffer.put("expire", offer.get("expire"));
+                foodOffer.put("foodID", offer.get("foodID"));
+                foodOffer.put("offerer", offer.get("offerer"));
+                foodOffer.put("offerID", o.get("objectId").toString());
+                foodOffer.put("price", offer.get("price"));
+                foodOffer.put("ownerId", Data.user.getObjectId());
+                Back.store(foodOffer, Back.object.foodoffer);
+                return 0;
             }
 
             @Override
             public void onPostExecute(Integer i) {
-                if(i == 0) {
-                    Toast.makeText(NewOffer.this, "Success", Toast.LENGTH_SHORT).show();
-                    finish();
-                }else {
-                    Toast.makeText(NewOffer.this, R.string.error, Toast.LENGTH_LONG).show();
-                }
+                Toast.makeText(NewOffer.this, "Success", Toast.LENGTH_SHORT).show();
+                finish();
             }
         }.execute(new Void[]{});
     }

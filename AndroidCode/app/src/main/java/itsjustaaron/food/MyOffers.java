@@ -9,14 +9,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ListView;
 
-import com.backendless.Backendless;
-import com.backendless.BackendlessCollection;
-import com.backendless.persistence.BackendlessDataQuery;
-
 import java.util.ArrayList;
 import java.util.Map;
 
+import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
+import itsjustaaron.food.Back.PagedList;
 
 public class MyOffers extends AppCompatActivity {
 
@@ -26,6 +24,7 @@ public class MyOffers extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_offers);
+        Data.UI = this;
         new AsyncTask<Void, Void, Void>() {
             ProgressDialog progressDialog;
 
@@ -39,10 +38,8 @@ public class MyOffers extends AppCompatActivity {
             @Override
             public Void doInBackground(Void... voids) {
                 String where = "ownerId = '" + Data.user.getObjectId() + "'";
-                BackendlessDataQuery backendlessDataQuery = new BackendlessDataQuery();
-                backendlessDataQuery.setWhereClause(where);
-                BackendlessCollection<Map> result = Backendless.Persistence.of("foodOffers").find(backendlessDataQuery);
-                for(Map m : result.getCurrentPage()) {
+                PagedList<Map> result = Back.findObjectByWhere(where, Back.object.foodoffer);
+                for(Map m : result.getCurPage()) {
                     foodOffers.add(new FoodOffer(m));
                 }
                 return null;

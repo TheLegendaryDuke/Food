@@ -7,9 +7,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import com.backendless.Backendless;
-import com.backendless.persistence.BackendlessDataQuery;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -53,12 +50,11 @@ public class Searchable extends Activity {
             searchCriteria.add(query);
             whereClause = "name LIKE '%" + query + "%'";
         }
+        final String where = whereClause;
         new AsyncTask<Void, Void, Integer>() {
             @Override
             public Integer doInBackground(Void... voids) {
-                BackendlessDataQuery dataQuery = new BackendlessDataQuery();
-                dataQuery.setWhereClause(whereClause);
-                List<Map> maps = Backendless.Persistence.of("foods").find(dataQuery).getCurrentPage();
+                List<Map> maps = Back.findObjectByWhere(where, Back.object.food).getCurPage();
                 List<String> foodIDs = new ArrayList<String>();
                 if (maps.size() != 0) {
                     for (int i = 0; i < maps.size(); i++) {
@@ -72,8 +68,6 @@ public class Searchable extends Activity {
                         }
                     }
                     where = where + ")";
-                    final BackendlessDataQuery backendlessDataQuery = new BackendlessDataQuery();
-                    backendlessDataQuery.setWhereClause(where);
                     if(Data.onCraving) {
                         Data.cravingPaged = Back.findObjectByWhere(where, Back.object.craving);
                         List<Map> mapResult = Data.cravingPaged.getCurPage();
@@ -88,8 +82,8 @@ public class Searchable extends Activity {
                             }
                         }
                     }else {
-                        Data.offerCollection = Backendless.Persistence.of("foodOffers").find(backendlessDataQuery);
-                        List<Map> mapResult = Data.offerCollection.getCurrentPage();
+                        Data.offerPaged = Back.findObjectByWhere(where, Back.object.foodoffer);
+                        List<Map> mapResult = Data.offerPaged.getCurPage();
                         if(mapResult.size() == 0) {
                             return 1;
                         }else {
@@ -132,6 +126,7 @@ public class Searchable extends Activity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.wait);
+        Data.UI = this;
 
         // Get the intent, verify the action and get the query(ommitted since custom usage)
         Intent intent = getIntent();

@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
@@ -31,17 +32,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.backendless.Backendless;
-import com.backendless.async.callback.AsyncCallback;
-import com.backendless.exceptions.BackendlessException;
-import com.backendless.exceptions.BackendlessFault;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +41,7 @@ import java.util.TimeZone;
 
 import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
+
 
 
 //TODO: side nav actions, guest restriction
@@ -92,6 +85,7 @@ public class Main extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Data.main = this;
+        Data.UI = this;
         Data.cravings = new ArrayList<>();
         Data.foods = new ArrayList<Food>();
         Data.fileDir = getFilesDir().toString();
@@ -112,14 +106,10 @@ public class Main extends AppCompatActivity
         new AsyncTask<Void, Void, Void>() {
             @Override
             public Void doInBackground(Void... voids) {
-                try {
-                    //download all the available food tags
-                    List<Map> result = Backendless.Persistence.of("tags").find().getCurrentPage();
-                    for (int i = 0; i < result.size(); i++) {
-                        Data.tags.add(result.get(i).get("tag").toString());
-                    }
-                } catch (BackendlessException e) {
-                    Log.d("backendless", e.toString());
+                //download all the available food tags
+                List<Map> result = Back.getAll(Back.object.tag).getCurPage();
+                for (int i = 0; i < result.size(); i++) {
+                    Data.tags.add(result.get(i).get("tag").toString());
                 }
                 return null;
             }
@@ -254,7 +244,6 @@ public class Main extends AppCompatActivity
                     next.putExtra("onCraving", onCraving);
                     if(onCraving) {
                         startActivity(next);
-                        cravingFragment.refresh(null);
                     }else {
                         startActivityForResult(next, 0);
                     }
@@ -356,20 +345,11 @@ public class Main extends AppCompatActivity
             switch (id) {
                 case R.id.logoff:
                     showWait();
-                    Backendless.UserService.logout(new AsyncCallback<Void>() {
-                        @Override
-                        public void handleResponse(Void aVoid) {
-                            Data.user = null;
-                            Intent intent = new Intent(Main.this, Welcome.class);
-                            startActivity(intent);
-                            finish();
-                        }
-
-                        @Override
-                        public void handleFault(BackendlessFault backendlessFault) {
-
-                        }
-                    });
+                    Back.logOff();
+                    Intent intent = new Intent(Main.this, Welcome.class);
+                    startActivity(intent);
+                    hideWait();
+                    finish();
                     break;
                 case R.id.contactDev:
                     Intent email = new Intent(Intent.ACTION_SENDTO);
@@ -396,5 +376,11 @@ public class Main extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Data.UI = this;
     }
 }

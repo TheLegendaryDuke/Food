@@ -6,14 +6,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ListView;
 
-import com.backendless.Backendless;
-import com.backendless.BackendlessCollection;
-import com.backendless.persistence.BackendlessDataQuery;
-
 import java.util.ArrayList;
 import java.util.Map;
 
+import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
+import itsjustaaron.food.Back.PagedList;
 
 public class MyCravings extends AppCompatActivity {
     ArrayList<Craving> cravings = new ArrayList<>();
@@ -22,6 +20,7 @@ public class MyCravings extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_cravings);
+        Data.UI = this;
         new AsyncTask<Void, Void, Void>() {
             ProgressDialog progressDialog;
 
@@ -35,13 +34,10 @@ public class MyCravings extends AppCompatActivity {
             @Override
             public Void doInBackground(Void... voids) {
                 String where = "userID = '" + Data.user.getObjectId() + "'";
-                BackendlessDataQuery backendlessDataQuery = new BackendlessDataQuery();
-                backendlessDataQuery.setWhereClause(where);
-                BackendlessCollection<Map> result = Backendless.Persistence.of("cravingFollowers").find(backendlessDataQuery);
-                for(Map m : result.getCurrentPage()) {
+                PagedList<Map> result = Back.findObjectByWhere(where, Back.object.cravingfollower);
+                for(Map m : result.getCurPage()) {
                     String cravingid = m.get("cravingID").toString();
-                    Map map = Backendless.Persistence.of("cravings").findById(cravingid);
-                    cravings.add(new Craving(map));
+                    cravings.add((Craving) Back.getObjectByID(cravingid, Back.object.craving));
                 }
                 return null;
             }

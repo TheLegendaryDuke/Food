@@ -18,13 +18,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.backendless.Backendless;
-import com.backendless.exceptions.BackendlessException;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 
+import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
 
 
@@ -37,6 +36,7 @@ public class ProfileSetup extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         imageUpdated = false;
         setContentView(R.layout.activity_profile_setup);
+        Data.UI = this;
         d = new ProgressDialog(this);
         d.setMessage("Please wait...");
         Toolbar toolbar = (Toolbar) findViewById(R.id.profileToolbar);
@@ -45,6 +45,8 @@ public class ProfileSetup extends AppCompatActivity {
         getSupportActionBar().setTitle("Back");
         ((TextView) findViewById(R.id.profileEmail)).setText(Data.user.getEmail());
         ((EditText) findViewById(R.id.profileName)).setText(Data.user.getProperty("name").toString());
+        ((EditText)findViewById(R.id.profileCity)).setText(Data.user.getProperty("city").toString());
+        ((EditText)findViewById(R.id.profileZip)).setText(Data.user.getProperty("zipCode").toString());
         Object address = Data.user.getProperty("address");
         ((EditText) findViewById(R.id.profileAddress)).setText(address == null ? "" : address.toString());
         final File portrait = new File(Data.fileDir + "/users/" + Data.user.getObjectId() + "/" + Data.user.getProperty("portrait").toString());
@@ -99,29 +101,17 @@ public class ProfileSetup extends AppCompatActivity {
         new AsyncTask<Void, Void, Integer>() {
             @Override
             public Integer doInBackground(Void... voids) {
-                try {
-                    Backendless.UserService.update(Data.user);
-                    if (imageUpdated) {
-                        final File image = new File(Data.fileDir + "/" + Data.user.getProperty("portrait").toString());
-                        Backendless.Files.upload(image, "users/" + Data.user.getObjectId() + "/", true);
-                    }
-                } catch (BackendlessException e) {
-                    Log.d("backendless", e.toString());
-                    return 1;
-                } catch (Exception e) {
-                    Log.d(e.getClass().toString(), e.getMessage());
-                    return 1;
+                Back.updateUserData();
+                if (imageUpdated) {
+                    final File image = new File(Data.fileDir + "/" + Data.user.getObjectId() + "/" + Data.user.getProperty("portrait").toString());
+                    Back.upload(image, "users/" + Data.user.getObjectId() + "/", true);
                 }
                 return 0;
             }
 
             @Override
             public void onPostExecute(Integer i) {
-                if (i == 0) {
-                    Toast.makeText(getApplicationContext(), "Update successful", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getApplicationContext(), getString(R.string.error), Toast.LENGTH_LONG).show();
-                }
+                Toast.makeText(getApplicationContext(), "Update successful", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(ProfileSetup.this, Main.class));
                 finish();
             }
@@ -146,23 +136,14 @@ public class ProfileSetup extends AppCompatActivity {
 
                     @Override
                     public Integer doInBackground(Void... v) {
-                        try {
-                            Backendless.UserService.restorePassword(Data.user.getEmail());
-                        } catch (BackendlessException e) {
-                            Log.d("backendless", e.toString());
-                            return 1;
-                        }
+                        Back.resetPassword();
                         return 0;
                     }
 
                     @Override
                     public void onPostExecute(Integer i) {
                         d.dismiss();
-                        if (i == 0) {
-                            Toast.makeText(getApplicationContext(), "Success, please check your email to set a new password", Toast.LENGTH_LONG).show();
-                        } else {
-                            Toast.makeText(getApplicationContext(), getString(R.string.error), Toast.LENGTH_LONG).show();
-                        }
+                        Toast.makeText(getApplicationContext(), "Success, please check your email to set a new password", Toast.LENGTH_LONG).show();
                     }
                 }.execute(new Void[]{});
             }

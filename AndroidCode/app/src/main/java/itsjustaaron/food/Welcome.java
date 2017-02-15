@@ -24,11 +24,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.backendless.Backendless;
-import com.backendless.BackendlessUser;
-import com.backendless.exceptions.BackendlessException;
-import com.backendless.persistence.local.UserIdStorageFactory;
-
+import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
 
 
@@ -46,6 +42,9 @@ public class Welcome extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
+        Data.application = getApplicationContext();
+        Data.UI = this;
+        Back.init();
         ConnectivityManager cm =
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
@@ -59,26 +58,16 @@ public class Welcome extends AppCompatActivity {
         }
         wait = new ProgressDialog(Welcome.this);
         wait.setMessage("Please wait...");
-        String appVersion = "v1";
-        Backendless.initApp(this, "0020F1DC-E584-AD36-FF74-6D3E9E917400", "7DCC75D9-058A-6830-FF54-817317E0C000", appVersion);
         //Check for previous login session
         new AsyncTask<Void, Void, Integer>() {
             //0 is success, 1 is failed(no previous login session available), 2 is error(login session no longer valid)
             @Override
             public Integer doInBackground(Void... voids) {
-                try {
-                    boolean aBoolean = Backendless.UserService.isValidLogin();
-                    if (aBoolean) {
-                        String userID = UserIdStorageFactory.instance().getStorage().get();
-                        Data.user = Backendless.Data.of(BackendlessUser.class).findById(userID);
-                        Proceed();
-                        return 0;
-                    } else {
-                        return 1;
-                    }
-                } catch (Exception e) {
-                    Log.d("backendless", e.toString());
-                    return 2;
+                if (Back.checkUserSession()) {
+                    Proceed();
+                    return 0;
+                } else {
+                    return 1;
                 }
             }
 
@@ -126,23 +115,20 @@ public class Welcome extends AppCompatActivity {
                         @Override
                         //0 is success, 1 is failure
                         public Integer doInBackground(Void... voids) {
-                            try {
-                                Data.user = Backendless.UserService.login(email, password, stayLogged);
+                            String errorCode = Back.login(email, password, stayLogged);
+                            if(errorCode.equals("")) {
                                 return 0;
-                            } catch (BackendlessException e) {
-                                String errorCode = e.getCode();
-                                if (errorCode.equals("3003")) {
-                                    message = "Invalid login or password! Please try again.";
-                                } else if (errorCode.equals("3006")) {
-                                    message = "Please enter your email and password!";
-                                } else if (errorCode.equals("3036")) {
-                                    message = "Too many failed attempts, account is reset! Check your entered email for new password";
-                                    Backendless.UserService.restorePassword(email);
-                                } else {
-                                    message = "Error code " + errorCode + ", please contact developer at contactfoodapp@gmail.com";
-                                }
-                                return 1;
+                            }else if (errorCode.equals("3003")) {
+                                message = "Invalid login or password! Please try again.";
+                            } else if (errorCode.equals("3006")) {
+                                message = "Please enter your email and password!";
+                            } else if (errorCode.equals("3036")) {
+                                message = "Too many failed attempts, account is reset! Check your entered email for new password";
+                                Back.resetPassword(email);
+                            } else {
+                                message = "Error code " + errorCode + ", please contact developer at contactfoodapp@gmail.com";
                             }
+                            return 1;
                         }
 
                         @Override
@@ -187,8 +173,8 @@ public class Welcome extends AppCompatActivity {
                 final ProgressDialog wait = new ProgressDialog(Welcome.this);
                 wait.setMessage("Loading...");
                 final String email = ((TextView) dialog.findViewById(R.id.registerEmail)).getText().toString();
-                String password = ((TextView) dialog.findViewById(R.id.registerPassword)).getText().toString();
-                String name = ((TextView) dialog.findViewById(R.id.registerName)).getText().toString();
+                final String password = ((TextView) dialog.findViewById(R.id.registerPassword)).getText().toString();
+                final String name = ((TextView) dialog.findViewById(R.id.registerName)).getText().toString();
                 String passwordAgain = ((TextView) dialog.findViewById(R.id.registerPasswordAgain)).getText().toString();
                 final TextView error = (TextView) dialog.findViewById(R.id.registerError);
                 if (email.equals("")) {
@@ -209,34 +195,26 @@ public class Welcome extends AppCompatActivity {
                 } else {
                     error.setVisibility(View.INVISIBLE);
                     wait.show();
-                    final BackendlessUser user = new BackendlessUser();
-                    user.setEmail(email);
-                    user.setPassword(password);
-                    user.setProperty("name", name);
-                    user.setProperty("portrait", "");
                     new AsyncTask<Void, Void, Integer>() {
                         String message;
 
                         @Override
                         public Integer doInBackground(Void... voids) {
-                            try {
-                                Data.user = Backendless.UserService.register(user);
+                            String errorCode = Back.registerUser(email, password, name);
+                            if(errorCode.equals("")) {
                                 return 0;
-                            } catch (BackendlessException e) {
-                                String errorCode = e.getCode();
-                                if (errorCode.equals("3011")) {
-                                    message = "Please enter a password.";
-                                } else if (errorCode.equals("3013")) {
-                                    message = "Please enter your email.";
-                                } else if (errorCode.equals("3033")) {
-                                    message = "This email address is already taken.";
-                                } else if (errorCode.equals("3040")) {
-                                    message = "Please enter a valid email address.";
-                                } else {
-                                    message = "Error code" + errorCode + ", please contact contactfoodapp@gmail.com";
-                                }
-                                return 1;
+                            }else if (errorCode.equals("3011")) {
+                                message = "Please enter a password.";
+                            } else if (errorCode.equals("3013")) {
+                                message = "Please enter your email.";
+                            } else if (errorCode.equals("3033")) {
+                                message = "This email address is already taken.";
+                            } else if (errorCode.equals("3040")) {
+                                message = "Please enter a valid email address.";
+                            } else {
+                                message = "Error code" + errorCode + ", please contact contactfoodapp@gmail.com";
                             }
+                            return 1;
                         }
 
                         @Override

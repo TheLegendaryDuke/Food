@@ -1,5 +1,7 @@
 package itsjustaaron.food.Back;
 
+import android.app.Activity;
+import android.content.Context;
 import android.widget.LinearLayout;
 
 import com.backendless.BackendlessCollection;
@@ -25,7 +27,7 @@ public class Data {
     public static ArrayList<Craving> cravings;
     public static ArrayList<FoodOffer> foodOffers;
     public static PagedList<Map> cravingPaged;
-    public static BackendlessCollection offerCollection;
+    public static PagedList<Map> offerPaged;
     public static ArrayList<String> tags;
     public static ArrayList<Food> foods;
     public static String fileDir;
@@ -35,4 +37,6 @@ public class Data {
     public static ArrayList<String> cSearchCriteria = new ArrayList<>();
     public static ArrayList<String> oSearchCriteria = new ArrayList<>();
     public static Main main;
+    public static Activity UI;
+    public static Context application;
 }

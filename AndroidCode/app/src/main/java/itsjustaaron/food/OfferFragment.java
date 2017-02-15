@@ -1,6 +1,8 @@
 package itsjustaaron.food;
 
 import android.app.ProgressDialog;
+import android.app.SearchManager;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,14 +14,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.backendless.Backendless;
-import com.backendless.exceptions.BackendlessException;
-import com.backendless.persistence.BackendlessDataQuery;
-import com.backendless.persistence.QueryOptions;
-
 import java.util.ArrayList;
 import java.util.Map;
 
+import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
 
 /**
@@ -44,20 +42,10 @@ public class OfferFragment extends Fragment {
 
         @Override
         public Void doInBackground(Void... voids) {
-            try {
-                Data.foodOffers.clear();
-                BackendlessDataQuery backendlessDataQuery = new BackendlessDataQuery();
-                QueryOptions queryOptions = new QueryOptions();
-                queryOptions.setOffset(0);
-                queryOptions.setPageSize(Data.loadCount);
-                backendlessDataQuery.setQueryOptions(queryOptions);
-                Data.offerCollection = Backendless.Data.of("foodOffers").find(backendlessDataQuery);
-                ArrayList<Map> temp = new ArrayList<>(Data.offerCollection.getCurrentPage());
-                for (int i = 0; i < temp.size(); i++) {
-                    Data.foodOffers.add(new FoodOffer(temp.get(i)));
-                }
-            } catch (BackendlessException e) {
-                Log.d("backgroundless", e.toString());
+            Data.foodOffers.clear();
+            ArrayList<Map> temp = new ArrayList<>(Back.getAll(Back.object.foodoffer).getCurPage());
+            for (int i = 0; i < temp.size(); i++) {
+                Data.foodOffers.add(new FoodOffer(temp.get(i)));
             }
             return null;
         }
@@ -70,8 +58,10 @@ public class OfferFragment extends Fragment {
     };
 
     public void refresh(final SwipeRefreshLayout s) {
-        if (Data.cravings.size() == 0) {
-            s.setRefreshing(false);
+        if (Data.foodOffers.size() == 0) {
+            if(s != null) {
+                s.setRefreshing(false);
+            }
             new Start().execute(new Void[]{});
         } else {
             new AsyncTask<Void, Void, Void>() {
@@ -90,17 +80,10 @@ public class OfferFragment extends Fragment {
                 public Void doInBackground(Void... voids) {
 
                     Data.foodOffers.clear();
-                    try {
-                        Data.offerCollection = Data.offerCollection.getPage(Data.loadCount, 0);
-                        ArrayList<Map> temp = new ArrayList<Map>(Data.offerCollection.getCurrentPage());
-                        for (int i = 0; i < temp.size(); i++) {
-                            Map obj = temp.get(i);
-                            FoodOffer craving = new FoodOffer(obj);
-                            Data.foodOffers.add(craving);
-                        }
-                    } catch (BackendlessException e) {
-                        Log.d("backendless", e.toString());
-                    }
+                    String query = Food.listToCsv(Data.oSearchCriteria);
+                    Intent search = new Intent(getActivity(), Searchable.class);
+                    search.putExtra(SearchManager.QUERY, query);
+                    startActivity(search);
                     return null;
                 }
 
@@ -143,6 +126,7 @@ public class OfferFragment extends Fragment {
             srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
+                    Data.foodOffers.clear();
                     refresh(srl);
                 }
             });
@@ -155,16 +139,12 @@ public class OfferFragment extends Fragment {
                     new AsyncTask<Void, Void, Void>() {
                         @Override
                         public Void doInBackground(Void... voids) {
-                            try {
-                                Data.offerCollection = Data.offerCollection.nextPage();
-                                ArrayList<Map> temp = new ArrayList<Map>(Data.offerCollection.getCurrentPage());
-                                for (int i = 0; i < temp.size(); i++) {
-                                    Map obj = temp.get(i);
-                                    FoodOffer offer = new FoodOffer(obj);
-                                    Data.foodOffers.add(offer);
-                                }
-                            } catch (BackendlessException e) {
-                                Log.d("backendless", e.toString());
+                            Data.offerPaged.nextPage();
+                            ArrayList<Map> temp = new ArrayList<Map>(Data.offerPaged.getCurPage());
+                            for (int i = 0; i < temp.size(); i++) {
+                                Map obj = temp.get(i);
+                                FoodOffer offer = new FoodOffer(obj);
+                                Data.foodOffers.add(offer);
                             }
                             return null;
                         }

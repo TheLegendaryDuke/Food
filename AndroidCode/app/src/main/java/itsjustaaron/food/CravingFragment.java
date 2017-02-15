@@ -14,11 +14,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.backendless.Backendless;
-import com.backendless.exceptions.BackendlessException;
-import com.backendless.persistence.BackendlessDataQuery;
-import com.backendless.persistence.QueryOptions;
-
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -64,6 +59,9 @@ public class CravingFragment extends Fragment {
 
     public void refresh(final SwipeRefreshLayout s) {
         if (Data.cravings.size() == 0) {
+            if(s != null) {
+                s.setRefreshing(false);
+            }
             new start().execute(new Void[]{});
         } else {
             new AsyncTask<Void, Void, Void>() {
@@ -82,10 +80,10 @@ public class CravingFragment extends Fragment {
                 public Void doInBackground(Void... voids) {
 
                     Data.cravings.clear();
-                        String query = Food.listToCsv(Data.cSearchCriteria);
-                        Intent search = new Intent(getActivity(), Searchable.class);
-                        search.putExtra(SearchManager.QUERY, query);
-                        startActivity(search);
+                    String query = Food.listToCsv(Data.cSearchCriteria);
+                    Intent search = new Intent(getActivity(), Searchable.class);
+                    search.putExtra(SearchManager.QUERY, query);
+                    startActivity(search);
                     return null;
                 }
 
@@ -123,6 +121,7 @@ public class CravingFragment extends Fragment {
         srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                Data.cravings.clear();
                 refresh(srl);
             }
         });

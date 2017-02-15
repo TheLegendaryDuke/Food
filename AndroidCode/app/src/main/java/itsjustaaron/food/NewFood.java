@@ -22,14 +22,10 @@ import android.widget.CheckedTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.backendless.Backendless;
-import com.backendless.BackendlessCollection;
-import com.backendless.exceptions.BackendlessException;
-import com.backendless.persistence.BackendlessDataQuery;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -40,7 +36,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
+import itsjustaaron.food.Back.PagedList;
 
 
 public class NewFood extends AppCompatActivity {
@@ -105,29 +103,22 @@ public class NewFood extends AppCompatActivity {
 
                                             @Override
                                             public Integer doInBackground(Void... voids) {
-                                                try {
                                                     food = values.get(position);
                                                     String whereC = "foodID = \'" + food.objectId + "\'";
-                                                    BackendlessDataQuery dataQuery = new BackendlessDataQuery();
-                                                    dataQuery.setWhereClause(whereC);
-                                                    BackendlessCollection<Map> result = Backendless.Persistence.of("cravings").find(dataQuery);
-                                                    if (result.getCurrentPage().size() != 0) {
+                                                    PagedList<Map> result = Back.findObjectByWhere(whereC, Back.object.craving);
+                                                    if (result.getCurPage().size() != 0) {
                                                         return 2;
                                                     } else {
                                                         Map<String, String> craving = new HashMap<String, String>();
                                                         craving.put("foodID", food.objectId);
                                                         craving.put("numFollowers", "1");
                                                         craving.put("ownerID", Data.user.getObjectId());
-                                                        Map map = Backendless.Persistence.of("cravings").save(craving);
+                                                        Map map = Back.store(craving, Back.object.craving);
                                                         Map<String, String> cravingFollower = new HashMap<String, String>();
                                                         cravingFollower.put("userID", Data.user.getObjectId());
                                                         cravingFollower.put("cravingID", map.get("objectId").toString());
-                                                        Backendless.Persistence.of("cravingFollowers").save(cravingFollower);
+                                                        Back.store(cravingFollower, Back.object.cravingfollower);
                                                     }
-                                                } catch (BackendlessException e) {
-                                                    Log.d("backendless", e.toString());
-                                                    return 1;
-                                                }
                                                 return 0;
                                             }
 
@@ -139,8 +130,6 @@ public class NewFood extends AppCompatActivity {
                                                     ret.putExtra("id", food.objectId);
                                                     setResult(RESULT_OK, ret);
                                                     finish();
-                                                } else if (x == 1) {
-                                                    Toast.makeText(context, getString(R.string.error), Toast.LENGTH_LONG).show();
                                                 } else {
                                                     new AlertDialog.Builder(context).setMessage("A craving with this food already exists, you can find it by searching the food name or tags").setNeutralButton("OK", new DialogInterface.OnClickListener() {
                                                         @Override
@@ -184,6 +173,7 @@ public class NewFood extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_food);
+        Data.UI = this;
         searchResults = new ArrayList<>();
         onCraving = getIntent().getBooleanExtra("onCraving", true);
         ListView listView = (ListView) findViewById(R.id.searchFoodResult);
@@ -276,39 +266,31 @@ public class NewFood extends AppCompatActivity {
                                     HashMap<String, String> tagMap = new HashMap<String, String>();
                                     tagMap.put("tag", tag);
                                     tagMap.put("ownerId", Data.user.getObjectId());
-                                    try{
-                                        Backendless.Persistence.of("tags").save(tagMap);
+                                        Back.store(tagMap, Back.object.tag);
                                         return 0;
-                                    }catch (BackendlessException e){
-                                        return 1;
-                                    }
                                 }
 
                                 @Override
                                 public void onPostExecute(Integer integer){
-                                    if(integer == 0) {
-                                        final CheckedTextView ctv = new CheckedTextView(NewFood.this);
-                                        ctv.setText(tag);
-                                        ctv.setChecked(true);
-                                        ctv.setId(Data.tags.size() - 1);
-                                        ctv.setCheckMarkDrawable(ContextCompat.getDrawable(NewFood.this, R.drawable.ic_check));
-                                        ctv.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                if(ctv.isChecked()) {
-                                                    ctv.setCheckMarkDrawable(null);
-                                                    ctv.setChecked(false);
-                                                }else {
-                                                    ctv.setCheckMarkDrawable(ContextCompat.getDrawable(NewFood.this, R.drawable.ic_check));
-                                                    ctv.setChecked(true);
-                                                }
+                                    final CheckedTextView ctv = new CheckedTextView(NewFood.this);
+                                    ctv.setText(tag);
+                                    ctv.setChecked(true);
+                                    ctv.setId(Data.tags.size() - 1);
+                                    ctv.setCheckMarkDrawable(ContextCompat.getDrawable(NewFood.this, R.drawable.ic_check));
+                                    ctv.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            if(ctv.isChecked()) {
+                                                ctv.setCheckMarkDrawable(null);
+                                                ctv.setChecked(false);
+                                            }else {
+                                                ctv.setCheckMarkDrawable(ContextCompat.getDrawable(NewFood.this, R.drawable.ic_check));
+                                                ctv.setChecked(true);
                                             }
-                                        });
-                                        container.addView(ctv, container.getChildCount() - 1);
-                                        tagChecks.add(ctv.getId(), true);
-                                    }else {
-                                        Toast.makeText(NewFood.this, getString(R.string.error), Toast.LENGTH_LONG).show();
-                                    }
+                                        }
+                                    });
+                                    container.addView(ctv, container.getChildCount() - 1);
+                                    tagChecks.add(ctv.getId(), true);
                                 }
                             }.execute(new Void[]{});
                         }
@@ -392,36 +374,26 @@ public class NewFood extends AppCompatActivity {
 
                 @Override
                 public Integer doInBackground(Void... voids) {
-                    try {
-                        String whereC = "name = \'" + name + "\'";
-                        BackendlessDataQuery dataQuery = new BackendlessDataQuery();
-                        dataQuery.setWhereClause(whereC);
-                        BackendlessCollection<Map> result = Backendless.Persistence.of("foods").find(dataQuery);
-                        if(result.getCurrentPage().size() != 0) {
-                            return 2;
-                        }
-                        Backendless.Files.upload(dest, "foods/", true);
-                        food = new Food(Backendless.Persistence.of("foods").save(hashMap));
-                        Data.foods.add(food);
-                        if(onCraving) {
-                            Map<String, String> craving = new HashMap<String, String>();
-                            craving.put("foodID", food.objectId);
-                            craving.put("numFollowers", "1");
-                            craving.put("ownerId", Data.user.getObjectId());
-                            Map map = Backendless.Persistence.of("cravings").save(craving);
-                            Map<String, String> cravingFollower = new HashMap<String, String>();
-                            cravingFollower.put("userID", Data.user.getObjectId());
-                            cravingFollower.put("cravingID", map.get("objectId").toString());
-                            Backendless.Persistence.of("cravingFollowers").save(cravingFollower);
-                        }
-                        return 0;
-                    } catch (BackendlessException e) {
-                        Log.d("backendless", e.toString());
-                        return 1;
-                    } catch (Exception e) {
-                        Log.d("otherExceptions", e.toString());
-                        return 1;
+                    String whereC = "name = \'" + name + "\'";
+                    PagedList<Map> result = Back.findObjectByWhere(whereC, Back.object.food);
+                    if(result.getCurPage().size() != 0) {
+                        return 2;
                     }
+                    Back.upload(dest, "foods/", true);
+                    food = new Food(Back.store(hashMap, Back.object.food));
+                    Data.foods.add(food);
+                    if(onCraving) {
+                        Map<String, String> craving = new HashMap<String, String>();
+                        craving.put("foodID", food.objectId);
+                        craving.put("numFollowers", "1");
+                        craving.put("ownerId", Data.user.getObjectId());
+                        Map map = Back.store(craving, Back.object.craving);
+                        Map<String, String> cravingFollower = new HashMap<String, String>();
+                        cravingFollower.put("userID", Data.user.getObjectId());
+                        cravingFollower.put("cravingID", map.get("objectId").toString());
+                        Back.store(cravingFollower, Back.object.cravingfollower);
+                    }
+                    return 0;
                 }
 
                 @Override
@@ -433,8 +405,6 @@ public class NewFood extends AppCompatActivity {
                             ret.putExtra("id", food.objectId);
                             setResult(RESULT_OK, ret);
                             finish();
-                        } else if (i == 1) {
-                            Toast.makeText(NewFood.this, getString(R.string.error), Toast.LENGTH_LONG).show();
                         } else if (i == 2) {
                             Toast.makeText(NewFood.this, "A food with the same name already exists, you can find it by searching the food name or tags", Toast.LENGTH_LONG).show();
                             setResult(2);
@@ -479,14 +449,12 @@ public class NewFood extends AppCompatActivity {
         } else {
             whereClause = "name LIKE '%" + search + "%'";
         }
-        final BackendlessDataQuery dataQuery = new BackendlessDataQuery();
-        dataQuery.setWhereClause(whereClause);
+        final String where= whereClause;
         new AsyncTask<Void, Void, Integer>() {
             @Override
             public Integer doInBackground(Void... voids) {
-                try {
-                    BackendlessCollection<Map> mapBackendlessCollection = Backendless.Persistence.of("foods").find(dataQuery);
-                    final List<Map> maps = mapBackendlessCollection.getCurrentPage();
+                    PagedList<Map> result = Back.findObjectByWhere(where, Back.object.food);
+                    final List<Map> maps = result.getCurPage();
                     if (maps.size() != 0) {
                         for (int i = 0; i < maps.size(); i++) {
                             Map map = maps.get(i);
@@ -507,10 +475,6 @@ public class NewFood extends AppCompatActivity {
                     } else {
                         return 1;
                     }
-                } catch (BackendlessException e) {
-                    Log.d("backendless", e.toString());
-                    return 2;
-                }
             }
 
             @Override
@@ -520,8 +484,9 @@ public class NewFood extends AppCompatActivity {
                     ((foodAdapter) listView.getAdapter()).notifyDataSetChanged();
                 } else if (i == 1) {
                     Toast.makeText(NewFood.this, "Your search yields no results", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(NewFood.this, getString(R.string.error), Toast.LENGTH_LONG).show();
+                    foodAdapter adapter = (foodAdapter) ((ListView) findViewById(R.id.searchFoodResult)).getAdapter();
+                    adapter.values.clear();
+                    adapter.notifyDataSetChanged();
                 }
                 wait.dismiss();
             }

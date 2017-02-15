@@ -8,10 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.backendless.Backendless;
-
-import java.util.Map;
-
+import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
 
 public class OfferDetails extends AppCompatActivity {
@@ -24,6 +21,7 @@ public class OfferDetails extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_offer_details);
+        Data.UI = this;
         final String offerID = getIntent().getStringExtra("offerID");
         progress = new ProgressDialog(this);
         progress.setMessage("Please wait...");
@@ -36,8 +34,7 @@ public class OfferDetails extends AppCompatActivity {
 
             @Override
             public Void doInBackground(Void... voids) {
-                Map map = Backendless.Persistence.of("offers").findById(offerID);
-                offer = new Offer(map);
+                offer = (Offer) Back.getObjectByID(offerID, Back.object.offer);
                 return null;
             }
 
