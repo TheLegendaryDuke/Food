@@ -29,15 +29,16 @@ public class OfferFragment extends Fragment {
     LinearLayoutManager layoutManager;
     View rootView;
     RecyclerView recyclerView;
+    ProgressDialog wait;
 
     private class Start extends AsyncTask<Void, Void, Void> {
-        ProgressDialog wait;
 
         @Override
         public void onPreExecute() {
-            wait = new ProgressDialog(getActivity());
-            wait.setMessage("Please wait...");
-            wait.show();
+            if (wait != null) {
+                wait.setMessage("Please wait...");
+                wait.show();
+            }
         }
 
         @Override
@@ -58,10 +59,12 @@ public class OfferFragment extends Fragment {
     };
 
     public void refresh(final SwipeRefreshLayout s) {
+        if(s != null) {
+            wait = null;
+        }else {
+            wait = new ProgressDialog(getActivity());
+        }
         if (Data.foodOffers.size() == 0) {
-            if(s != null) {
-                s.setRefreshing(false);
-            }
             new Start().execute(new Void[]{});
         } else {
             new AsyncTask<Void, Void, Void>() {
@@ -105,6 +108,7 @@ public class OfferFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        wait = new ProgressDialog(getActivity());
     }
 
     @Override

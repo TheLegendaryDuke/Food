@@ -14,9 +14,7 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.PasswordTransformationMethod;
-import android.util.Log;
 import android.view.Display;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -25,7 +23,9 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
@@ -34,6 +34,12 @@ import itsjustaaron.food.Back.Data;
 public class Welcome extends AppCompatActivity {
 
     private ProgressDialog wait;
+
+    Timer timer;
+
+    int timerTrigger = 0;
+
+    boolean existedUser = false;
 
     private void Proceed() {
         Intent intent = new Intent(this, Main.class);
@@ -48,6 +54,19 @@ public class Welcome extends AppCompatActivity {
         Data.application = getApplicationContext();
         Data.UI = this;
         Back.init();
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if(timerTrigger == 1) {
+                    findViewById(R.id.CoverImage).setVisibility(View.GONE);
+                }else if(existedUser) {
+                    Proceed();
+                }else {
+                    timerTrigger++;
+                }
+            }
+        }, 1000);
         ConnectivityManager cm =
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
@@ -66,8 +85,8 @@ public class Welcome extends AppCompatActivity {
             //0 is success, 1 is failed(no previous login session available), 2 is error(login session no longer valid)
             @Override
             public Integer doInBackground(Void... voids) {
-                if (Back.checkUserSession()) {
-                    Proceed();
+                existedUser = Back.checkUserSession();
+                if(existedUser){
                     return 0;
                 } else {
                     return 1;
@@ -76,11 +95,13 @@ public class Welcome extends AppCompatActivity {
 
             @Override
             public void onPostExecute(Integer result) {
-                if (result == 2) {
-                    Toast.makeText(getApplicationContext(), "Your login session has expired!", Toast.LENGTH_SHORT).show();
+                if(result == 1) {
+                    if(timerTrigger == 1) {
+                        findViewById(R.id.CoverImage).setVisibility(View.GONE);
+                    }else {
+                        timerTrigger++;
+                    }
                 }
-                findViewById(R.id.CoverImage).setVisibility(View.GONE);
-                findViewById(R.id.WelcomeBG).setVisibility(View.GONE);
             }
         }.execute(new Void[]{});
     }

@@ -89,7 +89,6 @@ public class Main extends AppCompatActivity
         Data.cravings = new ArrayList<>();
         Data.foods = new ArrayList<Food>();
         Data.fileDir = getFilesDir().toString();
-        offerFragment = new OfferFragment();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
