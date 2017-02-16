@@ -6,12 +6,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Point;
+import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -19,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -93,6 +96,9 @@ public class Welcome extends AppCompatActivity {
         dialog.setCancelable(true);
         container.setLayoutParams(new FrameLayout.LayoutParams((int)Math.round(width * 0.9), ViewGroup.LayoutParams.WRAP_CONTENT));
         Button proceed = (Button)dialog.findViewById(R.id.welcomeDialogLogin);
+        EditText passwordBox = (EditText) dialog.findViewById(R.id.loginPassword);
+        passwordBox.setTypeface(Typeface.DEFAULT_BOLD);
+        passwordBox.setTransformationMethod(new PasswordTransformationMethod());
         proceed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -167,6 +173,12 @@ public class Welcome extends AppCompatActivity {
         dialog.setCancelable(true);
         container.setLayoutParams(new FrameLayout.LayoutParams((int)Math.round(width * 0.9), ViewGroup.LayoutParams.WRAP_CONTENT));
         Button proceed = (Button) dialog.findViewById(R.id.welcomeDialogRegister);
+        EditText passwordBox = (EditText) dialog.findViewById(R.id.registerPassword);
+        passwordBox.setTypeface(Typeface.DEFAULT_BOLD);
+        passwordBox.setTransformationMethod(new PasswordTransformationMethod());
+        EditText passwordBox2 = (EditText) dialog.findViewById(R.id.registerPasswordAgain);
+        passwordBox2.setTypeface(Typeface.DEFAULT_BOLD);
+        passwordBox2.setTransformationMethod(new PasswordTransformationMethod());
         proceed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -32,7 +32,7 @@ public class NewOffer extends AppCompatActivity {
     private Food food;
     private HashMap<String, String> offer = new HashMap<>();
     private Date date;
-    private boolean defaultAddress;
+    private boolean defaultAddress = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
