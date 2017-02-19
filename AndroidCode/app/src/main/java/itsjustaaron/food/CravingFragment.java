@@ -29,14 +29,12 @@ public class CravingFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private LinearLayoutManager mLayoutManager;
     private MyAdapter mAdapter;
+    ProgressDialog wait;
 
     private class start extends AsyncTask<Void, Void, Void> {
-        ProgressDialog wait;
 
         @Override
         public void onPreExecute() {
-            wait = new ProgressDialog(getActivity());
-            wait.setMessage("Please wait...");
             wait.show();
         }
 
@@ -53,51 +51,40 @@ public class CravingFragment extends Fragment {
         @Override
         public void onPostExecute(Void v) {
             mAdapter.notifyDataSetChanged();
-            wait.dismiss();
+            if(wait != null) {
+                wait.dismiss();
+            }
         }
     };
 
     public void refresh(final SwipeRefreshLayout s) {
-        if(s == null) {
-            if (Data.cravings.size() == 0) {
-                new start().execute(new Void[]{});
-            } else {
-                new AsyncTask<Void, Void, Void>() {
-                    ProgressDialog wait;
-
-                    @Override
-                    public void onPreExecute() {
-                        if (s == null) {
-                            wait = new ProgressDialog(getActivity());
-                            wait.setMessage("Please wait...");
-                            wait.show();
-                        }
-                    }
-
-                    @Override
-                    public Void doInBackground(Void... voids) {
-
-                        Data.cravings.clear();
-                        String query = Food.listToCsv(Data.cSearchCriteria);
-                        Intent search = new Intent(getActivity(), Searchable.class);
-                        search.putExtra(SearchManager.QUERY, query);
-                        startActivity(search);
-                        return null;
-                    }
-
-                    @Override
-                    public void onPostExecute(Void v) {
-                        mAdapter.notifyDataSetChanged();
-                        if (s == null) {
-                            wait.dismiss();
-                        } else {
-                            s.setRefreshing(false);
-                        }
-                    }
-                }.execute(new Void[]{});
-            }
-        }else {
+        s.setRefreshing(false);
+        if (Data.foodOffers.size() == 0 || Data.cSearchCriteria.size() == 0) {
             new start().execute(new Void[]{});
+        }else {
+            new AsyncTask<Void, Void, Void>() {
+                @Override
+                public void onPreExecute() {
+                    wait.show();
+                }
+
+                @Override
+                public Void doInBackground(Void... voids) {
+
+                    Data.cravings.clear();
+                    String query = Food.listToCsv(Data.cSearchCriteria);
+                    Intent search = new Intent(getActivity(), Searchable.class);
+                    search.putExtra(SearchManager.QUERY, query);
+                    startActivity(search);
+                    return null;
+                }
+
+                @Override
+                public void onPostExecute(Void v) {
+                    mAdapter.notifyDataSetChanged();
+                    wait.dismiss();
+                }
+            }.execute(new Void[]{});
         }
     }
 
@@ -105,6 +92,8 @@ public class CravingFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Data.cravings = new ArrayList<Craving>();
+        wait = new ProgressDialog(getActivity());
+        wait.setMessage("Please wait...");
     }
 
     @Override

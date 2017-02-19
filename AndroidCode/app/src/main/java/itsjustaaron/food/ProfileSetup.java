@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 
@@ -28,8 +30,9 @@ import itsjustaaron.food.Back.Data;
 
 
 public class ProfileSetup extends AppCompatActivity {
-    protected boolean imageUpdated;
+    private boolean imageUpdated;
     private ProgressDialog d;
+    private Uri rawImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +65,7 @@ public class ProfileSetup extends AppCompatActivity {
         if (requestCode == 0) {
             if (data != null) {
                 Uri image = data.getData();
+                rawImage = image;
                 Intent cropIntent = new Intent("com.android.camera.action.CROP");
                 cropIntent.setDataAndType(image, "image/*");
                 cropIntent.putExtra("crop", "true");
@@ -74,14 +78,26 @@ public class ProfileSetup extends AppCompatActivity {
             }
         } else {
             try {
-                imageUpdated = true;
-                Bitmap result = data.getExtras().getParcelable("data");
-                File dest = new File(Data.fileDir + "/" + Data.user.getProperty("portrait").toString());
-                OutputStream out = new FileOutputStream(dest);
-                result.compress(Bitmap.CompressFormat.PNG, 100, out);
-                ((ImageView) findViewById(R.id.profileImage)).setImageBitmap(result);
+                if (resultCode == RESULT_OK) {
+                    imageUpdated = true;
+                    Bitmap result = data.getExtras().getParcelable("data");
+                    File dest = new File(Data.fileDir + "/" + Data.user.getProperty("portrait").toString());
+                    OutputStream out = new FileOutputStream(dest);
+                    result.compress(Bitmap.CompressFormat.PNG, 100, out);
+                    ((ImageView) findViewById(R.id.profileImage)).setImageBitmap(result);
+                } else {
+                    if (rawImage != null) {
+                        imageUpdated = true;
+                        File dest = new File(Data.fileDir + "/" + Data.user.getProperty("portrait").toString());
+                        FileOutputStream out = new FileOutputStream(dest);
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), rawImage);
+                        bitmap = Bitmap.createScaledBitmap(bitmap, 200, 200, true);
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+                        ((ImageView) findViewById(R.id.profileImage)).setImageBitmap(bitmap);
+                    }
+                }
             } catch (Exception e) {
-                Log.d("1", e.getMessage());
+                Log.d("loooooooookheree", e.toString(), e);
             }
         }
     }

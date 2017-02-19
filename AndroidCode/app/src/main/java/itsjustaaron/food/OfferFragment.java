@@ -35,10 +35,7 @@ public class OfferFragment extends Fragment {
 
         @Override
         public void onPreExecute() {
-            if (wait != null) {
-                wait.setMessage("Please wait...");
-                wait.show();
-            }
+            wait.show();
         }
 
         @Override
@@ -54,29 +51,22 @@ public class OfferFragment extends Fragment {
         @Override
         public void onPostExecute(Void v) {
             myAdapter.notifyDataSetChanged();
-            wait.dismiss();
+            if(wait != null) {
+                wait.dismiss();
+            }
         }
     };
 
     public void refresh(final SwipeRefreshLayout s) {
-        if(s != null) {
-            wait = null;
-        }else {
-            wait = new ProgressDialog(getActivity());
-        }
-        if (Data.foodOffers.size() == 0) {
+        s.setRefreshing(false);
+        if (Data.foodOffers.size() == 0 || Data.oSearchCriteria.size() == 0) {
             new Start().execute(new Void[]{});
         } else {
             new AsyncTask<Void, Void, Void>() {
-                ProgressDialog wait;
 
                 @Override
                 public void onPreExecute() {
-                    if (s == null) {
-                        wait = new ProgressDialog(getActivity());
-                        wait.setMessage("Please wait...");
-                        wait.show();
-                    }
+                    wait.show();
                 }
 
                 @Override
@@ -93,11 +83,7 @@ public class OfferFragment extends Fragment {
                 @Override
                 public void onPostExecute(Void v) {
                     myAdapter.notifyDataSetChanged();
-                    if (s == null) {
-                        wait.dismiss();
-                    } else {
-                        s.setRefreshing(false);
-                    }
+                    wait.dismiss();
                 }
             }.execute(new Void[]{});
         }
@@ -109,6 +95,7 @@ public class OfferFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         wait = new ProgressDialog(getActivity());
+        wait.setMessage("Please wait...");
     }
 
     @Override

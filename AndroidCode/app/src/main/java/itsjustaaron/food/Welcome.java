@@ -59,14 +59,19 @@ public class Welcome extends AppCompatActivity {
             @Override
             public void run() {
                 if(timerTrigger == 1) {
-                    findViewById(R.id.CoverImage).setVisibility(View.GONE);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            findViewById(R.id.CoverImage).setVisibility(View.GONE);
+                        }
+                    });
                 }else if(existedUser) {
                     Proceed();
                 }else {
                     timerTrigger++;
                 }
             }
-        }, 1000);
+        }, 2000);
         ConnectivityManager cm =
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();

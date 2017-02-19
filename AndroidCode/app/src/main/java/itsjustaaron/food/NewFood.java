@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -54,6 +55,8 @@ public class NewFood extends AppCompatActivity {
     private ProgressDialog wait;
 
     private ArrayList<Boolean> tagChecks = new ArrayList<>();
+
+    private Uri rawImage;
 
     private class foodAdapter extends ArrayAdapter<Food> {
         public List<Food> values;
@@ -165,6 +168,7 @@ public class NewFood extends AppCompatActivity {
     };
 
     public void pickPhoto(View view) {
+        rawImage = null;
         Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(pickPhoto, 0);
     }
@@ -313,6 +317,7 @@ public class NewFood extends AppCompatActivity {
         if (requestCode == 0) {
             if (data != null) {
                 Uri image = data.getData();
+                rawImage = image;
                 Intent cropIntent = new Intent("com.android.camera.action.CROP");
                 cropIntent.setDataAndType(image, "image/*");
                 cropIntent.putExtra("crop", "true");
@@ -324,10 +329,23 @@ public class NewFood extends AppCompatActivity {
                 startActivityForResult(cropIntent, 1);
             }
         } else {
-            if(data != null) {
-                imageUpdated = true;
-                pic = data.getExtras().getParcelable("data");
-                ((ImageView) findViewById(R.id.createFoodImage)).setImageBitmap(pic);
+            if(resultCode == RESULT_OK) {
+                if (data != null) {
+                    imageUpdated = true;
+                    pic = data.getExtras().getParcelable("data");
+                    ((ImageView) findViewById(R.id.createFoodImage)).setImageBitmap(pic);
+                }
+            }else {
+                if(rawImage != null) {
+                    try {
+                        pic = MediaStore.Images.Media.getBitmap(this.getContentResolver(), rawImage);
+                        pic = Bitmap.createScaledBitmap(pic, 200, 200, true);
+                        ((ImageView) findViewById(R.id.createFoodImage)).setImageURI(rawImage);
+                        imageUpdated = true;
+                    }catch (Exception e) {
+                        Log.d("error", e.toString(), e);
+                    }
+                }
             }
         }
     }
