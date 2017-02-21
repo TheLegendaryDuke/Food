@@ -23,6 +23,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -90,7 +91,13 @@ public class Welcome extends AppCompatActivity {
             //0 is success, 1 is failed(no previous login session available), 2 is error(login session no longer valid)
             @Override
             public Integer doInBackground(Void... voids) {
-                existedUser = Back.checkUserSession();
+                int userStats = Back.checkUserSession();
+                existedUser = false;
+                if(userStats == 0) {
+                    existedUser = true;
+                }else if(userStats == 1) {
+                    return 2;
+                }
                 if(existedUser){
                     return 0;
                 } else {
@@ -100,10 +107,13 @@ public class Welcome extends AppCompatActivity {
 
             @Override
             public void onPostExecute(Integer result) {
-                if(result == 1) {
-                    if(timerTrigger == 1) {
+                if(result == 2) {
+                    Toast.makeText(Welcome.this, "Your login session has expired.", Toast.LENGTH_SHORT);
+                }
+                if(result != 0) {
+                    if (timerTrigger == 1) {
                         findViewById(R.id.CoverImage).setVisibility(View.GONE);
-                    }else {
+                    } else {
                         timerTrigger++;
                     }
                 }

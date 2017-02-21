@@ -31,6 +31,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import java.io.File;
@@ -52,6 +53,8 @@ import itsjustaaron.food.Back.Data;
 
 public class Main extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    private Toast backPressed = null;
+
     public CravingFragment cravingFragment;
     public OfferFragment offerFragment;
 
@@ -92,6 +95,7 @@ public class Main extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("");
         setSupportActionBar(toolbar);
 
         progressDialog = new ProgressDialog(this);
@@ -163,14 +167,12 @@ public class Main extends AppCompatActivity
                 int position = tab.getPosition();
                 switch (position) {
                     case 0:
-                        Main.this.getSupportActionBar().setTitle("What others are craving");
                         findViewById(R.id.oSearchCriterias).setVisibility(View.GONE);
                         findViewById(R.id.cSearchCriterias).setVisibility(View.VISIBLE);
                         Data.onCraving = true;
                         return;
                     case 1:
                         offerFragment.start();
-                        Main.this.getSupportActionBar().setTitle("What's available");
                         findViewById(R.id.cSearchCriterias).setVisibility(View.GONE);
                         findViewById(R.id.oSearchCriterias).setVisibility(View.VISIBLE);
                         Data.onCraving = false;
@@ -213,11 +215,18 @@ public class Main extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
+        if(backPressed == null) {
+            backPressed = Toast.makeText(this, "Press again to exit the application.", Toast.LENGTH_LONG);
+        }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            if(backPressed.getView().getWindowVisibility() == View.VISIBLE) {
+                super.onBackPressed();
+            }else {
+                backPressed.show();
+            }
         }
     }
 
@@ -235,7 +244,7 @@ public class Main extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        final boolean onCraving = getSupportActionBar().getTitle() == "What others are craving";
+        final boolean onCraving = Data.onCraving;
         switch (id) {
             case R.id.addNew:
                 if(checkUser(this)) {
@@ -369,6 +378,11 @@ public class Main extends AppCompatActivity
                 case R.id.drawerOffer:
                     Intent myOffers = new Intent(this, MyOffers.class);
                     startActivity(myOffers);
+                    break;
+
+                case R.id.drawerOption:
+                    Intent options = new Intent(this, Options.class);
+                    startActivity(options);
                     break;
             }
         }

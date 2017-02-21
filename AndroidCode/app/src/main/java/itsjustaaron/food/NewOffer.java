@@ -2,6 +2,7 @@ package itsjustaaron.food;
 
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -17,6 +18,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -98,6 +102,9 @@ public class NewOffer extends AppCompatActivity {
         offer.put("ownerId", Data.user.getObjectId());
         String city,address,zip;
         if(defaultAddress) {
+            if(Data.user.getProperty("city") == null || Data.user.getProperty("address") == null || Data.user.getProperty("zipCode") == null) {
+                Toast.makeText(this, "Please enter your address information under your profile", Toast.LENGTH_LONG).show();
+            }
             city = Data.user.getProperty("city").toString();
             address = Data.user.getProperty("address").toString();
             zip = Data.user.getProperty("zipCode").toString();
@@ -112,6 +119,7 @@ public class NewOffer extends AppCompatActivity {
         offer.put("comment", ((EditText)findViewById(R.id.newOfferComment)).getText().toString());
         offer.put("foodID", food.objectId);
         offer.put("offerer", Data.user.getProperty("name").toString());
+        offer.put("offererPortrait", Data.user.getProperty("portrait").toString());
         new AsyncTask<Void, Void, Integer>() {
             @Override
             public void onPreExecute() {
@@ -124,6 +132,20 @@ public class NewOffer extends AppCompatActivity {
             public Integer doInBackground(Void... voids) {
                 Map o = Back.store(offer, Back.object.offer);
                 HashMap<String, String> foodOffer = new HashMap<>();
+                if(!Data.user.getProperty("portrait").equals("")) {
+                    try {
+                        File newFile = new File(Data.fileDir + "/offers/offerers/" + Data.user.getObjectId() + ".png");
+                        Bitmap bitmap = BitmapFactory.decodeFile(Data.fileDir + "/users/" + Data.user.getObjectId() + "/" + Data.user.getProperty("portrait").toString());
+                        newFile.mkdirs();
+                        newFile.createNewFile();
+                        OutputStream out = new FileOutputStream(newFile);
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 0, out);
+                        Back.upload(newFile, "/offers/offerers/" + Data.user.getObjectId() + ".png", true);
+                    }catch (Exception e) {
+                        Log.e("IO", e.toString(), e);
+                    }
+                }
+                foodOffer.put("offererPortrait", Data.user.getProperty("portrait").toString());
                 foodOffer.put("city", offer.get("city"));
                 foodOffer.put("expire", offer.get("expire"));
                 foodOffer.put("foodID", offer.get("foodID"));

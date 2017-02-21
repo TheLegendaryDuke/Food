@@ -20,12 +20,14 @@ public class FoodOffer {
     public double price;
     public Date expire;
     public String offerer;
+    public String offererPortrait;
 
     public FoodOffer(Map map) {
         //this.objectId = map.get("objectId").toString();
         this.offerID = map.get("offerID").toString();
         this.price = Double.parseDouble(map.get("price").toString());
         this.offerer = map.get("offerer").toString();
+        this.offererPortrait = map.get("offererPortrait").toString();
         try {
             this.expire = (Data.serverDateFormat).parse(map.get("expire").toString());
         }catch (Exception e) {

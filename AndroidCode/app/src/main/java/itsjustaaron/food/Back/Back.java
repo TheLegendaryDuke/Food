@@ -9,7 +9,9 @@ import android.widget.Toast;
 import com.backendless.Backendless;
 import com.backendless.BackendlessCollection;
 import com.backendless.BackendlessUser;
+import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessException;
+import com.backendless.exceptions.BackendlessFault;
 import com.backendless.geo.IBackendlessLocationListener;
 import com.backendless.persistence.BackendlessDataQuery;
 import com.backendless.persistence.QueryOptions;
@@ -167,8 +169,17 @@ public class Back {
     }
 
     public static void logOff() {
-        Backendless.UserService.logout();
-        Data.user = null;
+        Backendless.UserService.logout(new AsyncCallback<Void>() {
+            @Override
+            public void handleResponse(Void aVoid) {
+                Data.user = null;
+            }
+
+            @Override
+            public void handleFault(BackendlessFault backendlessFault) {
+
+            }
+        });
     }
 
     public static void upload(File file, String target, boolean override) {
@@ -221,17 +232,20 @@ public class Back {
             return ex.getCode();
         }
     }
-    public static boolean checkUserSession() {
+    public static int checkUserSession() {
         try {
             if (Backendless.UserService.isValidLogin()) {
                 String userID = UserIdStorageFactory.instance().getStorage().get();
                 Data.user = Backendless.Data.of(BackendlessUser.class).findById(userID);
-                return true;
+                return 0;
             }
         }catch (Exception e) {
+            if(((BackendlessException)e).getCode().equals("3064")) {
+                return 1;
+            }
             errorHandle(e);
         }
-        return false;
+        return 2;
     }
 
     public static String registerUser(String email, String password, String name) {

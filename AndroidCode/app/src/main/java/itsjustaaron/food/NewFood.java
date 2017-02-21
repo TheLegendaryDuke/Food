@@ -75,8 +75,24 @@ public class NewFood extends AppCompatActivity {
         public View getView(final int position, final View convertView, ViewGroup parent) {
             LayoutInflater inflater = (LayoutInflater) context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View rowView = inflater.inflate(R.layout.food_list_item, parent, false);
-            ((ImageView) rowView.findViewById(R.id.foodImage)).setImageBitmap(BitmapFactory.decodeFile(Data.fileDir + "/foods/" + values.get(position).image));
+            final View rowView = inflater.inflate(R.layout.food_list_item, parent, false);
+            final File image = new File(Data.fileDir + "/foods/" + values.get(position).image);
+            if(!image.exists()) {
+                new AsyncTask<Void, Void, Void>() {
+                    @Override
+                    public Void doInBackground(Void... voids) {
+                        Back.downloadToLocal("/foods/" + values.get(position).image);
+                        return null;
+                    }
+
+                    @Override
+                    public void onPostExecute(Void v) {
+                        ((ImageView) rowView.findViewById(R.id.foodImage)).setImageBitmap(BitmapFactory.decodeFile(Data.fileDir + "/foods/" + values.get(position).image));
+                    }
+                }.execute(new Void[]{});
+            }else {
+                ((ImageView) rowView.findViewById(R.id.foodImage)).setImageBitmap(BitmapFactory.decodeFile(Data.fileDir + "/foods/" + values.get(position).image));
+            }
             ((TextView) rowView.findViewById(R.id.foodName)).setText(values.get(position).name);
             ((TextView) rowView.findViewById(R.id.foodDescription)).setText(values.get(position).description);
             List<String> tags = Food.csvToList(values.get(position).tags);
@@ -371,13 +387,13 @@ public class NewFood extends AppCompatActivity {
         final String name = nameView.getText().toString();
         String desc = descView.getText().toString();
         try {
-            final File dest = new File(Data.fileDir + "/foods/" + name + ".png");
+            final File dest = new File(Data.fileDir + "/foods/" + name.replaceAll(" ", "-") + ".png");
             OutputStream out = new FileOutputStream(dest);
             pic.compress(Bitmap.CompressFormat.PNG, 100, out);
             final HashMap<String, String> hashMap = new HashMap<>();
             hashMap.put("name", name);
             hashMap.put("description", desc);
-            hashMap.put("image", name + ".png");
+            hashMap.put("image", name.replaceAll(" ", "-") + ".png");
             hashMap.put("ownerId", Data.user.getObjectId());
             ArrayList<String> tags = new ArrayList<>();
             for(int i = 0; i < Data.tags.size(); i++) {

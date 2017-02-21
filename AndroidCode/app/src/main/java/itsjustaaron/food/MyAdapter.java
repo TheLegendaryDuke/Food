@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
@@ -13,9 +14,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 
+import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
 
 /**
@@ -55,7 +58,7 @@ public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        View v = holder.view;
+        final View v = holder.view;
         if (source == 'c') {
             final ImageView image = (ImageView) v.findViewById(R.id.cravingItemImage);
             TextView description = (TextView) v.findViewById(R.id.cravingItemDescription);
@@ -113,6 +116,28 @@ public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             ((TextView)v.findViewById(R.id.offerFoodName)).setText(foodOffer.food.name);
             ((TextView)v.findViewById(R.id.offerFoodCity)).setText(foodOffer.city);
             ((TextView)v.findViewById(R.id.offerFoodPrice)).setText("$" + String.valueOf(foodOffer.price));
+            if(foodOffer.offererPortrait != null && !foodOffer.offererPortrait.equals("")) {
+                final String path = "/offers/offerers/" + foodOffer.offererPortrait;
+                File file = new File(path);
+                if(!file.exists()) {
+                    File dir = new File("/offers/offerers/");
+                    if(!dir.exists()) {
+                        dir.mkdirs();
+                    }
+                    new AsyncTask<Void, Void, Void>() {
+                        @Override
+                        public Void doInBackground(Void... voids) {
+                            Back.downloadToLocal(path);
+                            return null;
+                        }
+                        public void onPostExecute(Void voi) {
+                            ((ImageView)v.findViewById(R.id.offerOffererImage)).setImageBitmap(BitmapFactory.decodeFile(path));
+                        }
+                    }.execute(new Void[]{});
+                }else {
+                    ((ImageView) v.findViewById(R.id.offerOffererImage)).setImageBitmap(BitmapFactory.decodeFile(path));
+                }
+            }
             Date exp = foodOffer.expire;
             ((TextView)v.findViewById(R.id.offerFoodExpire)).setText("Expiring: " + Data.standardDateFormat.format(exp));
             image.setImageBitmap(BitmapFactory.decodeFile(fileDir + "/foods/" + foodOffer.food.image));
