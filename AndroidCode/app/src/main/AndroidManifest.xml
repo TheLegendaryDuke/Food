@@ -26,9 +26,6 @@
             android:label="@string/title_activity_main"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-            <meta-data
-                android:name="android.app.default_searchable"
-                android:value=".Searchable" />
         </activity>
         <activity
             android:name=".ProfileSetup"
@@ -39,18 +36,6 @@
             android:name=".NewFood"
             android:parentActivityName=".Main"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity
-            android:name=".Searchable"
-            android:launchMode="singleTop"
-            android:theme="@style/Theme.Transparent">
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.app.searchable"
-                android:resource="@xml/searchable" />
-        </activity>
         <activity
             android:name=".CravingDetails"
             android:parentActivityName=".Main" />
