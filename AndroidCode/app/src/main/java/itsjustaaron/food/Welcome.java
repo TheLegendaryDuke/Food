@@ -35,6 +35,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
+import itsjustaaron.food.Back.MyHandler;
 
 
 public class Welcome extends AppCompatActivity {
@@ -55,6 +56,7 @@ public class Welcome extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Data.handler = new MyHandler(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
         Back.init(getApplicationContext());

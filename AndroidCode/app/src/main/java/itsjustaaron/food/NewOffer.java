@@ -31,6 +31,7 @@ import java.util.TimeZone;
 
 import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
+import itsjustaaron.food.Back.MyHandler;
 
 public class NewOffer extends AppCompatActivity {
     private Food food;
@@ -40,6 +41,7 @@ public class NewOffer extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Data.handler = new MyHandler(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_offer);
         String foodId = getIntent().getStringExtra("food");

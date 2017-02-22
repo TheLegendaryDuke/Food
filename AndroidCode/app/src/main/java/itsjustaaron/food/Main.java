@@ -48,7 +48,7 @@ import java.util.TimeZone;
 
 import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
-
+import itsjustaaron.food.Back.MyHandler;
 
 
 //TODO: side nav actions, guest restriction
@@ -208,6 +208,7 @@ public class Main extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Data.handler = new MyHandler(this);
         Data.cravings = new ArrayList<>();
         Data.foods = new ArrayList<Food>();
         Data.fileDir = getFilesDir().toString();

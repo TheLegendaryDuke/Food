@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
+import itsjustaaron.food.Back.MyHandler;
 
 public class OfferDetails extends AppCompatActivity {
 
@@ -19,6 +20,7 @@ public class OfferDetails extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Data.handler = new MyHandler(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_offer_details);
         final String offerID = getIntent().getStringExtra("offerID");

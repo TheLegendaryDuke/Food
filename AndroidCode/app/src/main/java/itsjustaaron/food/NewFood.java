@@ -39,6 +39,7 @@ import java.util.Map;
 
 import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
+import itsjustaaron.food.Back.MyHandler;
 import itsjustaaron.food.Back.PagedList;
 
 
@@ -191,6 +192,7 @@ public class NewFood extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Data.handler = new MyHandler(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_food);
         searchResults = new ArrayList<>();

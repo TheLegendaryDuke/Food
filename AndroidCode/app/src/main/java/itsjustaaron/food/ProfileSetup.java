@@ -27,6 +27,7 @@ import java.io.OutputStream;
 
 import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
+import itsjustaaron.food.Back.MyHandler;
 
 
 public class ProfileSetup extends AppCompatActivity {
@@ -37,6 +38,7 @@ public class ProfileSetup extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Data.handler = new MyHandler(this);
         super.onCreate(savedInstanceState);
         imageUpdated = false;
         setContentView(R.layout.activity_profile_setup);
