@@ -11,6 +11,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.PasswordTransformationMethod;
@@ -27,6 +28,10 @@ import android.widget.Toast;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
@@ -38,7 +43,7 @@ public class Welcome extends AppCompatActivity {
 
     Timer timer;
 
-    int timerTrigger = 0;
+    Boolean timerTrigger = false;
 
     boolean existedUser = false;
 
@@ -59,17 +64,19 @@ public class Welcome extends AppCompatActivity {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                if(timerTrigger == 1) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            findViewById(R.id.CoverImage).setVisibility(View.GONE);
-                        }
-                    });
-                }else if(existedUser) {
-                    Proceed();
-                }else {
-                    timerTrigger++;
+                synchronized (timerTrigger) {
+                    if (timerTrigger) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                findViewById(R.id.CoverImage).setVisibility(View.GONE);
+                            }
+                        });
+                    } else if (existedUser) {
+                        Proceed();
+                    } else {
+                        timerTrigger = true;
+                    }
                 }
             }
         }, 2000);
@@ -111,11 +118,15 @@ public class Welcome extends AppCompatActivity {
                     Toast.makeText(Welcome.this, "Your login session has expired.", Toast.LENGTH_SHORT);
                 }
                 if(result != 0) {
-                    if (timerTrigger == 1) {
-                        findViewById(R.id.CoverImage).setVisibility(View.GONE);
-                    } else {
-                        timerTrigger++;
+                    synchronized (timerTrigger) {
+                        if (timerTrigger) {
+                            findViewById(R.id.CoverImage).setVisibility(View.GONE);
+                        } else {
+                            timerTrigger = true;
+                        }
                     }
+                }else {
+                    Proceed();
                 }
             }
         }.execute(new Void[]{});

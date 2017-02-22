@@ -5,6 +5,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -22,12 +23,17 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -58,6 +64,8 @@ public class Main extends AppCompatActivity
     public CravingFragment cravingFragment;
     public OfferFragment offerFragment;
 
+    private EditText annoyingSearch;
+
     private static ProgressDialog progressDialog;
     protected PagerAdapter adapter;
 
@@ -84,6 +92,8 @@ public class Main extends AppCompatActivity
     public static void hideWait() {
         progressDialog.dismiss();
     }
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,6 +127,20 @@ public class Main extends AppCompatActivity
                 return null;
             }
         }.execute(new Void[]{});
+//
+//        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        final MyEditText searchBar = (MyEditText) findViewById(R.id.menuSearchBar);
+        searchBar.setCursorVisible(false);
+        searchBar.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus) {
+                    searchBar.setCursorVisible(true);
+                }else {
+                    searchBar.setCursorVisible(false);
+                }
+            }
+        });
 
         final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -202,7 +226,6 @@ public class Main extends AppCompatActivity
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         toggle.syncState();
-
 
     }
 
