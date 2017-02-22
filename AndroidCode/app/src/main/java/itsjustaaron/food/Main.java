@@ -280,9 +280,9 @@ public class Main extends AppCompatActivity
                     }
                 }
                 break;
-            case R.id.search:
-                onSearchRequested();
-                break;
+//            case R.id.search:
+//                onSearchRequested();
+//                break;
         }
         return super.onOptionsItemSelected(item);
     }
