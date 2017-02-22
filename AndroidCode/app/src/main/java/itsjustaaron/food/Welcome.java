@@ -57,23 +57,23 @@ public class Welcome extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
-        Data.application = getApplicationContext();
-        Data.UI = this;
-        Back.init();
+        Back.init(getApplicationContext());
         timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 synchronized (timerTrigger) {
                     if (timerTrigger) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                findViewById(R.id.CoverImage).setVisibility(View.GONE);
-                            }
-                        });
-                    } else if (existedUser) {
-                        Proceed();
+                        if (existedUser) {
+                            Proceed();
+                        }else {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    findViewById(R.id.CoverImage).setVisibility(View.GONE);
+                                }
+                            });
+                        }
                     } else {
                         timerTrigger = true;
                     }
@@ -116,6 +116,7 @@ public class Welcome extends AppCompatActivity {
             public void onPostExecute(Integer result) {
                 if(result == 2) {
                     Toast.makeText(Welcome.this, "Your login session has expired.", Toast.LENGTH_SHORT);
+                    return;
                 }
                 if(result != 0) {
                     synchronized (timerTrigger) {
@@ -126,7 +127,13 @@ public class Welcome extends AppCompatActivity {
                         }
                     }
                 }else {
-                    Proceed();
+                    synchronized (timerTrigger) {
+                        if (timerTrigger) {
+                            Proceed();
+                        } else {
+                            timerTrigger = true;
+                        }
+                    }
                 }
             }
         }.execute(new Void[]{});

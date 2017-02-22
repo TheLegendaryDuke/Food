@@ -1,5 +1,6 @@
 package itsjustaaron.food.Back;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
@@ -40,8 +41,8 @@ import itsjustaaron.food.R;
 public class Back {
     private final static String downloadLink = "https://api.backendless.com/0020F1DC-E584-AD36-FF74-6D3E9E917400/v1/files";
 
-    public static void init() {
-        Backendless.initApp(Data.application, "0020F1DC-E584-AD36-FF74-6D3E9E917400", "7DCC75D9-058A-6830-FF54-817317E0C000", "v1");
+    public static void init(Context context) {
+        Backendless.initApp(context, "0020F1DC-E584-AD36-FF74-6D3E9E917400", "7DCC75D9-058A-6830-FF54-817317E0C000", "v1");
     }
 
     public enum object {
@@ -191,13 +192,7 @@ public class Back {
     }
 
     private static void errorHandle(Exception ex) {
-        Data.UI.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(Data.application, R.string.error, Toast.LENGTH_LONG).show();
-            }
-        });
-        Log.e("Backend", "An error has happened", ex);
+        Thread.setDefaultUncaughtExceptionHandler(Data.handler);
     }
 
     public static void resetPassword() {

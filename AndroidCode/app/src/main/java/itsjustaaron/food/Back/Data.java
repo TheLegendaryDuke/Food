@@ -36,7 +36,5 @@ public class Data {
     public static SimpleDateFormat standardDateFormat = new SimpleDateFormat("yyyy MMM dd");
     public static ArrayList<String> cSearchCriteria = new ArrayList<>();
     public static ArrayList<String> oSearchCriteria = new ArrayList<>();
-    public static Main main;
-    public static Activity UI;
-    public static Context application;
+    public static MyHandler handler;
 }

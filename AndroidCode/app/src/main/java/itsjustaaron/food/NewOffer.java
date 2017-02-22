@@ -42,7 +42,6 @@ public class NewOffer extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_offer);
-        Data.UI = this;
         String foodId = getIntent().getStringExtra("food");
         for(int i = 0; i < Data.foods.size(); i++) {
             if(Data.foods.get(i).objectId.equals(foodId)) {

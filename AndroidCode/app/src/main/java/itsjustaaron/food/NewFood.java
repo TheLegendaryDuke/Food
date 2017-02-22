@@ -193,7 +193,6 @@ public class NewFood extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_food);
-        Data.UI = this;
         searchResults = new ArrayList<>();
         onCraving = getIntent().getBooleanExtra("onCraving", true);
         ListView listView = (ListView) findViewById(R.id.searchFoodResult);

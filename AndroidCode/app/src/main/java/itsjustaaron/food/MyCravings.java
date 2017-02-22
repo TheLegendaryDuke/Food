@@ -20,7 +20,6 @@ public class MyCravings extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_cravings);
-        Data.UI = this;
         new AsyncTask<Void, Void, Void>() {
             ProgressDialog progressDialog;
 

@@ -64,10 +64,121 @@ public class Main extends AppCompatActivity
     public CravingFragment cravingFragment;
     public OfferFragment offerFragment;
 
-    private EditText annoyingSearch;
-
     private static ProgressDialog progressDialog;
     protected PagerAdapter adapter;
+
+    public void doMySearch(String query) {
+        progressDialog.show();
+        ArrayList searchCriteria;
+        if(Data.onCraving) {
+            searchCriteria = Data.cSearchCriteria;
+        }else {
+            searchCriteria = Data.oSearchCriteria;
+        }
+        searchCriteria.clear();
+        List<String> tagResult = Food.csvToList(query.toUpperCase());
+        boolean tagCheck = true;
+        for (int i = 0; i < tagResult.size(); i++) {
+            if (!Data.tags.contains(tagResult.get(i))) {
+                tagCheck = false;
+                break;
+            }
+        }
+        String whereClause = "";
+        if (tagCheck) {
+            searchCriteria.addAll(tagResult);
+            for (int i = 0; i < tagResult.size(); i++) {
+                whereClause = whereClause + "tags LIKE '%" + tagResult.get(i) + "%'";
+                if (i != tagResult.size() - 1) {
+                    whereClause = whereClause + " and ";
+                }
+            }
+        } else {
+            searchCriteria.add(query);
+            whereClause = "name LIKE '%" + query + "%'";
+        }
+        final String where = whereClause;
+        new AsyncTask<Void, Void, Integer>() {
+            @Override
+            public Integer doInBackground(Void... voids) {
+                List<Map> maps = Back.findObjectByWhere(where, Back.object.food).getCurPage();
+                List<String> foodIDs = new ArrayList<String>();
+                if (maps.size() != 0) {
+                    for (int i = 0; i < maps.size(); i++) {
+                        foodIDs.add(maps.get(i).get("objectId").toString());
+                    }
+                    String where = "foodID in (";
+                    for (int i = 0; i < foodIDs.size(); i++) {
+                        where = where + "'" + foodIDs.get(i) + "'";
+                        if (i != foodIDs.size() - 1) {
+                            where = where + ", ";
+                        }
+                    }
+                    where = where + ")";
+                    if(Data.onCraving) {
+                        Data.cravingPaged = Back.findObjectByWhere(where, Back.object.craving);
+                        List<Map> mapResult = Data.cravingPaged.getCurPage();
+                        if(mapResult.size() == 0) {
+                            return 1;
+                        }else {
+                            Data.cravings.clear();
+                            for (int i = 0; i < mapResult.size(); i++) {
+                                Map obj = mapResult.get(i);
+                                final Craving craving = new Craving(obj);
+                                Data.cravings.add(craving);
+                            }
+                        }
+                    }else {
+                        Data.offerPaged = Back.findObjectByWhere(where, Back.object.foodoffer);
+                        List<Map> mapResult = Data.offerPaged.getCurPage();
+                        if(mapResult.size() == 0) {
+                            return 1;
+                        }else {
+                            Data.foodOffers.clear();
+                            for (int i = 0; i < mapResult.size(); i++) {
+                                Map obj = mapResult.get(i);
+                                final FoodOffer foodOffer = new FoodOffer(obj);
+                                Data.foodOffers.add(foodOffer);
+                            }
+                        }
+                    }
+                }else {
+                    return 1;
+                }
+                return 0;
+            }
+
+            @Override
+            public void onPostExecute(Integer v) {
+                if(Data.onCraving) {
+                    if (v == 1) {
+                        Toast.makeText(getApplicationContext(), "Your search yields no results", Toast.LENGTH_SHORT).show();
+                    }else {
+                        searchCallBack();
+                    }
+                }else {
+                    if (v == 1) {
+                        Toast.makeText(getApplicationContext(), "Your search yields no results", Toast.LENGTH_SHORT).show();
+                    }else {
+                        searchCallBack();
+                    }
+                }
+            }
+        }.execute(new Void[]{});
+    }
+
+    public void search() {
+        MyEditText editText = (MyEditText) findViewById(R.id.menuSearchBar);
+        String search = editText.getText().toString();
+        if(search.equals("")) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+            editText.clearFocus();
+            editText.setHint("Search for a Food");
+            return;
+        }
+        doMySearch(search);
+    }
 
     public boolean checkUser(final Context context) {
         if (Data.user == null) {
@@ -97,8 +208,6 @@ public class Main extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Data.main = this;
-        Data.UI = this;
         Data.cravings = new ArrayList<>();
         Data.foods = new ArrayList<Food>();
         Data.fileDir = getFilesDir().toString();
@@ -127,18 +236,26 @@ public class Main extends AppCompatActivity
                 return null;
             }
         }.execute(new Void[]{});
-//
-//        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
         final MyEditText searchBar = (MyEditText) findViewById(R.id.menuSearchBar);
+        searchBar.setMain(this);
         searchBar.setCursorVisible(false);
         searchBar.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if(hasFocus) {
                     searchBar.setCursorVisible(true);
+                    searchBar.setHint("Press ENTER to search");
                 }else {
                     searchBar.setCursorVisible(false);
                 }
+            }
+        });
+
+        findViewById(R.id.search_bar_go).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                search();
             }
         });
 
@@ -280,9 +397,6 @@ public class Main extends AppCompatActivity
                     }
                 }
                 break;
-//            case R.id.search:
-//                onSearchRequested();
-//                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -323,16 +437,14 @@ public class Main extends AppCompatActivity
                     if(searchCriteria.size() == 0) {
                         if(Data.onCraving) {
                             Data.cravings.clear();
-                            cravingFragment.refresh(null);
+                            cravingFragment.refresh(cravingFragment.swipeRefreshLayout);
                         }else {
                             Data.foodOffers.clear();
-                            offerFragment.refresh(null);
+                            offerFragment.refresh(offerFragment.swipeRefreshLayout);
                         }
                     }else {
                         String query = Food.listToCsv(searchCriteria);
-                        Intent search = new Intent(Main.this, Searchable.class);
-                        search.putExtra(SearchManager.QUERY, query);
-                        startActivity(search);
+                        doMySearch(query);
                     }
                     criteriaContainer.removeAllViews();
                 }
@@ -341,6 +453,7 @@ public class Main extends AppCompatActivity
             smaller.addView(imageView);
             criteriaContainer.addView(smaller);
         }
+        progressDialog.dismiss();
     }
 
     @Override
@@ -417,6 +530,5 @@ public class Main extends AppCompatActivity
     @Override
     public void onResume() {
         super.onResume();
-        Data.UI = this;
     }
 }

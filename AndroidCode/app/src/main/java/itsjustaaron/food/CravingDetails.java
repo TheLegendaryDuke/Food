@@ -36,7 +36,6 @@ public class CravingDetails extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_craving_details);
-        Data.UI = this;
         progress = new ProgressDialog(this);
         progress.setMessage("Please wait...");
         final String cravingID = getIntent().getStringExtra("cravingID");

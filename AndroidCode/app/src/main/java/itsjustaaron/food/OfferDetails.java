@@ -21,7 +21,6 @@ public class OfferDetails extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_offer_details);
-        Data.UI = this;
         final String offerID = getIntent().getStringExtra("offerID");
         progress = new ProgressDialog(this);
         progress.setMessage("Please wait...");

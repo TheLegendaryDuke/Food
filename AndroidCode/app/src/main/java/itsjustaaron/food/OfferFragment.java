@@ -30,12 +30,13 @@ public class OfferFragment extends Fragment {
     View rootView;
     RecyclerView recyclerView;
     ProgressDialog wait;
+    public SwipeRefreshLayout swipeRefreshLayout;
 
     private class Start extends AsyncTask<Void, Void, Void> {
 
         @Override
         public void onPreExecute() {
-            wait.show();
+            swipeRefreshLayout.setRefreshing(true);
         }
 
         @Override
@@ -51,39 +52,32 @@ public class OfferFragment extends Fragment {
         @Override
         public void onPostExecute(Void v) {
             myAdapter.notifyDataSetChanged();
-            if(wait != null) {
-                wait.dismiss();
-            }
+            swipeRefreshLayout.setRefreshing(false);
         }
     };
 
     public void refresh(final SwipeRefreshLayout s) {
-        s.setRefreshing(false);
+        if(s != null) {
+            s.setRefreshing(true);
+        }
         if (Data.foodOffers.size() == 0 || Data.oSearchCriteria.size() == 0) {
             new Start().execute(new Void[]{});
         } else {
             new AsyncTask<Void, Void, Void>() {
 
                 @Override
-                public void onPreExecute() {
-                    wait.show();
-                }
-
-                @Override
                 public Void doInBackground(Void... voids) {
 
                     Data.foodOffers.clear();
                     String query = Food.listToCsv(Data.oSearchCriteria);
-                    Intent search = new Intent(getActivity(), Searchable.class);
-                    search.putExtra(SearchManager.QUERY, query);
-                    startActivity(search);
+                    ((Main)getActivity()).doMySearch(query);
                     return null;
                 }
 
                 @Override
                 public void onPostExecute(Void v) {
                     myAdapter.notifyDataSetChanged();
-                    wait.dismiss();
+                    s.setRefreshing(false);
                 }
             }.execute(new Void[]{});
         }
@@ -114,6 +108,7 @@ public class OfferFragment extends Fragment {
         if(!started) {
             started = true;
             final SwipeRefreshLayout srl = (SwipeRefreshLayout) rootView.findViewById(R.id.oSwipeRefresh);
+            swipeRefreshLayout = srl;
             srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {

@@ -24,7 +24,6 @@ public class MyOffers extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_offers);
-        Data.UI = this;
         new AsyncTask<Void, Void, Void>() {
             ProgressDialog progressDialog;
 

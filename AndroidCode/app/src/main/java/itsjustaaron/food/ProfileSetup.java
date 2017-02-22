@@ -40,7 +40,6 @@ public class ProfileSetup extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         imageUpdated = false;
         setContentView(R.layout.activity_profile_setup);
-        Data.UI = this;
         d = new ProgressDialog(this);
         d.setMessage("Please wait...");
         Toolbar toolbar = (Toolbar) findViewById(R.id.profileToolbar);
