@@ -38,6 +38,7 @@ public class ProfileSetup extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        getIntent();
         Data.handler = new MyHandler(this);
         super.onCreate(savedInstanceState);
         imageUpdated = false;
@@ -50,7 +51,7 @@ public class ProfileSetup extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Back");
         ((TextView) findViewById(R.id.profileEmail)).setText(Data.user.getEmail());
-        ((EditText) findViewById(R.id.profileName)).setText(Data.user.getProperty("name") == null ? "" : Data.user.getProperty("name").toString());
+        ((TextView) findViewById(R.id.profileName)).setText(Data.user.getProperty("name") == null ? "" : Data.user.getProperty("name").toString());
         ((EditText)findViewById(R.id.profileCity)).setText(Data.user.getProperty("city") == null ? "" : Data.user.getProperty("city").toString());
         ((EditText)findViewById(R.id.profileZip)).setText(Data.user.getProperty("zipCode") == null ? "" : Data.user.getProperty("zipCode").toString());
         Object address = Data.user.getProperty("address");
@@ -87,7 +88,7 @@ public class ProfileSetup extends AppCompatActivity {
                     }
                     imageUpdated = true;
                     Bitmap result = data.getExtras().getParcelable("data");
-                    File dest = new File(Data.fileDir + "/" + portrait);
+                    File dest = new File(Data.fileDir + "/users/" + Data.user.getObjectId() + "/" + portrait);
                     OutputStream out = new FileOutputStream(dest);
                     result.compress(Bitmap.CompressFormat.PNG, 100, out);
                     ((ImageView) findViewById(R.id.profileImage)).setImageBitmap(result);
@@ -97,7 +98,7 @@ public class ProfileSetup extends AppCompatActivity {
                             portrait = Data.user.getObjectId() + ".png";
                         }
                         imageUpdated = true;
-                        File dest = new File(Data.fileDir + "/" + portrait);
+                        File dest = new File(Data.fileDir + "/users/" + Data.user.getObjectId() + "/" + portrait);
                         FileOutputStream out = new FileOutputStream(dest);
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), rawImage);
                         bitmap = Bitmap.createScaledBitmap(bitmap, 200, 200, true);
@@ -115,20 +116,19 @@ public class ProfileSetup extends AppCompatActivity {
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Please wait...");
         progressDialog.show();
-        String name = ((EditText) findViewById(R.id.profileName)).getText().toString();
         String address = ((EditText) findViewById(R.id.profileAddress)).getText().toString();
 
-        Data.user.setProperty("name", name);
         Data.user.setProperty("address", address);
         Data.user.setProperty("city", ((EditText)findViewById(R.id.profileCity)).getText().toString());
         Data.user.setProperty("zipCode", ((EditText)findViewById(R.id.profileZip)).getText().toString());
+        Data.user.setProperty("portrait", portrait);
 
         new AsyncTask<Void, Void, Integer>() {
             @Override
             public Integer doInBackground(Void... voids) {
                 Back.updateUserData();
                 if (imageUpdated) {
-                    final File image = new File(Data.fileDir + "/" + Data.user.getObjectId() + "/" + portrait);
+                    final File image = new File(Data.fileDir + "/users/" + Data.user.getObjectId() + "/" + portrait);
                     Back.upload(image, "users/" + Data.user.getObjectId() + "/", true);
                 }
                 return 0;

@@ -127,6 +127,9 @@ public class Back {
         String local = Data.fileDir + fileDir;
         try {
             File file = new File(local);
+            if(!file.getParentFile().exists()){
+                file.getParentFile().mkdirs();
+            }
             file.createNewFile();
             URL realUrl = new URL(url);
             HttpURLConnection conn = (HttpURLConnection) realUrl.openConnection();

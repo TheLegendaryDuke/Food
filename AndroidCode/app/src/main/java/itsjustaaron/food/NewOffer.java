@@ -122,9 +122,9 @@ public class NewOffer extends AppCompatActivity {
         offer.put("offerer", Data.user.getProperty("name").toString());
         offer.put("offererPortrait", Data.user.getProperty("portrait").toString());
         new AsyncTask<Void, Void, Integer>() {
+            ProgressDialog progressDialog = new ProgressDialog(NewOffer.this);
             @Override
             public void onPreExecute() {
-                ProgressDialog progressDialog = new ProgressDialog(NewOffer.this);
                 progressDialog.setMessage("Please wait");
                 progressDialog.show();
             }
@@ -137,11 +137,13 @@ public class NewOffer extends AppCompatActivity {
                     try {
                         File newFile = new File(Data.fileDir + "/offers/offerers/" + Data.user.getObjectId() + ".png");
                         Bitmap bitmap = BitmapFactory.decodeFile(Data.fileDir + "/users/" + Data.user.getObjectId() + "/" + Data.user.getProperty("portrait").toString());
-                        newFile.mkdirs();
+                        if(!newFile.getParentFile().exists()){
+                            newFile.getParentFile().mkdirs();
+                        }
                         newFile.createNewFile();
                         OutputStream out = new FileOutputStream(newFile);
-                        bitmap.compress(Bitmap.CompressFormat.PNG, 0, out);
-                        Back.upload(newFile, "/offers/offerers/" + Data.user.getObjectId() + ".png", true);
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 10, out);
+                        Back.upload(newFile, "/offers/offerers/", true);
                     }catch (Exception e) {
                         Log.e("IO", e.toString(), e);
                     }
@@ -161,6 +163,7 @@ public class NewOffer extends AppCompatActivity {
             @Override
             public void onPostExecute(Integer i) {
                 Toast.makeText(NewOffer.this, "Success", Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
                 finish();
             }
         }.execute(new Void[]{});

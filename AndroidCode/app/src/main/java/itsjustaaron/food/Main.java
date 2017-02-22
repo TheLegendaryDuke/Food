@@ -266,22 +266,12 @@ public class Main extends AppCompatActivity
             ((TextView) navigationView.getHeaderView(0).findViewById(R.id.DrawerName)).setText("Guest");
         } else {
             ((TextView) navigationView.getHeaderView(0).findViewById(R.id.DrawerName)).setText((String) Data.user.getProperty("name"));
-            if (Data.user.getProperty("portrait") != "") {
+            if (!Data.user.getProperty("portrait").equals("")) {
                 //download the user portrait if there is one
-                final File portrait = new File(Data.fileDir + "/users/" + Data.user .getObjectId() + "/" + Data.user.getProperty("portrait").toString());
+                final File portrait = new File(Data.fileDir + "/users/" + Data.user.getObjectId() + "/" + Data.user.getProperty("portrait").toString());
                 if (portrait.exists()) {
                     ((ImageView) navigationView.getHeaderView(0).findViewById(R.id.userPortrait)).setImageBitmap(BitmapFactory.decodeFile(portrait.getAbsolutePath()));
                 } else {
-
-                    File dir = new File(Data.fileDir + "/users/");
-                    if (!dir.exists()) {
-                        dir.mkdir();
-                    }
-
-                    File subDir = new File(Data.fileDir + "/users/" + Data.user.getObjectId() + "/");
-                    if(!subDir.exists()) {
-                        subDir.mkdir();
-                    }
 
                     new AsyncTask<Void, Void, Void>() {
                         @Override
@@ -349,8 +339,8 @@ public class Main extends AppCompatActivity
 
     public void ProfileSetup(View view) {
         if(checkUser(this)) {
-            Intent intent = new Intent(Main.this, ProfileSetup.class);
-            startActivity(intent);
+            Intent intent = new Intent(this, ProfileSetup.class);
+            Main.this.startActivity(intent);
         }
     }
 
@@ -459,6 +449,7 @@ public class Main extends AppCompatActivity
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == 0) {
             if(resultCode == RESULT_OK) {
                 String id = data.getStringExtra("id");

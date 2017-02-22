@@ -39,6 +39,9 @@ public class CravingFragment extends Fragment {
 
         @Override
         public void onPreExecute() {
+            if(wait != null) {
+                wait.show();
+            }
             swipeRefreshLayout.setRefreshing(true);
         }
 
@@ -57,6 +60,7 @@ public class CravingFragment extends Fragment {
             mAdapter.notifyDataSetChanged();
             if(wait != null) {
                 wait.dismiss();
+                wait = null;
             }
             swipeRefreshLayout.setRefreshing(false);
         }

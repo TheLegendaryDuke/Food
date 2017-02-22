@@ -37,7 +37,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="20dp"
+                android:textStyle="bold"
+                android:textSize="30sp"
+                android:textAlignment="center"
+                android:id="@+id/profileName" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="30dp"
                 android:textSize="30sp"
                 android:textStyle="bold"
                 android:text="Email Address:"/>
@@ -49,25 +59,6 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="10dp"
                 android:textSize="30sp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:textSize="30sp"
-                android:textStyle="bold"
-                android:text="Alias/Nickname:" />
-
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:textSize="30sp"
-                android:hint="Please enter a nickname"
-                android:textAlignment="center"
-                android:id="@+id/profileName" />
 
             <TextView
                 android:layout_width="wrap_content"

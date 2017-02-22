@@ -58,5 +58,6 @@ public class OfferDetails extends AppCompatActivity {
         ((TextView)findViewById(R.id.offerDetailOfferer)).setText(offer.offerer);
         ((TextView)findViewById(R.id.offerDetailFoodLocation)).setText(offer.address + "\n" + offer.city + "\n" + offer.zipCode);
         ((TextView)findViewById(R.id.offerDetailFoodExpire)).setText(Data.standardDateFormat.format(offer.expire));
+        ((ImageView)findViewById(R.id.offerDetailOffererImage)).setImageBitmap(BitmapFactory.decodeFile(Data.fileDir + "/offers/offerers/" + offer.offererPortrait));
     }
 }

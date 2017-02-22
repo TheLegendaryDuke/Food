@@ -118,12 +118,8 @@ public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             ((TextView)v.findViewById(R.id.offerFoodPrice)).setText("$" + String.valueOf(foodOffer.price));
             if(foodOffer.offererPortrait != null && !foodOffer.offererPortrait.equals("")) {
                 final String path = "/offers/offerers/" + foodOffer.offererPortrait;
-                File file = new File(path);
+                File file = new File(Data.fileDir + path);
                 if(!file.exists()) {
-                    File dir = new File("/offers/offerers/");
-                    if(!dir.exists()) {
-                        dir.mkdirs();
-                    }
                     new AsyncTask<Void, Void, Void>() {
                         @Override
                         public Void doInBackground(Void... voids) {
@@ -135,7 +131,7 @@ public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                         }
                     }.execute(new Void[]{});
                 }else {
-                    ((ImageView) v.findViewById(R.id.offerOffererImage)).setImageBitmap(BitmapFactory.decodeFile(path));
+                    ((ImageView) v.findViewById(R.id.offerOffererImage)).setImageBitmap(BitmapFactory.decodeFile(Data.fileDir + path));
                 }
             }
             Date exp = foodOffer.expire;
