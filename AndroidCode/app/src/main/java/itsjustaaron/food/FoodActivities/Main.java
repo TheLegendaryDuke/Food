@@ -162,6 +162,8 @@ public class Main extends AppCompatActivity
         }.execute(new Void[]{});
     }
 
+    public void Scan(View view) {}
+
     public void search() {
         MyEditText editText = (MyEditText) findViewById(R.id.menuSearchBar);
         String search = editText.getText().toString();
