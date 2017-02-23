@@ -162,7 +162,9 @@ public class Main extends AppCompatActivity
         }.execute(new Void[]{});
     }
 
-    public void Scan(View view) {}
+    public void Scan(View view) {
+        offerFragment.start();
+    }
 
     public void search() {
         MyEditText editText = (MyEditText) findViewById(R.id.menuSearchBar);
@@ -301,7 +303,6 @@ public class Main extends AppCompatActivity
                         Data.onCraving = true;
                         return;
                     case 1:
-                        offerFragment.start();
                         findViewById(R.id.cSearchCriterias).setVisibility(View.GONE);
                         findViewById(R.id.oSearchCriterias).setVisibility(View.VISIBLE);
                         Data.onCraving = false;

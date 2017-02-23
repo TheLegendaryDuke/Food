@@ -38,7 +38,9 @@ public class OfferFragment extends Fragment {
 
         @Override
         public void onPreExecute() {
-            swipeRefreshLayout.setRefreshing(true);
+            if(started) {
+                swipeRefreshLayout.setRefreshing(true);
+            }
         }
 
         @Override
@@ -48,7 +50,8 @@ public class OfferFragment extends Fragment {
             for(File f : offerers.listFiles()) {
                 f.delete();
             }
-            ArrayList<Map> temp = new ArrayList<>(Back.getAll(Back.object.foodoffer).getCurPage());
+            Data.offerPaged = Back.findObjectByWhere("city='"+Data.user.getProperty("city")+"'",Back.object.foodoffer);
+            ArrayList<Map> temp = new ArrayList<>(Data.offerPaged.getCurPage());
             for (int i = 0; i < temp.size(); i++) {
                 Data.foodOffers.add(new FoodOffer(temp.get(i)));
             }
@@ -57,8 +60,14 @@ public class OfferFragment extends Fragment {
 
         @Override
         public void onPostExecute(Void v) {
-            myAdapter.notifyDataSetChanged();
-            swipeRefreshLayout.setRefreshing(false);
+            if(!started) {
+                getActivity().findViewById(R.id.findNear).setVisibility(View.GONE);
+                swipeRefreshLayout.setVisibility(View.VISIBLE);
+                started = true;
+            }else {
+                myAdapter.notifyDataSetChanged();
+                swipeRefreshLayout.setRefreshing(false);
+            }
         }
     };
 
@@ -89,7 +98,9 @@ public class OfferFragment extends Fragment {
         }
     }
 
-    public void notifyChanges() {myAdapter.notifyDataSetChanged();}
+    public void notifyChanges() {
+        myAdapter.notifyDataSetChanged();
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -112,7 +123,6 @@ public class OfferFragment extends Fragment {
 
     public void start() {
         if(!started) {
-            started = true;
             final SwipeRefreshLayout srl = (SwipeRefreshLayout) rootView.findViewById(R.id.oSwipeRefresh);
             swipeRefreshLayout = srl;
             srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
