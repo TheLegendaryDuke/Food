@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -42,6 +43,10 @@ public class OfferFragment extends Fragment {
         @Override
         public Void doInBackground(Void... voids) {
             Data.foodOffers.clear();
+            File offerers = new File(Data.fileDir + "/offers/offerers/");
+            for(File f : offerers.listFiles()) {
+                f.delete();
+            }
             ArrayList<Map> temp = new ArrayList<>(Back.getAll(Back.object.foodoffer).getCurPage());
             for (int i = 0; i < temp.size(); i++) {
                 Data.foodOffers.add(new FoodOffer(temp.get(i)));

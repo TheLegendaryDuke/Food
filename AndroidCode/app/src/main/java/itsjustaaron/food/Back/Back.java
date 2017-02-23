@@ -137,6 +137,7 @@ public class Back {
             conn.connect();
             InputStream is = conn.getInputStream();
             Bitmap bm = BitmapFactory.decodeStream(is);
+            Log.d("downloadsize", String.valueOf(bm.getByteCount()));
             FileOutputStream fos = new FileOutputStream(local);
             ByteArrayOutputStream outstream = new ByteArrayOutputStream();
             bm.compress(Bitmap.CompressFormat.PNG, 100, outstream);

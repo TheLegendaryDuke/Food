@@ -127,7 +127,7 @@ public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                             return null;
                         }
                         public void onPostExecute(Void voi) {
-                            ((ImageView)v.findViewById(R.id.offerOffererImage)).setImageBitmap(BitmapFactory.decodeFile(path));
+                            ((ImageView)v.findViewById(R.id.offerOffererImage)).setImageBitmap(BitmapFactory.decodeFile(Data.fileDir + path));
                         }
                     }.execute(new Void[]{});
                 }else {

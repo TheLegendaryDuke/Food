@@ -128,8 +128,19 @@ public class ProfileSetup extends AppCompatActivity {
             public Integer doInBackground(Void... voids) {
                 Back.updateUserData();
                 if (imageUpdated) {
-                    final File image = new File(Data.fileDir + "/users/" + Data.user.getObjectId() + "/" + portrait);
-                    Back.upload(image, "users/" + Data.user.getObjectId() + "/", true);
+                    try {
+                        final File image = new File(Data.fileDir + "/users/" + Data.user.getObjectId() + "/" + portrait);
+                        Back.upload(image, "users/" + Data.user.getObjectId() + "/", true);
+                        File newFile = new File(Data.fileDir + "/offers/offerers/" + portrait);
+                        if (!newFile.getParentFile().exists()) {
+                            newFile.getParentFile().mkdirs();
+                        }
+                        OutputStream out = new FileOutputStream(newFile);
+                        BitmapFactory.decodeFile(Data.fileDir + "/users/" + Data.user.getObjectId() + "/" + portrait).compress(Bitmap.CompressFormat.PNG, 10, out);
+                        Back.upload(newFile, "offers/offerers/", true);
+                    }catch (Exception e){
+                        Log.e("file", e.toString(), e);
+                    }
                 }
                 return 0;
             }

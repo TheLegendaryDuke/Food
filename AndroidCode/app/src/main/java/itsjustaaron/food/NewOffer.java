@@ -143,7 +143,7 @@ public class NewOffer extends AppCompatActivity {
                         newFile.createNewFile();
                         OutputStream out = new FileOutputStream(newFile);
                         bitmap.compress(Bitmap.CompressFormat.PNG, 10, out);
-                        Back.upload(newFile, "/offers/offerers/", true);
+                        Back.upload(newFile, "offers/offerers/", true);
                     }catch (Exception e) {
                         Log.e("IO", e.toString(), e);
                     }
