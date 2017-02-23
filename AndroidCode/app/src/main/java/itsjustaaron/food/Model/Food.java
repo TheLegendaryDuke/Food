@@ -1,4 +1,4 @@
-package itsjustaaron.food;
+package itsjustaaron.food.Model;
 
 import java.util.ArrayList;
 import java.util.HashMap;

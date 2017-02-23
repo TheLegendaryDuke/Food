@@ -1,4 +1,4 @@
-package itsjustaaron.food;
+package itsjustaaron.food.FoodActivities;
 
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
@@ -13,6 +13,10 @@ import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
 import itsjustaaron.food.Back.MyHandler;
 import itsjustaaron.food.Back.PagedList;
+import itsjustaaron.food.Model.Craving;
+import itsjustaaron.food.Model.Food;
+import itsjustaaron.food.R;
+import itsjustaaron.food.Utilities.BasicFoodAdapter;
 
 public class MyCravings extends AppCompatActivity {
     ArrayList<Craving> cravings = new ArrayList<>();

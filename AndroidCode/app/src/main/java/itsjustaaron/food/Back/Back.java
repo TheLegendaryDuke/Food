@@ -4,16 +4,12 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.backendless.Backendless;
-import com.backendless.BackendlessCollection;
 import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessException;
 import com.backendless.exceptions.BackendlessFault;
-import com.backendless.geo.IBackendlessLocationListener;
 import com.backendless.persistence.BackendlessDataQuery;
 import com.backendless.persistence.QueryOptions;
 import com.backendless.persistence.local.UserIdStorageFactory;
@@ -24,15 +20,11 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Collections;
-import java.util.Date;
 import java.util.Map;
 
-import itsjustaaron.food.Craving;
-import itsjustaaron.food.Food;
-import itsjustaaron.food.FoodOffer;
-import itsjustaaron.food.Offer;
-import itsjustaaron.food.R;
+import itsjustaaron.food.Model.Craving;
+import itsjustaaron.food.Model.Food;
+import itsjustaaron.food.Model.Offer;
 
 /**
  * Created by Aaron-Home on 2017-02-11.

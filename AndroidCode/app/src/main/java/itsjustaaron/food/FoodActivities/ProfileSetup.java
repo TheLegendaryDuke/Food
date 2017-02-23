@@ -1,4 +1,4 @@
-package itsjustaaron.food;
+package itsjustaaron.food.FoodActivities;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -21,13 +21,13 @@ import android.widget.Toast;
 
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 
 import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
 import itsjustaaron.food.Back.MyHandler;
+import itsjustaaron.food.R;
 
 
 public class ProfileSetup extends AppCompatActivity {

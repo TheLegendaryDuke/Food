@@ -1,4 +1,4 @@
-package itsjustaaron.food;
+package itsjustaaron.food.Model;
 
 import android.util.Log;
 
@@ -8,6 +8,7 @@ import java.util.Map;
 
 import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
+import itsjustaaron.food.Model.Food;
 
 /**
  * Created by aozhang on 2/1/2017.

@@ -1,15 +1,12 @@
-package itsjustaaron.food;
+package itsjustaaron.food.FoodActivities;
 
 import android.app.ProgressDialog;
-import android.app.SearchManager;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +17,10 @@ import java.util.Map;
 
 import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
+import itsjustaaron.food.Model.Food;
+import itsjustaaron.food.Model.FoodOffer;
+import itsjustaaron.food.R;
+import itsjustaaron.food.Utilities.EndlessScroll;
 
 /**
  * Created by Aaron-Work on 8/7/2016.

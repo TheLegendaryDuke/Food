@@ -1,4 +1,4 @@
-package itsjustaaron.food;
+package itsjustaaron.food.FoodActivities;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -20,6 +20,9 @@ import java.util.Date;
 
 import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
+import itsjustaaron.food.Model.Craving;
+import itsjustaaron.food.Model.FoodOffer;
+import itsjustaaron.food.R;
 
 /**
  * Created by aozhang on 1/18/2017.

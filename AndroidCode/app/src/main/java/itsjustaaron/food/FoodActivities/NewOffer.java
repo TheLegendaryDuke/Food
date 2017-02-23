@@ -1,4 +1,4 @@
-package itsjustaaron.food;
+package itsjustaaron.food.FoodActivities;
 
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
@@ -32,6 +32,8 @@ import java.util.TimeZone;
 import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
 import itsjustaaron.food.Back.MyHandler;
+import itsjustaaron.food.Model.Food;
+import itsjustaaron.food.R;
 
 public class NewOffer extends AppCompatActivity {
     private Food food;

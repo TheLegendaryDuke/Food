@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="itsjustaaron.food.Main">
+    tools:context="itsjustaaron.food.FoodActivities.Main">
 
 <LinearLayout
     android:layout_width="match_parent"
@@ -52,7 +52,7 @@
                             android:layout_toEndOf="@id/search_bar_icon"
                             android:layout_toStartOf="@id/search_bar_go"
                             android:scrollbars="none">
-                                <itsjustaaron.food.MyEditText
+                                <itsjustaaron.food.FoodActivities.MyEditText
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:background="@color/lightOrange"

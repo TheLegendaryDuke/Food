@@ -1,17 +1,13 @@
-package itsjustaaron.food;
+package itsjustaaron.food.FoodActivities;
 
 import android.app.ProgressDialog;
-import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
@@ -23,17 +19,12 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -49,6 +40,10 @@ import java.util.TimeZone;
 import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
 import itsjustaaron.food.Back.MyHandler;
+import itsjustaaron.food.Model.Craving;
+import itsjustaaron.food.Model.Food;
+import itsjustaaron.food.Model.FoodOffer;
+import itsjustaaron.food.R;
 
 
 //TODO: side nav actions, guest restriction

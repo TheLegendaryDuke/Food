@@ -1,4 +1,4 @@
-package itsjustaaron.food;
+package itsjustaaron.food.FoodActivities;
 
 import android.content.Context;
 import android.util.AttributeSet;

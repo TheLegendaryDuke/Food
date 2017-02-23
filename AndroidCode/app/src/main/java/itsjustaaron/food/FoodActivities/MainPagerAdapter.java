@@ -1,10 +1,8 @@
-package itsjustaaron.food;
+package itsjustaaron.food.FoodActivities;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-
-import itsjustaaron.food.Back.Data;
 
 /**
  * Created by Aaron-Work on 8/7/2016.
@@ -44,7 +42,7 @@ public class MainPagerAdapter extends FragmentPagerAdapter {
             case 0:
                 return "Cravings";
             case 1:
-                return "Offers";
+                return "Special Offers";
             default:
                 return null;
         }

@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity
-            android:name=".Welcome"
+            android:name=".FoodActivities.Welcome"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,30 +22,30 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Main"
+            android:name=".FoodActivities.Main"
             android:label="@string/title_activity_main"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
         <activity
-            android:name=".ProfileSetup"
-            android:parentActivityName=".Main"
+            android:name=".FoodActivities.ProfileSetup"
+            android:parentActivityName=".FoodActivities.Main"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".NewFood"
-            android:parentActivityName=".Main"
+            android:name=".FoodActivities.NewFood"
+            android:parentActivityName=".FoodActivities.Main"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".CravingDetails"
-            android:parentActivityName=".Main" />
-        <activity android:name=".NewOffer" />
-        <activity android:name=".OfferDetails" />
-        <activity android:name=".MyCravings"
-            android:parentActivityName=".Main"/>
-        <activity android:name=".MyOffers" />
-        <activity android:name=".Options"
-            android:parentActivityName=".Main"/>
+            android:name=".FoodActivities.CravingDetails"
+            android:parentActivityName=".FoodActivities.Main" />
+        <activity android:name=".FoodActivities.NewOffer" />
+        <activity android:name=".FoodActivities.OfferDetails" />
+        <activity android:name=".FoodActivities.MyCravings"
+            android:parentActivityName=".FoodActivities.Main"/>
+        <activity android:name=".FoodActivities.MyOffers" />
+        <activity android:name=".FoodActivities.Options"
+            android:parentActivityName=".FoodActivities.Main"/>
     </application>
 
 </manifest>

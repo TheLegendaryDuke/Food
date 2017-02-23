@@ -1,4 +1,4 @@
-package itsjustaaron.food;
+package itsjustaaron.food.Utilities;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;

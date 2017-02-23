@@ -1,4 +1,4 @@
-package itsjustaaron.food;
+package itsjustaaron.food.FoodActivities;
 
 import android.app.ProgressDialog;
 import android.graphics.BitmapFactory;
@@ -11,6 +11,8 @@ import android.widget.TextView;
 import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
 import itsjustaaron.food.Back.MyHandler;
+import itsjustaaron.food.Model.Offer;
+import itsjustaaron.food.R;
 
 public class OfferDetails extends AppCompatActivity {
 

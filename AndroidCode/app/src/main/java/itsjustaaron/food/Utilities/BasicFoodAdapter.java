@@ -1,4 +1,4 @@
-package itsjustaaron.food;
+package itsjustaaron.food.Utilities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,6 +15,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import itsjustaaron.food.Back.Data;
+import itsjustaaron.food.Model.Craving;
+import itsjustaaron.food.FoodActivities.CravingDetails;
+import itsjustaaron.food.Model.Food;
+import itsjustaaron.food.Model.FoodOffer;
+import itsjustaaron.food.FoodActivities.OfferDetails;
+import itsjustaaron.food.R;
 
 /**
  * Created by aozhang on 2/10/2017.

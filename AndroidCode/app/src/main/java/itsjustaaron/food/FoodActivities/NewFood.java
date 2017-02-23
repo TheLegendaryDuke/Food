@@ -1,4 +1,4 @@
-package itsjustaaron.food;
+package itsjustaaron.food.FoodActivities;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -23,7 +23,6 @@ import android.widget.CheckedTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,6 +40,8 @@ import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
 import itsjustaaron.food.Back.MyHandler;
 import itsjustaaron.food.Back.PagedList;
+import itsjustaaron.food.Model.Food;
+import itsjustaaron.food.R;
 
 
 public class NewFood extends AppCompatActivity {

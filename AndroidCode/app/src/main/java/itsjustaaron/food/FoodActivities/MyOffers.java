@@ -1,8 +1,7 @@
-package itsjustaaron.food;
+package itsjustaaron.food.FoodActivities;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +15,10 @@ import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
 import itsjustaaron.food.Back.MyHandler;
 import itsjustaaron.food.Back.PagedList;
+import itsjustaaron.food.Model.Food;
+import itsjustaaron.food.Model.FoodOffer;
+import itsjustaaron.food.R;
+import itsjustaaron.food.Utilities.BasicFoodAdapter;
 
 public class MyOffers extends AppCompatActivity {
 

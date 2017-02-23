@@ -1,16 +1,9 @@
-package itsjustaaron.food;
+package itsjustaaron.food.Model;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,9 +17,9 @@ import itsjustaaron.food.Back.PagedList;
  */
 public class Craving {
     public String objectId;
-    Food food;
-    int numFollowers;
-    boolean following;
+    public Food food;
+    public int numFollowers;
+    public boolean following;
 
     public Craving(Map map) {
         this.objectId = map.get("objectId").toString();

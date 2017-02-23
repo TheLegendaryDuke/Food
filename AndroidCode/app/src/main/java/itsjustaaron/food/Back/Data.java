@@ -1,22 +1,14 @@
 package itsjustaaron.food.Back;
 
-import android.app.Activity;
-import android.content.Context;
-import android.widget.LinearLayout;
-
-import com.backendless.BackendlessCollection;
 import com.backendless.BackendlessUser;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Map;
 
-import itsjustaaron.food.Craving;
-import itsjustaaron.food.CravingFragment;
-import itsjustaaron.food.Food;
-import itsjustaaron.food.FoodOffer;
-import itsjustaaron.food.Main;
-import itsjustaaron.food.OfferFragment;
+import itsjustaaron.food.Model.Craving;
+import itsjustaaron.food.Model.Food;
+import itsjustaaron.food.Model.FoodOffer;
 
 /**
  * Created by Aaron-Work on 8/4/2016.

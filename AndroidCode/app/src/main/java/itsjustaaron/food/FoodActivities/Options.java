@@ -1,10 +1,11 @@
-package itsjustaaron.food;
+package itsjustaaron.food.FoodActivities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import itsjustaaron.food.Back.Data;
 import itsjustaaron.food.Back.MyHandler;
+import itsjustaaron.food.R;
 
 public class Options extends AppCompatActivity {
 
