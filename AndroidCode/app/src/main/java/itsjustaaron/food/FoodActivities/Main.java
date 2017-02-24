@@ -300,13 +300,13 @@ public class Main extends AppCompatActivity
                     case 0:
                         findViewById(R.id.oSearchCriterias).setVisibility(View.GONE);
                         findViewById(R.id.cSearchCriterias).setVisibility(View.VISIBLE);
-                        //findViewById(R.id.addNew).setVisibility(View.VISIBLE);
+                        findViewById(R.id.addNew).setVisibility(View.VISIBLE);
                         Data.onCraving = true;
                         return;
                     case 1:
                         findViewById(R.id.cSearchCriterias).setVisibility(View.GONE);
                         findViewById(R.id.oSearchCriterias).setVisibility(View.VISIBLE);
-                        //findViewById(R.id.addNew).setVisibility(View.GONE);
+                        findViewById(R.id.addNew).setVisibility(View.GONE);
                         Data.onCraving = false;
                         return;
                     default:
@@ -383,8 +383,6 @@ public class Main extends AppCompatActivity
                     next.putExtra("onCraving", onCraving);
                     if(onCraving) {
                         startActivity(next);
-                    }else {
-                        startActivityForResult(next, 0);
                     }
                 }
                 break;
@@ -447,19 +445,6 @@ public class Main extends AppCompatActivity
         progressDialog.dismiss();
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 0) {
-            if(resultCode == RESULT_OK) {
-                String id = data.getStringExtra("id");
-                Intent intent = new Intent(this, NewOffer.class);
-                intent.putExtra("food", id);
-                startActivity(intent);
-            }
-        }
-    }
-
     //Side drawer actions
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -501,11 +486,6 @@ public class Main extends AppCompatActivity
                 case R.id.drawerFavorites:
                     Intent myCravings = new Intent(this, MyCravings.class);
                     startActivity(myCravings);
-                    break;
-
-                case R.id.drawerOffer:
-                    Intent myOffers = new Intent(this, MyOffers.class);
-                    startActivity(myOffers);
                     break;
 
                 case R.id.drawerOption:

@@ -39,11 +39,9 @@
         <activity
             android:name=".FoodActivities.CravingDetails"
             android:parentActivityName=".FoodActivities.Main" />
-        <activity android:name=".FoodActivities.NewOffer" />
         <activity android:name=".FoodActivities.OfferDetails" />
         <activity android:name=".FoodActivities.MyCravings"
             android:parentActivityName=".FoodActivities.Main"/>
-        <activity android:name=".FoodActivities.MyOffers" />
         <activity android:name=".FoodActivities.Options"
             android:parentActivityName=".FoodActivities.Main"/>
     </application>

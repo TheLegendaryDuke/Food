@@ -83,13 +83,6 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/internalID3"
                 android:id="@+id/detailCravingOffers"/>
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Propose an offer"
-                android:gravity="center"
-                android:id="@+id/proposeOffer"
-                android:layout_below="@id/detailCravingOffers"/>
         </RelativeLayout>
     </ScrollView>
 </RelativeLayout>
