@@ -1,6 +1,9 @@
 package itsjustaaron.food.Model;
 
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.ImageView;
 
 import java.io.File;
 import java.util.Date;
@@ -9,6 +12,7 @@ import java.util.Map;
 import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
 import itsjustaaron.food.Model.Food;
+import itsjustaaron.food.R;
 
 /**
  * Created by aozhang on 2/1/2017.
@@ -57,6 +61,13 @@ public class FoodOffer {
                 Back.downloadToLocal(path);
             }
             Data.foods.add(food);
+        }
+        if (offererPortrait != null && !offererPortrait.equals("")) {
+            final String path = "/offers/offerers/" + offererPortrait;
+            File file = new File(Data.fileDir + path);
+            if (!file.exists()) {
+                Back.downloadToLocal(path);
+            }
         }
     }
 }

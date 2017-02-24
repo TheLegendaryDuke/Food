@@ -121,33 +121,10 @@ public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                 ((TextView) v.findViewById(R.id.offerFoodName)).setText(foodOffer.food.name);
                 ((TextView) v.findViewById(R.id.offerFoodCity)).setText(foodOffer.city);
                 ((TextView) v.findViewById(R.id.offerFoodPrice)).setText("$" + String.valueOf(foodOffer.price));
-                    if (foodOffer.offererPortrait != null && !foodOffer.offererPortrait.equals("")) {
-                        try {
-                            update.acquire(1);
-                        } catch (Exception e) {
-                            Log.e("sync", "somethings wrong", e);
-                        }
-                        final String path = "/offers/offerers/" + foodOffer.offererPortrait;
-                        File file = new File(Data.fileDir + path);
-                        if (!file.exists()) {
-                            new AsyncTask<Void, Void, Void>() {
-                                @Override
-                                public Void doInBackground(Void... voids) {
-                                    Back.downloadToLocal(path);
-                                    update.release();
-                                    return null;
-                                }
-
-                                //TODO: synchronization here
-                                public void onPostExecute(Void voi) {
-                                    ((ImageView) v.findViewById(R.id.offerOffererImage)).setImageBitmap(BitmapFactory.decodeFile(Data.fileDir + path));
-                                }
-                            }.execute(new Void[]{});
-                        } else {
-                            ((ImageView) v.findViewById(R.id.offerOffererImage)).setImageBitmap(BitmapFactory.decodeFile(Data.fileDir + path));
-                            update.release();
-                        }
-                    }
+                if (foodOffer.offererPortrait != null && !foodOffer.offererPortrait.equals("")) {
+                    final String path = "/offers/offerers/" + foodOffer.offererPortrait;
+                    ((ImageView) v.findViewById(R.id.offerOffererImage)).setImageBitmap(BitmapFactory.decodeFile(Data.fileDir + path));
+                }
                 Date exp = foodOffer.expire;
                 ((TextView) v.findViewById(R.id.offerFoodExpire)).setText("Expiring: " + Data.standardDateFormat.format(exp));
                 image.setImageBitmap(BitmapFactory.decodeFile(fileDir + "/foods/" + foodOffer.food.image));
