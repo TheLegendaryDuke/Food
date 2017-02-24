@@ -19,7 +19,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -52,14 +51,14 @@ public class ProfileSetup extends AppCompatActivity {
         getSupportActionBar().setTitle("Back");
         ((TextView) findViewById(R.id.profileEmail)).setText(Data.user.getEmail());
         ((TextView) findViewById(R.id.profileName)).setText(Data.user.getProperty("name") == null ? "" : Data.user.getProperty("name").toString());
-        ((EditText)findViewById(R.id.profileCity)).setText(Data.user.getProperty("city") == null ? "" : Data.user.getProperty("city").toString());
-        ((EditText)findViewById(R.id.profileZip)).setText(Data.user.getProperty("zipCode") == null ? "" : Data.user.getProperty("zipCode").toString());
+        ((EditText) findViewById(R.id.profileCity)).setText(Data.user.getProperty("city") == null ? "" : Data.user.getProperty("city").toString());
+        ((EditText) findViewById(R.id.profileZip)).setText(Data.user.getProperty("zipCode") == null ? "" : Data.user.getProperty("zipCode").toString());
         Object address = Data.user.getProperty("address");
         ((EditText) findViewById(R.id.profileAddress)).setText(address == null ? "" : address.toString());
-        if(!Data.user.getProperty("portrait").equals("")) {
+        if (!Data.user.getProperty("portrait").equals("")) {
             final File portrait = new File(Data.fileDir + "/users/" + Data.user.getObjectId() + "/" + Data.user.getProperty("portrait").toString());
             //portrait must be there for custom-portrait user since Main downloads it
-                ((ImageView) findViewById(R.id.profileImage)).setImageBitmap(BitmapFactory.decodeFile(portrait.getAbsolutePath()));
+            ((ImageView) findViewById(R.id.profileImage)).setImageBitmap(BitmapFactory.decodeFile(portrait.getAbsolutePath()));
         }
     }
 
@@ -83,7 +82,7 @@ public class ProfileSetup extends AppCompatActivity {
         } else {
             try {
                 if (resultCode == RESULT_OK) {
-                    if(portrait.equals("")) {
+                    if (portrait.equals("")) {
                         portrait = Data.user.getObjectId() + ".png";
                     }
                     imageUpdated = true;
@@ -94,7 +93,7 @@ public class ProfileSetup extends AppCompatActivity {
                     ((ImageView) findViewById(R.id.profileImage)).setImageBitmap(result);
                 } else {
                     if (rawImage != null) {
-                        if(portrait.equals("")) {
+                        if (portrait.equals("")) {
                             portrait = Data.user.getObjectId() + ".png";
                         }
                         imageUpdated = true;
@@ -119,8 +118,8 @@ public class ProfileSetup extends AppCompatActivity {
         String address = ((EditText) findViewById(R.id.profileAddress)).getText().toString();
 
         Data.user.setProperty("address", address);
-        Data.user.setProperty("city", ((EditText)findViewById(R.id.profileCity)).getText().toString());
-        Data.user.setProperty("zipCode", ((EditText)findViewById(R.id.profileZip)).getText().toString());
+        Data.user.setProperty("city", ((EditText) findViewById(R.id.profileCity)).getText().toString());
+        Data.user.setProperty("zipCode", ((EditText) findViewById(R.id.profileZip)).getText().toString());
         Data.user.setProperty("portrait", portrait);
 
         new AsyncTask<Void, Void, Integer>() {
@@ -138,7 +137,7 @@ public class ProfileSetup extends AppCompatActivity {
                         OutputStream out = new FileOutputStream(newFile);
                         BitmapFactory.decodeFile(Data.fileDir + "/users/" + Data.user.getObjectId() + "/" + portrait).compress(Bitmap.CompressFormat.PNG, 10, out);
                         Back.upload(newFile, "offers/offerers/", true);
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         Log.e("file", e.toString(), e);
                     }
                 }
@@ -152,7 +151,7 @@ public class ProfileSetup extends AppCompatActivity {
                 progressDialog.dismiss();
                 finish();
             }
-        }.execute(new Void[]{});
+        }.execute();
     }
 
     public void pickPhoto(View view) {
@@ -182,7 +181,7 @@ public class ProfileSetup extends AppCompatActivity {
                         d.dismiss();
                         Toast.makeText(getApplicationContext(), "Success, please check your email to set a new password", Toast.LENGTH_LONG).show();
                     }
-                }.execute(new Void[]{});
+                }.execute();
             }
         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override

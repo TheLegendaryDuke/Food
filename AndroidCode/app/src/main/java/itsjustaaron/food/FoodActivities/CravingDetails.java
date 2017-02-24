@@ -62,7 +62,7 @@ public class CravingDetails extends AppCompatActivity {
             public void onPostExecute(Void v) {
                 updateUI();
             }
-        }.execute(new Void[]{});
+        }.execute();
     }
 
     public void updateUI() {
@@ -87,11 +87,11 @@ public class CravingDetails extends AppCompatActivity {
         propose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(Data.user != null) {
+                if (Data.user != null) {
                     Intent next = new Intent(getApplicationContext(), NewOffer.class);
                     next.putExtra("food", craving.food.objectId);
                     startActivity(next);
-                }else {
+                } else {
                     Toast.makeText(CravingDetails.this, "Please login first!", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -150,6 +150,6 @@ public class CravingDetails extends AppCompatActivity {
                 }
                 progress.dismiss();
             }
-        }.execute(new Void[]{});
+        }.execute();
     }
 }

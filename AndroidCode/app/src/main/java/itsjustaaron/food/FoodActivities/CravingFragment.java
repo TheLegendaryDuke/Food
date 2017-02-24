@@ -27,50 +27,19 @@ import itsjustaaron.food.Utilities.EndlessScroll;
 public class CravingFragment extends Fragment {
 
     public View rootView;
+    public SwipeRefreshLayout swipeRefreshLayout;
+    ProgressDialog wait;
     private RecyclerView mRecyclerView;
     private LinearLayoutManager mLayoutManager;
     private MyAdapter mAdapter;
-    public SwipeRefreshLayout swipeRefreshLayout;
-    ProgressDialog wait;
-
-    private class start extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        public void onPreExecute() {
-            if(wait != null) {
-                wait.show();
-            }
-            swipeRefreshLayout.setRefreshing(true);
-        }
-
-        @Override
-        public Void doInBackground(Void... voids) {
-                Data.cravings.clear();
-                ArrayList<Map> temp = new ArrayList<>(Back.getAll(Back.object.craving).getCurPage());
-                for (int i = 0; i < temp.size(); i++) {
-                    Data.cravings.add(new Craving(temp.get(i)));
-                }
-            return null;
-        }
-
-        @Override
-        public void onPostExecute(Void v) {
-            mAdapter.notifyDataSetChanged();
-            if(wait != null) {
-                wait.dismiss();
-                wait = null;
-            }
-            swipeRefreshLayout.setRefreshing(false);
-        }
-    };
 
     public void refresh(final SwipeRefreshLayout s) {
-        if(s != null) {
+        if (s != null) {
             s.setRefreshing(true);
         }
         if (Data.foodOffers.size() == 0 || Data.cSearchCriteria.size() == 0) {
-            new start().execute(new Void[]{});
-        }else {
+            new start().execute();
+        } else {
             new AsyncTask<Void, Void, Void>() {
 
                 @Override
@@ -78,7 +47,7 @@ public class CravingFragment extends Fragment {
 
                     Data.cravings.clear();
                     String query = Food.listToCsv(Data.cSearchCriteria);
-                    ((Main)getActivity()).doMySearch(query);
+                    ((Main) getActivity()).doMySearch(query);
                     return null;
                 }
 
@@ -87,7 +56,7 @@ public class CravingFragment extends Fragment {
                     mAdapter.notifyDataSetChanged();
                     swipeRefreshLayout.setRefreshing(false);
                 }
-            }.execute(new Void[]{});
+            }.execute();
         }
     }
 
@@ -120,7 +89,7 @@ public class CravingFragment extends Fragment {
             }
         });
 
-        new start().execute(new Void[]{});
+        new start().execute();
 
         final EndlessScroll endlessScroll = new EndlessScroll(mLayoutManager) {
             @Override
@@ -128,13 +97,13 @@ public class CravingFragment extends Fragment {
                 new AsyncTask<Void, Void, Void>() {
                     @Override
                     public Void doInBackground(Void... voids) {
-                            Data.cravingPaged.nextPage();
-                            ArrayList<Map> temp = new ArrayList<Map>(Data.cravingPaged.getCurPage());
-                            for (int i = 0; i < temp.size(); i++) {
-                                Map obj = temp.get(i);
-                                Craving craving = new Craving(obj);
-                                Data.cravings.add(craving);
-                            }
+                        Data.cravingPaged.nextPage();
+                        ArrayList<Map> temp = new ArrayList<Map>(Data.cravingPaged.getCurPage());
+                        for (int i = 0; i < temp.size(); i++) {
+                            Map obj = temp.get(i);
+                            Craving craving = new Craving(obj);
+                            Data.cravings.add(craving);
+                        }
                         return null;
                     }
 
@@ -142,7 +111,7 @@ public class CravingFragment extends Fragment {
                     public void onPostExecute(Void v) {
                         mAdapter.notifyDataSetChanged();
                     }
-                }.execute(new Void[]{});
+                }.execute();
             }
         };
         mRecyclerView.addOnScrollListener(endlessScroll);
@@ -152,5 +121,36 @@ public class CravingFragment extends Fragment {
 
     public void notifyChanges() {
         mAdapter.notifyDataSetChanged();
+    }
+
+    private class start extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        public void onPreExecute() {
+            if (wait != null) {
+                wait.show();
+            }
+            swipeRefreshLayout.setRefreshing(true);
+        }
+
+        @Override
+        public Void doInBackground(Void... voids) {
+            Data.cravings.clear();
+            ArrayList<Map> temp = new ArrayList<>(Back.getAll(Back.object.craving).getCurPage());
+            for (int i = 0; i < temp.size(); i++) {
+                Data.cravings.add(new Craving(temp.get(i)));
+            }
+            return null;
+        }
+
+        @Override
+        public void onPostExecute(Void v) {
+            mAdapter.notifyDataSetChanged();
+            if (wait != null) {
+                wait.dismiss();
+                wait = null;
+            }
+            swipeRefreshLayout.setRefreshing(false);
+        }
     }
 }

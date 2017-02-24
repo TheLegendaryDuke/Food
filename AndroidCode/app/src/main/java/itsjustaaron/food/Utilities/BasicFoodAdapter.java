@@ -15,11 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import itsjustaaron.food.Back.Data;
-import itsjustaaron.food.Model.Craving;
 import itsjustaaron.food.FoodActivities.CravingDetails;
+import itsjustaaron.food.FoodActivities.OfferDetails;
+import itsjustaaron.food.Model.Craving;
 import itsjustaaron.food.Model.Food;
 import itsjustaaron.food.Model.FoodOffer;
-import itsjustaaron.food.FoodActivities.OfferDetails;
 import itsjustaaron.food.R;
 
 /**
@@ -37,15 +37,15 @@ public class BasicFoodAdapter<T> extends ArrayAdapter<T> {
         super(context, -1, data);
         this.context = context;
         this.data = data;
-        if(data.get(0) instanceof FoodOffer) {
+        if (data.get(0) instanceof FoodOffer) {
             forCraving = false;
-            for(T t : data) {
-                foods.add(((FoodOffer)t).food);
+            for (T t : data) {
+                foods.add(((FoodOffer) t).food);
             }
-        }else {
+        } else {
             forCraving = true;
-            for(T t : data) {
-                foods.add(((Craving)t).food);
+            for (T t : data) {
+                foods.add(((Craving) t).food);
             }
         }
     }
@@ -60,7 +60,7 @@ public class BasicFoodAdapter<T> extends ArrayAdapter<T> {
         ((TextView) rowView.findViewById(R.id.foodDescription)).setText(foods.get(position).description);
         List<String> tags = Food.csvToList(foods.get(position).tags);
         final LinearLayout cont = (LinearLayout) rowView.findViewById(R.id.foodItemTags);
-        for(String tag : tags) {
+        for (String tag : tags) {
             TextView textView = new TextView(context);
             textView.setText(tag);
             cont.addView(textView);
@@ -69,12 +69,12 @@ public class BasicFoodAdapter<T> extends ArrayAdapter<T> {
             @Override
             public void onClick(View v) {
                 Intent go;
-                if(forCraving) {
+                if (forCraving) {
                     go = new Intent(context, CravingDetails.class);
-                    go.putExtra("cravingID", ((Craving)t).objectId);
-                }else {
+                    go.putExtra("cravingID", ((Craving) t).objectId);
+                } else {
                     go = new Intent(context, OfferDetails.class);
-                    go.putExtra("offerID", ((FoodOffer)t).offerID);
+                    go.putExtra("offerID", ((FoodOffer) t).offerID);
                 }
                 context.startActivity(go);
             }

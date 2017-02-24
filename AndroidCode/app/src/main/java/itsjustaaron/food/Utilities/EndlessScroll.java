@@ -45,7 +45,7 @@ public abstract class EndlessScroll extends RecyclerView.OnScrollListener {
         int lastVisibleItemPosition = 0;
         int totalItemCount = mLayoutManager.getItemCount();
 
-        lastVisibleItemPosition = ((LinearLayoutManager) mLayoutManager).findLastVisibleItemPosition();
+        lastVisibleItemPosition = mLayoutManager.findLastVisibleItemPosition();
 
 
         // If it’s still loading, we check to see if the dataset count has

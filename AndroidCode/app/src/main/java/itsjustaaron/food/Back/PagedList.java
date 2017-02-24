@@ -10,7 +10,8 @@ import java.util.ArrayList;
 
 public class PagedList<T> {
     private BackendlessCollection<T> data;
-    public PagedList(BackendlessCollection<T> data){
+
+    public PagedList(BackendlessCollection<T> data) {
         this.data = data;
     }
 

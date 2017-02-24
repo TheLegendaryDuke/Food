@@ -30,7 +30,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,20 +53,27 @@ import itsjustaaron.food.R;
 
 public class Main extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    private Toast backPressed = null;
-
+    private static ProgressDialog progressDialog;
     public CravingFragment cravingFragment;
     public OfferFragment offerFragment;
-
-    private static ProgressDialog progressDialog;
     protected PagerAdapter adapter;
+    private Toast backPressed = null;
+
+    //helpers to implement wait
+    public static void showWait() {
+        progressDialog.show();
+    }
+
+    public static void hideWait() {
+        progressDialog.dismiss();
+    }
 
     public void doMySearch(String query) {
         progressDialog.show();
         ArrayList searchCriteria;
-        if(Data.onCraving) {
+        if (Data.onCraving) {
             searchCriteria = Data.cSearchCriteria;
-        }else {
+        } else {
             searchCriteria = Data.oSearchCriteria;
         }
         searchCriteria.clear();
@@ -110,12 +116,12 @@ public class Main extends AppCompatActivity
                         }
                     }
                     where = where + ")";
-                    if(Data.onCraving) {
+                    if (Data.onCraving) {
                         Data.cravingPaged = Back.findObjectByWhere(where, Back.object.craving);
                         List<Map> mapResult = Data.cravingPaged.getCurPage();
-                        if(mapResult.size() == 0) {
+                        if (mapResult.size() == 0) {
                             return 1;
-                        }else {
+                        } else {
                             Data.cravings.clear();
                             for (int i = 0; i < mapResult.size(); i++) {
                                 Map obj = mapResult.get(i);
@@ -123,12 +129,12 @@ public class Main extends AppCompatActivity
                                 Data.cravings.add(craving);
                             }
                         }
-                    }else {
+                    } else {
                         Data.offerPaged = Back.findObjectByWhere(where, Back.object.foodoffer);
                         List<Map> mapResult = Data.offerPaged.getCurPage();
-                        if(mapResult.size() == 0) {
+                        if (mapResult.size() == 0) {
                             return 1;
-                        }else {
+                        } else {
                             Data.foodOffers.clear();
                             for (int i = 0; i < mapResult.size(); i++) {
                                 Map obj = mapResult.get(i);
@@ -137,7 +143,7 @@ public class Main extends AppCompatActivity
                             }
                         }
                     }
-                }else {
+                } else {
                     return 1;
                 }
                 return 0;
@@ -145,21 +151,21 @@ public class Main extends AppCompatActivity
 
             @Override
             public void onPostExecute(Integer v) {
-                if(Data.onCraving) {
+                if (Data.onCraving) {
                     if (v == 1) {
                         Toast.makeText(getApplicationContext(), "Your search yields no results", Toast.LENGTH_SHORT).show();
-                    }else {
+                    } else {
                         searchCallBack();
                     }
-                }else {
+                } else {
                     if (v == 1) {
                         Toast.makeText(getApplicationContext(), "Your search yields no results", Toast.LENGTH_SHORT).show();
-                    }else {
+                    } else {
                         searchCallBack();
                     }
                 }
             }
-        }.execute(new Void[]{});
+        }.execute();
     }
 
     public void Scan(View view) {
@@ -169,8 +175,8 @@ public class Main extends AppCompatActivity
     public void search() {
         MyEditText editText = (MyEditText) findViewById(R.id.menuSearchBar);
         String search = editText.getText().toString();
-        if(search.equals("")) {
-            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (search.equals("")) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
             editText.clearFocus();
             editText.setHint("Search for a Food");
@@ -193,17 +199,6 @@ public class Main extends AppCompatActivity
         }
         return true;
     }
-
-    //helpers to implement wait
-    public static void showWait() {
-        progressDialog.show();
-    }
-
-    public static void hideWait() {
-        progressDialog.dismiss();
-    }
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -235,7 +230,7 @@ public class Main extends AppCompatActivity
                 }
                 return null;
             }
-        }.execute(new Void[]{});
+        }.execute();
 
         final MyEditText searchBar = (MyEditText) findViewById(R.id.menuSearchBar);
         searchBar.setMain(this);
@@ -243,10 +238,10 @@ public class Main extends AppCompatActivity
         searchBar.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus) {
+                if (hasFocus) {
                     searchBar.setCursorVisible(true);
                     searchBar.setHint("Press ENTER to search");
-                }else {
+                } else {
                     searchBar.setCursorVisible(false);
                 }
             }
@@ -284,7 +279,7 @@ public class Main extends AppCompatActivity
                         public void onPostExecute(Void v) {
                             ((ImageView) navigationView.getHeaderView(0).findViewById(R.id.userPortrait)).setImageBitmap(BitmapFactory.decodeFile(portrait.getAbsolutePath()));
                         }
-                    }.execute(new Void[]{});
+                    }.execute();
                 }
             }
         }
@@ -338,7 +333,7 @@ public class Main extends AppCompatActivity
     }
 
     public void ProfileSetup(View view) {
-        if(checkUser(this)) {
+        if (checkUser(this)) {
             Intent intent = new Intent(this, ProfileSetup.class);
             Main.this.startActivity(intent);
         }
@@ -346,16 +341,16 @@ public class Main extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        if(backPressed == null) {
+        if (backPressed == null) {
             backPressed = Toast.makeText(this, "Press again to exit the application.", Toast.LENGTH_LONG);
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            if(backPressed.getView().getWindowVisibility() == View.VISIBLE) {
+            if (backPressed.getView().getWindowVisibility() == View.VISIBLE) {
                 super.onBackPressed();
-            }else {
+            } else {
                 backPressed.show();
             }
         }
@@ -378,12 +373,12 @@ public class Main extends AppCompatActivity
         final boolean onCraving = Data.onCraving;
         switch (id) {
             case R.id.addNew:
-                if(checkUser(this)) {
+                if (checkUser(this)) {
                     Intent next = new Intent(this, NewFood.class);
                     next.putExtra("onCraving", onCraving);
-                    if(onCraving) {
+                    if (onCraving) {
                         startActivity(next);
-                    }else {
+                    } else {
                         startActivityForResult(next, 0);
                     }
                 }
@@ -394,21 +389,21 @@ public class Main extends AppCompatActivity
 
     public void searchCallBack() {
         final LinearLayout criteriaContainer;
-        if(Data.onCraving) {
+        if (Data.onCraving) {
             criteriaContainer = (LinearLayout) findViewById(R.id.cSearchCriterias);
-        }else {
+        } else {
             criteriaContainer = (LinearLayout) findViewById(R.id.oSearchCriterias);
         }
         criteriaContainer.removeAllViews();
         final ArrayList<String> searchCriteria;
-        if(Data.onCraving) {
+        if (Data.onCraving) {
             searchCriteria = Data.cSearchCriteria;
             cravingFragment.notifyChanges();
-        }else {
+        } else {
             searchCriteria = Data.oSearchCriteria;
             offerFragment.notifyChanges();
         }
-        for(final String c : searchCriteria) {
+        for (final String c : searchCriteria) {
             TextView textView = new TextView(this);
             final LinearLayout smaller = new LinearLayout(this);
             smaller.setOrientation(LinearLayout.HORIZONTAL);
@@ -425,15 +420,15 @@ public class Main extends AppCompatActivity
                 @Override
                 public void onClick(View v) {
                     searchCriteria.remove(c);
-                    if(searchCriteria.size() == 0) {
-                        if(Data.onCraving) {
+                    if (searchCriteria.size() == 0) {
+                        if (Data.onCraving) {
                             Data.cravings.clear();
                             cravingFragment.refresh(cravingFragment.swipeRefreshLayout);
-                        }else {
+                        } else {
                             Data.foodOffers.clear();
                             offerFragment.refresh(offerFragment.swipeRefreshLayout);
                         }
-                    }else {
+                    } else {
                         String query = Food.listToCsv(searchCriteria);
                         doMySearch(query);
                     }
@@ -450,8 +445,8 @@ public class Main extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 0) {
-            if(resultCode == RESULT_OK) {
+        if (requestCode == 0) {
+            if (resultCode == RESULT_OK) {
                 String id = data.getStringExtra("id");
                 Intent intent = new Intent(this, NewOffer.class);
                 intent.putExtra("food", id);
@@ -474,7 +469,7 @@ public class Main extends AppCompatActivity
                     finish();
                 }
             }).show();
-        }else {
+        } else {
             // Handle navigation view item clicks here.
             int id = item.getItemId();
 

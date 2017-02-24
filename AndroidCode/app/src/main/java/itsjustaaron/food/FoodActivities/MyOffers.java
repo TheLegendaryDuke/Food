@@ -3,9 +3,9 @@ package itsjustaaron.food.FoodActivities;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -43,7 +43,7 @@ public class MyOffers extends AppCompatActivity {
             public Void doInBackground(Void... voids) {
                 String where = "ownerId = '" + Data.user.getObjectId() + "'";
                 PagedList<Map> result = Back.findObjectByWhere(where, Back.object.foodoffer);
-                for(Map m : result.getCurPage()) {
+                for (Map m : result.getCurPage()) {
                     foodOffers.add(new FoodOffer(m));
                 }
                 return null;
@@ -51,16 +51,16 @@ public class MyOffers extends AppCompatActivity {
 
             @Override
             public void onPostExecute(Void v) {
-                if(foodOffers.size() == 0) {
+                if (foodOffers.size() == 0) {
                     new AlertDialog.Builder(MyOffers.this).setMessage("You don't have any offers!")
                             .setCancelable(false)
                             .setNeutralButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            finish();
-                        }
-                    }).show();
-                }else {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    finish();
+                                }
+                            }).show();
+                } else {
                     ListView listView = (ListView) findViewById(R.id.myOffersList);
                     ArrayList<Food> foods = new ArrayList<>();
                     for (FoodOffer foodOffer : foodOffers) {
@@ -71,6 +71,6 @@ public class MyOffers extends AppCompatActivity {
                 }
                 progressDialog.dismiss();
             }
-        }.execute(new Void[]{});
+        }.execute();
     }
 }

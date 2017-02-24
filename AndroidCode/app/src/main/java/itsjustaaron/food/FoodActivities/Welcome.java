@@ -36,13 +36,10 @@ import itsjustaaron.food.R;
 
 public class Welcome extends AppCompatActivity {
 
-    private ProgressDialog wait;
-
     Timer timer;
-
     Boolean timerTrigger = false;
-
     boolean existedUser = false;
+    private ProgressDialog wait;
 
     private void Proceed() {
         Intent intent = new Intent(this, Main.class);
@@ -64,7 +61,7 @@ public class Welcome extends AppCompatActivity {
                     if (timerTrigger) {
                         if (existedUser) {
                             Proceed();
-                        }else {
+                        } else {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -81,7 +78,7 @@ public class Welcome extends AppCompatActivity {
         ConnectivityManager cm =
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        if(netInfo == null || !netInfo.isConnectedOrConnecting()) {
+        if (netInfo == null || !netInfo.isConnectedOrConnecting()) {
             new AlertDialog.Builder(this).setCancelable(false).setMessage("Please check your network connection!").setTitle("No Internet").setNeutralButton("OK", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -98,12 +95,12 @@ public class Welcome extends AppCompatActivity {
             public Integer doInBackground(Void... voids) {
                 int userStats = Back.checkUserSession();
                 existedUser = false;
-                if(userStats == 0) {
+                if (userStats == 0) {
                     existedUser = true;
-                }else if(userStats == 1) {
+                } else if (userStats == 1) {
                     return 2;
                 }
-                if(existedUser){
+                if (existedUser) {
                     return 0;
                 } else {
                     return 1;
@@ -112,11 +109,11 @@ public class Welcome extends AppCompatActivity {
 
             @Override
             public void onPostExecute(Integer result) {
-                if(result == 2) {
+                if (result == 2) {
                     Toast.makeText(Welcome.this, "Your login session has expired.", Toast.LENGTH_SHORT);
                     return;
                 }
-                if(result != 0) {
+                if (result != 0) {
                     synchronized (timerTrigger) {
                         if (timerTrigger) {
                             findViewById(R.id.CoverImage).setVisibility(View.GONE);
@@ -124,7 +121,7 @@ public class Welcome extends AppCompatActivity {
                             timerTrigger = true;
                         }
                     }
-                }else {
+                } else {
                     synchronized (timerTrigger) {
                         if (timerTrigger) {
                             Proceed();
@@ -134,7 +131,7 @@ public class Welcome extends AppCompatActivity {
                     }
                 }
             }
-        }.execute(new Void[]{});
+        }.execute();
     }
 
     public void Login(View view) {
@@ -144,10 +141,10 @@ public class Welcome extends AppCompatActivity {
         int width = size.x;
         final Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.welcome_dialog_login);
-        LinearLayout container = (LinearLayout)dialog.findViewById(R.id.welcomeLoginDialog);
+        LinearLayout container = (LinearLayout) dialog.findViewById(R.id.welcomeLoginDialog);
         dialog.setCancelable(true);
-        container.setLayoutParams(new FrameLayout.LayoutParams((int)Math.round(width * 0.9), ViewGroup.LayoutParams.WRAP_CONTENT));
-        Button proceed = (Button)dialog.findViewById(R.id.welcomeDialogLogin);
+        container.setLayoutParams(new FrameLayout.LayoutParams((int) Math.round(width * 0.9), ViewGroup.LayoutParams.WRAP_CONTENT));
+        Button proceed = (Button) dialog.findViewById(R.id.welcomeDialogLogin);
         EditText passwordBox = (EditText) dialog.findViewById(R.id.loginPassword);
         passwordBox.setTypeface(Typeface.DEFAULT_BOLD);
         passwordBox.setTransformationMethod(new PasswordTransformationMethod());
@@ -163,7 +160,7 @@ public class Welcome extends AppCompatActivity {
                 } else if (password.equals("")) {
                     error.setText("The password seems missing");
                     error.setVisibility(View.VISIBLE);
-                }else{
+                } else {
                     wait.show();
                     error.setVisibility(View.INVISIBLE);
                     final boolean stayLogged = ((CheckBox) dialog.findViewById(R.id.loginRemember)).isChecked();
@@ -174,9 +171,9 @@ public class Welcome extends AppCompatActivity {
                         //0 is success, 1 is failure
                         public Integer doInBackground(Void... voids) {
                             String errorCode = Back.login(email, password, stayLogged);
-                            if(errorCode.equals("")) {
+                            if (errorCode.equals("")) {
                                 return 0;
-                            }else if (errorCode.equals("3003")) {
+                            } else if (errorCode.equals("3003")) {
                                 message = "Invalid login or password! Please try again.";
                             } else if (errorCode.equals("3006")) {
                                 message = "Please enter your email and password!";
@@ -201,7 +198,7 @@ public class Welcome extends AppCompatActivity {
                                 wait.dismiss();
                             }
                         }
-                    }.execute(new Void[]{});
+                    }.execute();
                 }
             }
         });
@@ -221,9 +218,9 @@ public class Welcome extends AppCompatActivity {
         int width = size.x;
         final Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.welcome_dialog_register);
-        LinearLayout container = (LinearLayout)dialog.findViewById(R.id.welcomeRegisterDialog);
+        LinearLayout container = (LinearLayout) dialog.findViewById(R.id.welcomeRegisterDialog);
         dialog.setCancelable(true);
-        container.setLayoutParams(new FrameLayout.LayoutParams((int)Math.round(width * 0.9), ViewGroup.LayoutParams.WRAP_CONTENT));
+        container.setLayoutParams(new FrameLayout.LayoutParams((int) Math.round(width * 0.9), ViewGroup.LayoutParams.WRAP_CONTENT));
         Button proceed = (Button) dialog.findViewById(R.id.welcomeDialogRegister);
         EditText passwordBox = (EditText) dialog.findViewById(R.id.registerPassword);
         passwordBox.setTypeface(Typeface.DEFAULT_BOLD);
@@ -265,9 +262,9 @@ public class Welcome extends AppCompatActivity {
                         @Override
                         public Integer doInBackground(Void... voids) {
                             String errorCode = Back.registerUser(email, password, name);
-                            if(errorCode.equals("")) {
+                            if (errorCode.equals("")) {
                                 return 0;
-                            }else if (errorCode.equals("3011")) {
+                            } else if (errorCode.equals("3011")) {
                                 message = "Please enter a password.";
                             } else if (errorCode.equals("3013")) {
                                 message = "Please enter your email.";
@@ -298,7 +295,7 @@ public class Welcome extends AppCompatActivity {
                                 error.setVisibility(View.VISIBLE);
                             }
                         }
-                    }.execute(new Void[]{});
+                    }.execute();
                 }
             }
         });

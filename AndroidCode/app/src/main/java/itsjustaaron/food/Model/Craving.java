@@ -48,22 +48,17 @@ public class Craving {
                 }
             }
             Data.foods.add(food);
-            if(Data.user != null) {
+            if (Data.user != null) {
                 String whereClause = "cravingID='" + objectId + "' and userID='" + Data.user.getObjectId() + "'";
                 List<Map> maps = Back.findObjectByWhere(whereClause, Back.object.cravingfollower).getCurPage();
-                if (maps == null || maps.size() == 0) {
-                    following = false;
-                } else {
-                    following = true;
-                }
-            }else {
+                following = !(maps == null || maps.size() == 0);
+            } else {
                 following = false;
             }
         } catch (Exception e) {
             Log.d("download food pic", e.toString());
         }
     }
-
 
 
     public void save() {
@@ -85,7 +80,7 @@ public class Craving {
                     map.put("userID", Data.user.getObjectId());
                     numFollowers++;
                     save();
-                    Back.store(map, Back.object.cravingfollower);;
+                    Back.store(map, Back.object.cravingfollower);
                 } else {
                     numFollowers--;
                     save();
@@ -95,6 +90,6 @@ public class Craving {
                 }
                 return null;
             }
-        }.execute(new Void[]{});
+        }.execute();
     }
 }

@@ -37,10 +37,6 @@ public class Back {
         Backendless.initApp(context, "0020F1DC-E584-AD36-FF74-6D3E9E917400", "7DCC75D9-058A-6830-FF54-817317E0C000", "v1");
     }
 
-    public enum object {
-        food, foodoffer, offer, craving, cravingfollower, tag
-    }
-
     public static Object getObjectByID(String id, object object) {
         try {
             switch (object) {
@@ -51,7 +47,7 @@ public class Back {
                 case offer:
                     return new Offer(Backendless.Persistence.of("offers").findById(id));
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             errorHandle(e);
         }
         return null;
@@ -73,7 +69,7 @@ public class Back {
                 case offer:
                     return new PagedList<Map>(Backendless.Persistence.of("offers").find(dataQuery));
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             errorHandle(e);
         }
         return null;
@@ -97,7 +93,7 @@ public class Back {
                 default:
                     return null;
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             errorHandle(e);
             return null;
         }
@@ -109,7 +105,7 @@ public class Back {
                 case cravingfollower:
                     Backendless.Persistence.of("cravingFollowers").remove(map);
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             errorHandle(e);
         }
     }
@@ -119,7 +115,7 @@ public class Back {
         String local = Data.fileDir + fileDir;
         try {
             File file = new File(local);
-            if(!file.getParentFile().exists()){
+            if (!file.getParentFile().exists()) {
                 file.getParentFile().mkdirs();
             }
             file.createNewFile();
@@ -136,7 +132,7 @@ public class Back {
             byte[] byteArray = outstream.toByteArray();
             fos.write(byteArray);
             fos.close();
-        }catch (Exception ex) {
+        } catch (Exception ex) {
             Log.e("Back.Download", ex.toString(), ex);
             errorHandle(ex);
         }
@@ -159,7 +155,7 @@ public class Back {
                     Data.offerPaged = new PagedList<Map>(Backendless.Persistence.of("foodOffers").find(backendlessDataQuery));
                     return Data.offerPaged;
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             errorHandle(e);
         }
         return null;
@@ -182,7 +178,7 @@ public class Back {
     public static void upload(File file, String target, boolean override) {
         try {
             Backendless.Files.upload(file, target, override);
-        }catch (Exception e) {
+        } catch (Exception e) {
             errorHandle(e);
         }
     }
@@ -194,7 +190,7 @@ public class Back {
     public static void resetPassword() {
         try {
             Backendless.UserService.restorePassword(Data.user.getEmail());
-        }catch (Exception e) {
+        } catch (Exception e) {
             errorHandle(e);
         }
     }
@@ -202,7 +198,7 @@ public class Back {
     public static void resetPassword(String email) {
         try {
             Backendless.UserService.restorePassword(email);
-        }catch (Exception e) {
+        } catch (Exception e) {
             errorHandle(e);
         }
     }
@@ -210,7 +206,7 @@ public class Back {
     public static void updateUserData() {
         try {
             Backendless.UserService.update(Data.user);
-        }catch (Exception e) {
+        } catch (Exception e) {
             errorHandle(e);
         }
     }
@@ -219,10 +215,11 @@ public class Back {
         try {
             Data.user = Backendless.UserService.login(email, password, remember);
             return "";
-        }catch (BackendlessException ex) {
+        } catch (BackendlessException ex) {
             return ex.getCode();
         }
     }
+
     public static int checkUserSession() {
         try {
             if (Backendless.UserService.isValidLogin()) {
@@ -230,8 +227,8 @@ public class Back {
                 Data.user = Backendless.Data.of(BackendlessUser.class).findById(userID);
                 return 0;
             }
-        }catch (Exception e) {
-            if(((BackendlessException)e).getCode().equals("3064")) {
+        } catch (Exception e) {
+            if (((BackendlessException) e).getCode().equals("3064")) {
                 return 1;
             }
             errorHandle(e);
@@ -248,8 +245,12 @@ public class Back {
             user.setProperty("portrait", "");
             Data.user = Backendless.UserService.register(user);
             return "";
-        }catch (BackendlessException ex) {
+        } catch (BackendlessException ex) {
             return ex.getCode();
         }
+    }
+
+    public enum object {
+        food, foodoffer, offer, craving, cravingfollower, tag
     }
 }
