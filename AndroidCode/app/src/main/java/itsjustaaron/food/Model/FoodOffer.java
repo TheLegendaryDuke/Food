@@ -1,9 +1,6 @@
 package itsjustaaron.food.Model;
 
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.ImageView;
 
 import java.io.File;
 import java.util.Date;
@@ -11,8 +8,6 @@ import java.util.Map;
 
 import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
-import itsjustaaron.food.Model.Food;
-import itsjustaaron.food.R;
 
 /**
  * Created by aozhang on 2/1/2017.
@@ -35,7 +30,7 @@ public class FoodOffer {
         this.offererPortrait = map.get("offererPortrait").toString();
         try {
             this.expire = (Data.serverDateFormat).parse(map.get("expire").toString());
-        }catch (Exception e) {
+        } catch (Exception e) {
             Log.d("dateParsing", e.toString());
         }
         this.city = map.get("city").toString();
@@ -53,10 +48,10 @@ public class FoodOffer {
             final String imagePath = Data.fileDir + "/foods/" + food.image;
             final File file = new File(imagePath);
             File dir = new File(Data.fileDir + "/foods/");
-            if(!dir.exists()) {
+            if (!dir.exists()) {
                 dir.mkdir();
             }
-            if(!file.exists()) {
+            if (!file.exists()) {
                 String path = "/foods/" + food.image;
                 Back.downloadToLocal(path);
             }
@@ -68,11 +63,6 @@ public class FoodOffer {
             if (!file.exists()) {
                 Back.downloadToLocal(path);
             }
-        }
-        String path = "/offers/" + offerID + ".png";
-        File file = new File(Data.fileDir + path);
-        if(!file.exists()) {
-            Back.downloadToLocal(path);
         }
     }
 }

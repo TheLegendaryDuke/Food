@@ -4,23 +4,19 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.Semaphore;
 
-import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
 import itsjustaaron.food.Model.Craving;
 import itsjustaaron.food.Model.FoodOffer;
@@ -35,7 +31,6 @@ public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     private Context context;
     private char source;
     private ArrayList<T> mDataset;
-    private final Semaphore update = new Semaphore(1, true);
 
     // Provide a suitable constructor (depends on the kind of dataset)
     public MyAdapter(ArrayList<T> myDataset, char s, Context context) {
@@ -127,7 +122,7 @@ public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             }
             Date exp = foodOffer.expire;
             ((TextView) v.findViewById(R.id.offerFoodExpire)).setText("Expiring: " + Data.standardDateFormat.format(exp));
-            image.setImageBitmap(BitmapFactory.decodeFile(fileDir + "/offers/" + foodOffer.offerID + ".png"));
+            image.setImageBitmap(BitmapFactory.decodeFile(fileDir + "/foods/" + foodOffer.food.image));
             v.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

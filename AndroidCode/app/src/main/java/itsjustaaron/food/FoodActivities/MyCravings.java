@@ -2,8 +2,8 @@ package itsjustaaron.food.FoodActivities;
 
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -40,7 +40,7 @@ public class MyCravings extends AppCompatActivity {
             public Void doInBackground(Void... voids) {
                 String where = "userID = '" + Data.user.getObjectId() + "'";
                 PagedList<Map> result = Back.findObjectByWhere(where, Back.object.cravingfollower);
-                for(Map m : result.getCurPage()) {
+                for (Map m : result.getCurPage()) {
                     String cravingid = m.get("cravingID").toString();
                     cravings.add((Craving) Back.getObjectByID(cravingid, Back.object.craving));
                 }
@@ -51,13 +51,13 @@ public class MyCravings extends AppCompatActivity {
             public void onPostExecute(Void v) {
                 ListView listView = (ListView) findViewById(R.id.myCravingList);
                 ArrayList<Food> foods = new ArrayList<>();
-                for(Craving craving : cravings) {
+                for (Craving craving : cravings) {
                     foods.add(craving.food);
                 }
                 BasicFoodAdapter foodAdapter = new BasicFoodAdapter(MyCravings.this, cravings);
                 listView.setAdapter(foodAdapter);
                 progressDialog.dismiss();
             }
-        }.execute(new Void[]{});
+        }.execute();
     }
 }

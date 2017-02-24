@@ -32,10 +32,8 @@ public class MyEditText extends EditText {
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event)
-    {
-        if (keyCode==KeyEvent.KEYCODE_ENTER)
-        {
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_ENTER) {
             main.search();
         }
         // Handle all other keys in the default way

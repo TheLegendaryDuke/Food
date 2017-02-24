@@ -46,20 +46,20 @@ public class OfferDetails extends AppCompatActivity {
                 updateUI();
                 progress.dismiss();
             }
-        }.execute(new Void[]{});
+        }.execute();
     }
 
     public void updateUI() {
         ImageView image = (ImageView) findViewById(R.id.offerDetailFoodImage);
         image.setImageBitmap(BitmapFactory.decodeFile(getFilesDir() + "/foods/" + offer.food.image));
-        ((TextView)findViewById(R.id.offerDetailFoodName)).setText(offer.food.name);
-        ((TextView)findViewById(R.id.offerDetailFoodDesc)).setText(offer.food.description);
-        ((TextView)findViewById(R.id.offerDetailFoodTags)).setText(offer.food.tags);
-        ((TextView)findViewById(R.id.offerDetailFoodComment)).setText(offer.comment);
-        ((TextView)findViewById(R.id.offerDetailFoodPrice)).setText(String.valueOf("$" + offer.price));
-        ((TextView)findViewById(R.id.offerDetailOfferer)).setText(offer.offerer);
-        ((TextView)findViewById(R.id.offerDetailFoodLocation)).setText(offer.address + "\n" + offer.city + "\n" + offer.zipCode);
-        ((TextView)findViewById(R.id.offerDetailFoodExpire)).setText(Data.standardDateFormat.format(offer.expire));
-        ((ImageView)findViewById(R.id.offerDetailOffererImage)).setImageBitmap(BitmapFactory.decodeFile(Data.fileDir + "/offers/offerers/" + offer.offererPortrait));
+        ((TextView) findViewById(R.id.offerDetailFoodName)).setText(offer.food.name);
+        ((TextView) findViewById(R.id.offerDetailFoodDesc)).setText(offer.food.description);
+        ((TextView) findViewById(R.id.offerDetailFoodTags)).setText(offer.food.tags);
+        ((TextView) findViewById(R.id.offerDetailFoodComment)).setText(offer.comment);
+        ((TextView) findViewById(R.id.offerDetailFoodPrice)).setText(String.valueOf("$" + offer.price));
+        ((TextView) findViewById(R.id.offerDetailOfferer)).setText(offer.offerer);
+        ((TextView) findViewById(R.id.offerDetailFoodLocation)).setText(offer.address + "\n" + offer.city + "\n" + offer.zipCode);
+        ((TextView) findViewById(R.id.offerDetailFoodExpire)).setText(Data.standardDateFormat.format(offer.expire));
+        ((ImageView) findViewById(R.id.offerDetailOffererImage)).setImageBitmap(BitmapFactory.decodeFile(Data.fileDir + "/offers/offerers/" + offer.offererPortrait));
     }
 }

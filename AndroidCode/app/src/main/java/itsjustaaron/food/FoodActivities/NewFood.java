@@ -60,131 +60,6 @@ public class NewFood extends AppCompatActivity {
 
     private Uri rawImage;
 
-    private class foodAdapter extends ArrayAdapter<Food> {
-        public List<Food> values;
-        private Context context;
-
-        public foodAdapter(Context context, List<Food> values) {
-            super(context, -1, values);
-            if (values == null) {
-                values = new ArrayList<Food>();
-            }
-            this.values = values;
-            this.context = context;
-        }
-
-        @Override
-        public View getView(final int position, final View convertView, ViewGroup parent) {
-            LayoutInflater inflater = (LayoutInflater) context
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            final View rowView = inflater.inflate(R.layout.food_list_item, parent, false);
-            final File image = new File(Data.fileDir + "/foods/" + values.get(position).image);
-            if(!image.exists()) {
-                new AsyncTask<Void, Void, Void>() {
-                    @Override
-                    public Void doInBackground(Void... voids) {
-                        Back.downloadToLocal("/foods/" + values.get(position).image);
-                        return null;
-                    }
-
-                    @Override
-                    public void onPostExecute(Void v) {
-                        ((ImageView) rowView.findViewById(R.id.foodImage)).setImageBitmap(BitmapFactory.decodeFile(Data.fileDir + "/foods/" + values.get(position).image));
-                    }
-                }.execute(new Void[]{});
-            }else {
-                ((ImageView) rowView.findViewById(R.id.foodImage)).setImageBitmap(BitmapFactory.decodeFile(Data.fileDir + "/foods/" + values.get(position).image));
-            }
-            ((TextView) rowView.findViewById(R.id.foodName)).setText(values.get(position).name);
-            ((TextView) rowView.findViewById(R.id.foodDescription)).setText(values.get(position).description);
-            List<String> tags = Food.csvToList(values.get(position).tags);
-            LinearLayout cont = (LinearLayout) rowView.findViewById(R.id.foodItemTags);
-            for(String tag : tags) {
-                TextView textView = new TextView(context);
-                textView.setText(tag);
-                cont.addView(textView);
-            }
-            rowView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    AlertDialog ad = new AlertDialog.Builder(context)
-                            .setTitle("Select this food?")
-                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(final DialogInterface dialogInterface, int i) {
-                                    if(onCraving) {
-                                        new AsyncTask<Void, Void, Integer>() {
-                                            Food food;
-
-                                            @Override
-                                            public void onPreExecute() {
-                                                dialogInterface.dismiss();
-                                                wait.show();
-                                            }
-
-                                            @Override
-                                            public Integer doInBackground(Void... voids) {
-                                                    food = values.get(position);
-                                                    String whereC = "foodID = \'" + food.objectId + "\'";
-                                                    PagedList<Map> result = Back.findObjectByWhere(whereC, Back.object.craving);
-                                                    if (result.getCurPage().size() != 0) {
-                                                        return 2;
-                                                    } else {
-                                                        Map<String, String> craving = new HashMap<String, String>();
-                                                        craving.put("foodID", food.objectId);
-                                                        craving.put("numFollowers", "1");
-                                                        craving.put("ownerID", Data.user.getObjectId());
-                                                        Map map = Back.store(craving, Back.object.craving);
-                                                        Map<String, String> cravingFollower = new HashMap<String, String>();
-                                                        cravingFollower.put("userID", Data.user.getObjectId());
-                                                        cravingFollower.put("cravingID", map.get("objectId").toString());
-                                                        Back.store(cravingFollower, Back.object.cravingfollower);
-                                                    }
-                                                return 0;
-                                            }
-
-                                            @Override
-                                            public void onPostExecute(Integer x) {
-                                                if (x == 0) {
-                                                    Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show();
-                                                    Intent ret = new Intent();
-                                                    ret.putExtra("id", food.objectId);
-                                                    setResult(RESULT_OK, ret);
-                                                    finish();
-                                                } else {
-                                                    new AlertDialog.Builder(context).setMessage("A craving with this food already exists, you can find it by searching the food name or tags").setNeutralButton("OK", new DialogInterface.OnClickListener() {
-                                                        @Override
-                                                        public void onClick(DialogInterface dialog, int which) {
-                                                            setResult(2);
-                                                            finish();
-                                                        }
-                                                    }).show();
-                                                }
-                                                dialogInterface.dismiss();
-                                                wait.dismiss();
-                                            }
-                                        }.execute(new Void[]{});
-                                    }else {
-                                        Intent ret = new Intent();
-                                        ret.putExtra("id", values.get(position).objectId);
-                                        setResult(RESULT_OK, ret);
-                                        finish();
-                                    }
-                                }
-                            })
-                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    dialogInterface.dismiss();
-                                }
-                            }).create();
-                    ad.show();
-                }
-            });
-            return rowView;
-        }
-    };
-
     public void pickPhoto(View view) {
         rawImage = null;
         Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -235,19 +110,19 @@ public class NewFood extends AppCompatActivity {
             }
         }).show();
 
-        final LinearLayout container = (LinearLayout)findViewById(R.id.tagContainer);
-        for(int i = 0; i < Data.tags.size(); i++) {
+        final LinearLayout container = (LinearLayout) findViewById(R.id.tagContainer);
+        for (int i = 0; i < Data.tags.size(); i++) {
             String tag = Data.tags.get(i);
             final CheckedTextView checkedTextView = new CheckedTextView(this);
             checkedTextView.setText(tag);
             checkedTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(checkedTextView.isChecked()) {
+                    if (checkedTextView.isChecked()) {
                         checkedTextView.setCheckMarkDrawable(null);
                         checkedTextView.setChecked(false);
                         tagChecks.set(checkedTextView.getId(), false);
-                    }else {
+                    } else {
                         checkedTextView.setCheckMarkDrawable(ContextCompat.getDrawable(NewFood.this, R.drawable.ic_check));
                         checkedTextView.setChecked(true);
                         tagChecks.set(checkedTextView.getId(), true);
@@ -277,9 +152,9 @@ public class NewFood extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         final String tag = input.getText().toString().toUpperCase();
-                        if(Data.tags.contains(tag)) {
+                        if (Data.tags.contains(tag)) {
                             Toast.makeText(NewFood.this, "There is already a tag with the same name!", Toast.LENGTH_LONG).show();
-                        }else {
+                        } else {
                             Data.tags.add(tag);
 
                             new AsyncTask<Void, Void, Integer>() {
@@ -288,12 +163,12 @@ public class NewFood extends AppCompatActivity {
                                     HashMap<String, String> tagMap = new HashMap<String, String>();
                                     tagMap.put("tag", tag);
                                     tagMap.put("ownerId", Data.user.getObjectId());
-                                        Back.store(tagMap, Back.object.tag);
-                                        return 0;
+                                    Back.store(tagMap, Back.object.tag);
+                                    return 0;
                                 }
 
                                 @Override
-                                public void onPostExecute(Integer integer){
+                                public void onPostExecute(Integer integer) {
                                     final CheckedTextView ctv = new CheckedTextView(NewFood.this);
                                     ctv.setText(tag);
                                     ctv.setChecked(true);
@@ -302,10 +177,10 @@ public class NewFood extends AppCompatActivity {
                                     ctv.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
-                                            if(ctv.isChecked()) {
+                                            if (ctv.isChecked()) {
                                                 ctv.setCheckMarkDrawable(null);
                                                 ctv.setChecked(false);
-                                            }else {
+                                            } else {
                                                 ctv.setCheckMarkDrawable(ContextCompat.getDrawable(NewFood.this, R.drawable.ic_check));
                                                 ctv.setChecked(true);
                                             }
@@ -314,7 +189,7 @@ public class NewFood extends AppCompatActivity {
                                     container.addView(ctv, container.getChildCount() - 1);
                                     tagChecks.add(ctv.getId(), true);
                                 }
-                            }.execute(new Void[]{});
+                            }.execute();
                         }
                     }
                 }).setNegativeButton("cancel", new DialogInterface.OnClickListener() {
@@ -347,20 +222,20 @@ public class NewFood extends AppCompatActivity {
                 startActivityForResult(cropIntent, 1);
             }
         } else {
-            if(resultCode == RESULT_OK) {
+            if (resultCode == RESULT_OK) {
                 if (data != null) {
                     imageUpdated = true;
                     pic = data.getExtras().getParcelable("data");
                     ((ImageView) findViewById(R.id.createFoodImage)).setImageBitmap(pic);
                 }
-            }else {
-                if(rawImage != null) {
+            } else {
+                if (rawImage != null) {
                     try {
                         pic = MediaStore.Images.Media.getBitmap(this.getContentResolver(), rawImage);
                         pic = Bitmap.createScaledBitmap(pic, 200, 200, true);
                         ((ImageView) findViewById(R.id.createFoodImage)).setImageURI(rawImage);
                         imageUpdated = true;
-                    }catch (Exception e) {
+                    } catch (Exception e) {
                         Log.d("error", e.toString(), e);
                     }
                 }
@@ -369,17 +244,17 @@ public class NewFood extends AppCompatActivity {
     }
 
     public void Create(View view) {
-        EditText nameView = (EditText)findViewById(R.id.createFoodName);
-        EditText descView = (EditText)findViewById(R.id.createFoodDesc);
-        if(nameView.getText() == null || nameView.getText().toString().length() == 0) {
+        EditText nameView = (EditText) findViewById(R.id.createFoodName);
+        EditText descView = (EditText) findViewById(R.id.createFoodDesc);
+        if (nameView.getText() == null || nameView.getText().toString().length() == 0) {
             Toast.makeText(NewFood.this, "Please enter a name for the food", Toast.LENGTH_SHORT).show();
             return;
         }
-        if(descView.getText() == null || descView.getText().toString().length() == 0) {
+        if (descView.getText() == null || descView.getText().toString().length() == 0) {
             Toast.makeText(NewFood.this, "Please enter a description for the food", Toast.LENGTH_SHORT).show();
             return;
         }
-        if(!imageUpdated) {
+        if (!imageUpdated) {
             Toast.makeText(NewFood.this, "Please select an image for the food", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -398,13 +273,13 @@ public class NewFood extends AppCompatActivity {
             hashMap.put("image", name.replaceAll(" ", "-") + ".png");
             hashMap.put("ownerId", Data.user.getObjectId());
             ArrayList<String> tags = new ArrayList<>();
-            for(int i = 0; i < Data.tags.size(); i++) {
-                if(tagChecks.get(i)) {
+            for (int i = 0; i < Data.tags.size(); i++) {
+                if (tagChecks.get(i)) {
                     tags.add(Data.tags.get(i));
                 }
             }
             hashMap.put("tags", Food.listToCsv(tags));
-            new AsyncTask<Void,Void,Integer>() {
+            new AsyncTask<Void, Void, Integer>() {
 
                 Food food = new Food();
 
@@ -412,13 +287,13 @@ public class NewFood extends AppCompatActivity {
                 public Integer doInBackground(Void... voids) {
                     String whereC = "name = \'" + name + "\'";
                     PagedList<Map> result = Back.findObjectByWhere(whereC, Back.object.food);
-                    if(result.getCurPage().size() != 0) {
+                    if (result.getCurPage().size() != 0) {
                         return 2;
                     }
                     Back.upload(dest, "foods/", true);
                     food = new Food(Back.store(hashMap, Back.object.food));
                     Data.foods.add(food);
-                    if(onCraving) {
+                    if (onCraving) {
                         Map<String, String> craving = new HashMap<String, String>();
                         craving.put("foodID", food.objectId);
                         craving.put("numFollowers", "1");
@@ -434,7 +309,7 @@ public class NewFood extends AppCompatActivity {
 
                 @Override
                 public void onPostExecute(Integer i) {
-                    if(onCraving) {
+                    if (onCraving) {
                         if (i == 0) {
                             Toast.makeText(NewFood.this, "Created successfully.", Toast.LENGTH_SHORT).show();
                             Intent ret = new Intent();
@@ -446,15 +321,15 @@ public class NewFood extends AppCompatActivity {
                             setResult(2);
                             finish();
                         }
-                    }else {
+                    } else {
                         Intent ret = new Intent();
                         ret.putExtra("id", food.objectId);
                         setResult(RESULT_OK, ret);
                         finish();
                     }
                 }
-            }.execute(new Void[]{});
-        }catch (FileNotFoundException e) {
+            }.execute();
+        } catch (FileNotFoundException e) {
             Toast.makeText(NewFood.this, getString(R.string.error), Toast.LENGTH_LONG).show();
             Log.d("Save pic", e.toString());
         }
@@ -485,32 +360,32 @@ public class NewFood extends AppCompatActivity {
         } else {
             whereClause = "name LIKE '%" + search + "%'";
         }
-        final String where= whereClause;
+        final String where = whereClause;
         new AsyncTask<Void, Void, Integer>() {
             @Override
             public Integer doInBackground(Void... voids) {
-                    PagedList<Map> result = Back.findObjectByWhere(where, Back.object.food);
-                    final List<Map> maps = result.getCurPage();
-                    if (maps.size() != 0) {
-                        for (int i = 0; i < maps.size(); i++) {
-                            Map map = maps.get(i);
-                            Food food = new Food(map);
-                            searchResults.add(food);
-                            boolean contains = false;
-                            for(Food f : Data.foods) {
-                                if(f.objectId.equals(food.objectId)) {
-                                    contains = true;
-                                    break;
-                                }
-                            }
-                            if(!contains) {
-                                Data.foods.add(food);
+                PagedList<Map> result = Back.findObjectByWhere(where, Back.object.food);
+                final List<Map> maps = result.getCurPage();
+                if (maps.size() != 0) {
+                    for (int i = 0; i < maps.size(); i++) {
+                        Map map = maps.get(i);
+                        Food food = new Food(map);
+                        searchResults.add(food);
+                        boolean contains = false;
+                        for (Food f : Data.foods) {
+                            if (f.objectId.equals(food.objectId)) {
+                                contains = true;
+                                break;
                             }
                         }
-                        return 0;
-                    } else {
-                        return 1;
+                        if (!contains) {
+                            Data.foods.add(food);
+                        }
                     }
+                    return 0;
+                } else {
+                    return 1;
+                }
             }
 
             @Override
@@ -526,6 +401,131 @@ public class NewFood extends AppCompatActivity {
                 }
                 wait.dismiss();
             }
-        }.execute(new Void[]{});
+        }.execute();
+    }
+
+    private class foodAdapter extends ArrayAdapter<Food> {
+        public List<Food> values;
+        private Context context;
+
+        public foodAdapter(Context context, List<Food> values) {
+            super(context, -1, values);
+            if (values == null) {
+                values = new ArrayList<Food>();
+            }
+            this.values = values;
+            this.context = context;
+        }
+
+        @Override
+        public View getView(final int position, final View convertView, ViewGroup parent) {
+            LayoutInflater inflater = (LayoutInflater) context
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            final View rowView = inflater.inflate(R.layout.food_list_item, parent, false);
+            final File image = new File(Data.fileDir + "/foods/" + values.get(position).image);
+            if (!image.exists()) {
+                new AsyncTask<Void, Void, Void>() {
+                    @Override
+                    public Void doInBackground(Void... voids) {
+                        Back.downloadToLocal("/foods/" + values.get(position).image);
+                        return null;
+                    }
+
+                    @Override
+                    public void onPostExecute(Void v) {
+                        ((ImageView) rowView.findViewById(R.id.foodImage)).setImageBitmap(BitmapFactory.decodeFile(Data.fileDir + "/foods/" + values.get(position).image));
+                    }
+                }.execute();
+            } else {
+                ((ImageView) rowView.findViewById(R.id.foodImage)).setImageBitmap(BitmapFactory.decodeFile(Data.fileDir + "/foods/" + values.get(position).image));
+            }
+            ((TextView) rowView.findViewById(R.id.foodName)).setText(values.get(position).name);
+            ((TextView) rowView.findViewById(R.id.foodDescription)).setText(values.get(position).description);
+            List<String> tags = Food.csvToList(values.get(position).tags);
+            LinearLayout cont = (LinearLayout) rowView.findViewById(R.id.foodItemTags);
+            for (String tag : tags) {
+                TextView textView = new TextView(context);
+                textView.setText(tag);
+                cont.addView(textView);
+            }
+            rowView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    AlertDialog ad = new AlertDialog.Builder(context)
+                            .setTitle("Select this food?")
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(final DialogInterface dialogInterface, int i) {
+                                    if (onCraving) {
+                                        new AsyncTask<Void, Void, Integer>() {
+                                            Food food;
+
+                                            @Override
+                                            public void onPreExecute() {
+                                                dialogInterface.dismiss();
+                                                wait.show();
+                                            }
+
+                                            @Override
+                                            public Integer doInBackground(Void... voids) {
+                                                food = values.get(position);
+                                                String whereC = "foodID = \'" + food.objectId + "\'";
+                                                PagedList<Map> result = Back.findObjectByWhere(whereC, Back.object.craving);
+                                                if (result.getCurPage().size() != 0) {
+                                                    return 2;
+                                                } else {
+                                                    Map<String, String> craving = new HashMap<String, String>();
+                                                    craving.put("foodID", food.objectId);
+                                                    craving.put("numFollowers", "1");
+                                                    craving.put("ownerID", Data.user.getObjectId());
+                                                    Map map = Back.store(craving, Back.object.craving);
+                                                    Map<String, String> cravingFollower = new HashMap<String, String>();
+                                                    cravingFollower.put("userID", Data.user.getObjectId());
+                                                    cravingFollower.put("cravingID", map.get("objectId").toString());
+                                                    Back.store(cravingFollower, Back.object.cravingfollower);
+                                                }
+                                                return 0;
+                                            }
+
+                                            @Override
+                                            public void onPostExecute(Integer x) {
+                                                if (x == 0) {
+                                                    Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show();
+                                                    Intent ret = new Intent();
+                                                    ret.putExtra("id", food.objectId);
+                                                    setResult(RESULT_OK, ret);
+                                                    finish();
+                                                } else {
+                                                    new AlertDialog.Builder(context).setMessage("A craving with this food already exists, you can find it by searching the food name or tags").setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialog, int which) {
+                                                            setResult(2);
+                                                            finish();
+                                                        }
+                                                    }).show();
+                                                }
+                                                dialogInterface.dismiss();
+                                                wait.dismiss();
+                                            }
+                                        }.execute();
+                                    } else {
+                                        Intent ret = new Intent();
+                                        ret.putExtra("id", values.get(position).objectId);
+                                        setResult(RESULT_OK, ret);
+                                        finish();
+                                    }
+                                }
+                            })
+                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                }
+                            }).create();
+                    ad.show();
+                }
+            });
+            return rowView;
+        }
     }
 }

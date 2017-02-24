@@ -26,57 +26,20 @@ import itsjustaaron.food.Utilities.EndlessScroll;
  * Created by Aaron-Work on 8/7/2016.
  */
 public class OfferFragment extends Fragment {
+    public SwipeRefreshLayout swipeRefreshLayout;
     MyAdapter<FoodOffer> myAdapter;
     boolean started = false;
     LinearLayoutManager layoutManager;
     View rootView;
     RecyclerView recyclerView;
     ProgressDialog wait;
-    public SwipeRefreshLayout swipeRefreshLayout;
-
-    private class Start extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        public void onPreExecute() {
-            if(started) {
-                swipeRefreshLayout.setRefreshing(true);
-            }
-        }
-
-        @Override
-        public Void doInBackground(Void... voids) {
-            Data.foodOffers.clear();
-            File offerers = new File(Data.fileDir + "/offers/offerers/");
-            for(File f : offerers.listFiles()) {
-                f.delete();
-            }
-            Data.offerPaged = Back.findObjectByWhere("city='"+Data.user.getProperty("city")+"'",Back.object.foodoffer);
-            ArrayList<Map> temp = new ArrayList<>(Data.offerPaged.getCurPage());
-            for (int i = 0; i < temp.size(); i++) {
-                Data.foodOffers.add(new FoodOffer(temp.get(i)));
-            }
-            return null;
-        }
-
-        @Override
-        public void onPostExecute(Void v) {
-            if(!started) {
-                getActivity().findViewById(R.id.findNear).setVisibility(View.GONE);
-                swipeRefreshLayout.setVisibility(View.VISIBLE);
-                started = true;
-            }else {
-                myAdapter.notifyDataSetChanged();
-                swipeRefreshLayout.setRefreshing(false);
-            }
-        }
-    };
 
     public void refresh(final SwipeRefreshLayout s) {
-        if(s != null) {
+        if (s != null) {
             s.setRefreshing(true);
         }
         if (Data.foodOffers.size() == 0 || Data.oSearchCriteria.size() == 0) {
-            new Start().execute(new Void[]{});
+            new Start().execute();
         } else {
             new AsyncTask<Void, Void, Void>() {
 
@@ -85,7 +48,7 @@ public class OfferFragment extends Fragment {
 
                     Data.foodOffers.clear();
                     String query = Food.listToCsv(Data.oSearchCriteria);
-                    ((Main)getActivity()).doMySearch(query);
+                    ((Main) getActivity()).doMySearch(query);
                     return null;
                 }
 
@@ -94,7 +57,7 @@ public class OfferFragment extends Fragment {
                     myAdapter.notifyDataSetChanged();
                     s.setRefreshing(false);
                 }
-            }.execute(new Void[]{});
+            }.execute();
         }
     }
 
@@ -114,7 +77,7 @@ public class OfferFragment extends Fragment {
         rootView = inflater.inflate(R.layout.tab_offer, container, false);
         Data.foodOffers = new ArrayList<>();
         myAdapter = new MyAdapter<>(Data.foodOffers, 'o', getActivity());
-        recyclerView = (RecyclerView)rootView.findViewById(R.id.offerList);
+        recyclerView = (RecyclerView) rootView.findViewById(R.id.offerList);
         recyclerView.setAdapter(myAdapter);
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
@@ -122,7 +85,7 @@ public class OfferFragment extends Fragment {
     }
 
     public void start() {
-        if(!started) {
+        if (!started) {
             final SwipeRefreshLayout srl = (SwipeRefreshLayout) rootView.findViewById(R.id.oSwipeRefresh);
             swipeRefreshLayout = srl;
             srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -133,7 +96,7 @@ public class OfferFragment extends Fragment {
                 }
             });
 
-            new Start().execute(new Void[]{});
+            new Start().execute();
 
             final EndlessScroll endlessScroll = new EndlessScroll(layoutManager) {
                 @Override
@@ -155,10 +118,47 @@ public class OfferFragment extends Fragment {
                         public void onPostExecute(Void v) {
                             myAdapter.notifyDataSetChanged();
                         }
-                    }.execute(new Void[]{});
+                    }.execute();
                 }
             };
             recyclerView.addOnScrollListener(endlessScroll);
+        }
+    }
+
+    private class Start extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        public void onPreExecute() {
+            if (started) {
+                swipeRefreshLayout.setRefreshing(true);
+            }
+        }
+
+        @Override
+        public Void doInBackground(Void... voids) {
+            Data.foodOffers.clear();
+            File offerers = new File(Data.fileDir + "/offers/offerers/");
+            for (File f : offerers.listFiles()) {
+                f.delete();
+            }
+            Data.offerPaged = Back.findObjectByWhere("city='" + Data.user.getProperty("city") + "'", Back.object.foodoffer);
+            ArrayList<Map> temp = new ArrayList<>(Data.offerPaged.getCurPage());
+            for (int i = 0; i < temp.size(); i++) {
+                Data.foodOffers.add(new FoodOffer(temp.get(i)));
+            }
+            return null;
+        }
+
+        @Override
+        public void onPostExecute(Void v) {
+            if (!started) {
+                getActivity().findViewById(R.id.findNear).setVisibility(View.GONE);
+                swipeRefreshLayout.setVisibility(View.VISIBLE);
+                started = true;
+            } else {
+                myAdapter.notifyDataSetChanged();
+                swipeRefreshLayout.setRefreshing(false);
+            }
         }
     }
 }

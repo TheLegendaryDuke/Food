@@ -1,7 +1,7 @@
 package itsjustaaron.food.FoodActivities;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
 import itsjustaaron.food.Back.Data;
 import itsjustaaron.food.Back.MyHandler;
