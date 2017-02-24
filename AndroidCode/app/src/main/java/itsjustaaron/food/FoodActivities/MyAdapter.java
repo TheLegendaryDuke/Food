@@ -27,6 +27,7 @@ import itsjustaaron.food.R;
  */
 
 public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
+    private final Semaphore update = new Semaphore(1, true);
     private String fileDir;
     private Context context;
     private char source;
