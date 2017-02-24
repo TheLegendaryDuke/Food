@@ -63,102 +63,79 @@ public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-            final View v = holder.view;
-            if (source == 'c') {
-                final ImageView image = (ImageView) v.findViewById(R.id.cravingItemImage);
-                TextView description = (TextView) v.findViewById(R.id.cravingItemDescription);
-                TextView tags = (TextView) v.findViewById(R.id.cravingItemTags);
-                final ImageView likeOrNot = (ImageView) v.findViewById(R.id.cravingFollowingOrNot);
-                final TextView count = (TextView) v.findViewById(R.id.cravingFollowerCount);
-                final Craving craving = (Craving) mDataset.get(position);
-                final String imagePath = fileDir + "/foods/" + craving.food.image;
-                image.setImageBitmap(BitmapFactory.decodeFile(imagePath));
-                ((TextView) v.findViewById(R.id.cravingItemName)).setText(craving.food.name);
-                description.setText(craving.food.description);
-                tags.setText(craving.food.tags);
-                if (craving.following) {
-                    likeOrNot.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), R.mipmap.favorite, null));
-                } else {
-                    likeOrNot.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_favorite_border_black_48dp, null));
-                }
-                likeOrNot.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if (Data.user != null) {
-                            craving.followSwitch();
-                            if (craving.following) {
-                                likeOrNot.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), R.mipmap.favorite, null));
-                                count.setText(String.valueOf(Integer.parseInt(count.getText().toString()) + 1));
-                            } else {
-                                likeOrNot.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_favorite_border_black_48dp, null));
-                                count.setText(String.valueOf(Integer.parseInt(count.getText().toString()) - 1));
-                            }
-                        } else {
-                            new AlertDialog.Builder(context).setMessage("Please login first!").setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-                        }
-                    }
-                });
-                View.OnClickListener listener = new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent next = new Intent(context, CravingDetails.class);
-                        next.putExtra("cravingID", craving.objectId);
-                        context.startActivity(next);
-                    }
-                };
-                image.setOnClickListener(listener);
-                description.setOnClickListener(listener);
-                count.setText(String.valueOf(craving.numFollowers));
+        final View v = holder.view;
+        if (source == 'c') {
+            final ImageView image = (ImageView) v.findViewById(R.id.cravingItemImage);
+            TextView description = (TextView) v.findViewById(R.id.cravingItemDescription);
+            TextView tags = (TextView) v.findViewById(R.id.cravingItemTags);
+            final ImageView likeOrNot = (ImageView) v.findViewById(R.id.cravingFollowingOrNot);
+            final TextView count = (TextView) v.findViewById(R.id.cravingFollowerCount);
+            final Craving craving = (Craving) mDataset.get(position);
+            final String imagePath = fileDir + "/foods/" + craving.food.image;
+            image.setImageBitmap(BitmapFactory.decodeFile(imagePath));
+            ((TextView) v.findViewById(R.id.cravingItemName)).setText(craving.food.name);
+            description.setText(craving.food.description);
+            tags.setText(craving.food.tags);
+            if (craving.following) {
+                likeOrNot.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), R.mipmap.favorite, null));
             } else {
-                ImageView image = (ImageView) v.findViewById(R.id.offerFoodImage);
-                final FoodOffer foodOffer = (FoodOffer) mDataset.get(position);
-                ((TextView) v.findViewById(R.id.offerFoodOfferer)).setText(foodOffer.offerer);
-                ((TextView) v.findViewById(R.id.offerFoodName)).setText(foodOffer.food.name);
-                ((TextView) v.findViewById(R.id.offerFoodCity)).setText(foodOffer.city);
-                ((TextView) v.findViewById(R.id.offerFoodPrice)).setText("$" + String.valueOf(foodOffer.price));
-                    if (foodOffer.offererPortrait != null && !foodOffer.offererPortrait.equals("")) {
-                        try {
-                            update.acquire(1);
-                        } catch (Exception e) {
-                            Log.e("sync", "somethings wrong", e);
-                        }
-                        final String path = "/offers/offerers/" + foodOffer.offererPortrait;
-                        File file = new File(Data.fileDir + path);
-                        if (!file.exists()) {
-                            new AsyncTask<Void, Void, Void>() {
-                                @Override
-                                public Void doInBackground(Void... voids) {
-                                    Back.downloadToLocal(path);
-                                    update.release();
-                                    return null;
-                                }
-
-                                //TODO: synchronization here
-                                public void onPostExecute(Void voi) {
-                                    ((ImageView) v.findViewById(R.id.offerOffererImage)).setImageBitmap(BitmapFactory.decodeFile(Data.fileDir + path));
-                                }
-                            }.execute(new Void[]{});
+                likeOrNot.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_favorite_border_black_48dp, null));
+            }
+            likeOrNot.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (Data.user != null) {
+                        craving.followSwitch();
+                        if (craving.following) {
+                            likeOrNot.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), R.mipmap.favorite, null));
+                            count.setText(String.valueOf(Integer.parseInt(count.getText().toString()) + 1));
                         } else {
-                            ((ImageView) v.findViewById(R.id.offerOffererImage)).setImageBitmap(BitmapFactory.decodeFile(Data.fileDir + path));
-                            update.release();
+                            likeOrNot.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_favorite_border_black_48dp, null));
+                            count.setText(String.valueOf(Integer.parseInt(count.getText().toString()) - 1));
                         }
+                    } else {
+                        new AlertDialog.Builder(context).setMessage("Please login first!").setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
                     }
-                Date exp = foodOffer.expire;
-                ((TextView) v.findViewById(R.id.offerFoodExpire)).setText("Expiring: " + Data.standardDateFormat.format(exp));
-                image.setImageBitmap(BitmapFactory.decodeFile(fileDir + "/foods/" + foodOffer.food.image));
-                v.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent detail = new Intent(context, OfferDetails.class);
-                        detail.putExtra("offerID", foodOffer.offerID);
-                        context.startActivity(detail);
-                    }
-                });
+                }
+            });
+            View.OnClickListener listener = new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent next = new Intent(context, CravingDetails.class);
+                    next.putExtra("cravingID", craving.objectId);
+                    context.startActivity(next);
+                }
+            };
+            image.setOnClickListener(listener);
+            description.setOnClickListener(listener);
+            count.setText(String.valueOf(craving.numFollowers));
+        } else {
+            ImageView image = (ImageView) v.findViewById(R.id.offerFoodImage);
+            final FoodOffer foodOffer = (FoodOffer) mDataset.get(position);
+            ((TextView) v.findViewById(R.id.offerFoodOfferer)).setText(foodOffer.offerer);
+            ((TextView) v.findViewById(R.id.offerFoodName)).setText(foodOffer.food.name);
+            ((TextView) v.findViewById(R.id.offerFoodCity)).setText(foodOffer.city);
+            ((TextView) v.findViewById(R.id.offerFoodPrice)).setText("$" + String.valueOf(foodOffer.price));
+            if (foodOffer.offererPortrait != null && !foodOffer.offererPortrait.equals("")) {
+                final String path = "/offers/offerers/" + foodOffer.offererPortrait;
+                ((ImageView) v.findViewById(R.id.offerOffererImage)).setImageBitmap(BitmapFactory.decodeFile(Data.fileDir + path));
+            }
+            Date exp = foodOffer.expire;
+            ((TextView) v.findViewById(R.id.offerFoodExpire)).setText("Expiring: " + Data.standardDateFormat.format(exp));
+            image.setImageBitmap(BitmapFactory.decodeFile(fileDir + "/offers/" + foodOffer.offerID + ".png"));
+            v.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent detail = new Intent(context, OfferDetails.class);
+                    detail.putExtra("offerID", foodOffer.offerID);
+                    context.startActivity(detail);
+                }
+            });
         }
     }
 
