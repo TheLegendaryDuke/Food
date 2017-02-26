@@ -83,6 +83,21 @@ public class CravingDetails extends AppCompatActivity {
         ((TextView) findViewById(R.id.detailTags)).setText(list);
         ((TextView) findViewById(R.id.detailDescription)).setText(craving.food.description);
 
+//        TODO:use the button to direct to Food-Shop
+//        Button propose = (Button) findViewById(R.id.proposeOffer);
+//        propose.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if(Data.user != null) {
+//                    Intent next = new Intent(getApplicationContext(), NewOffer.class);
+//                    next.putExtra("food", craving.food.objectId);
+//                    startActivity(next);
+//                }else {
+//                    Toast.makeText(CravingDetails.this, "Please login first!", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        });
+
         new AsyncTask<Void, Void, Void>() {
             List<String> offers;
             List<String> offerIDs;
