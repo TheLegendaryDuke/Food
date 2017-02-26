@@ -111,7 +111,6 @@ public class Welcome extends AppCompatActivity {
             public void onPostExecute(Integer result) {
                 if (result == 2) {
                     Toast.makeText(Welcome.this, "Your login session has expired.", Toast.LENGTH_SHORT);
-                    return;
                 }
                 if (result != 0) {
                     synchronized (timerTrigger) {

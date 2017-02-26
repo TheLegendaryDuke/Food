@@ -22,9 +22,9 @@
         android:gravity="center">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_favorite_border_black_48dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@mipmap/heart_grey"
             android:id="@+id/cravingFollowingOrNot"/>
 
         <TextView
