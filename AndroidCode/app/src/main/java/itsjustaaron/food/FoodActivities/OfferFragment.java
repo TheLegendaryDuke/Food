@@ -159,6 +159,9 @@ public class OfferFragment extends Fragment {
                 getActivity().findViewById(R.id.findNear).setVisibility(View.GONE);
                 swipeRefreshLayout.setVisibility(View.VISIBLE);
                 started = true;
+                if(Data.foodOffers.size() == 0) {
+                    getActivity().findViewById(R.id.nothingNear).setVisibility(View.VISIBLE);
+                }
             } else {
                 myAdapter.notifyDataSetChanged();
                 swipeRefreshLayout.setRefreshing(false);
