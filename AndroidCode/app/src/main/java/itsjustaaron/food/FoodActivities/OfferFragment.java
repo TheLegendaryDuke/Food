@@ -138,8 +138,12 @@ public class OfferFragment extends Fragment {
         public Void doInBackground(Void... voids) {
             Data.foodOffers.clear();
             File offerers = new File(Data.fileDir + "/offers/offerers/");
-            for (File f : offerers.listFiles()) {
-                f.delete();
+            if(!offerers.exists()) {
+                offerers.mkdirs();
+            }else {
+                for (File f : offerers.listFiles()) {
+                    f.delete();
+                }
             }
             Data.offerPaged = Back.findObjectByWhere("city='" + Data.user.getProperty("city") + "'", Back.object.foodoffer);
             ArrayList<Map> temp = new ArrayList<>(Data.offerPaged.getCurPage());
