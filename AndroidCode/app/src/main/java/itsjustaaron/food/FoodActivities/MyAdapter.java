@@ -86,7 +86,7 @@ public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                             likeOrNot.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), R.mipmap.favorite, null));
                             count.setText(String.valueOf(Integer.parseInt(count.getText().toString()) + 1));
                         } else {
-                            likeOrNot.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_favorite_border_black_48dp, null));
+                            likeOrNot.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), R.mipmap.heart_grey, null));
                             count.setText(String.valueOf(Integer.parseInt(count.getText().toString()) - 1));
                         }
                     } else {

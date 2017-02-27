@@ -24,18 +24,15 @@
         <activity
             android:name=".FoodActivities.Main"
             android:label="@string/title_activity_main"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".FoodActivities.ProfileSetup"
             android:parentActivityName=".FoodActivities.Main"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".FoodActivities.NewFood"
-            android:parentActivityName=".FoodActivities.Main"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:parentActivityName=".FoodActivities.Main" />
         <activity
             android:name=".FoodActivities.CravingDetails"
             android:parentActivityName=".FoodActivities.Main" />
