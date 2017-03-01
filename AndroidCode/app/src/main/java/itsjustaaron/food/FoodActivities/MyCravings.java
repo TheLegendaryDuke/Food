@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -49,14 +50,19 @@ public class MyCravings extends AppCompatActivity {
 
             @Override
             public void onPostExecute(Void v) {
-                ListView listView = (ListView) findViewById(R.id.myCravingList);
-                ArrayList<Food> foods = new ArrayList<>();
-                for(Craving craving : cravings) {
-                    foods.add(craving.food);
+                if(cravings.size() == 0) {
+                    findViewById(R.id.myCravingEmpty).setVisibility(View.VISIBLE);
+                    findViewById(R.id.myCravingList).setVisibility(View.GONE);
+                }else {
+                    ListView listView = (ListView) findViewById(R.id.myCravingList);
+                    ArrayList<Food> foods = new ArrayList<>();
+                    for (Craving craving : cravings) {
+                        foods.add(craving.food);
+                    }
+                    BasicFoodAdapter foodAdapter = new BasicFoodAdapter(MyCravings.this, cravings);
+                    listView.setAdapter(foodAdapter);
+                    progressDialog.dismiss();
                 }
-                BasicFoodAdapter foodAdapter = new BasicFoodAdapter(MyCravings.this, cravings);
-                listView.setAdapter(foodAdapter);
-                progressDialog.dismiss();
             }
         }.execute(new Void[]{});
     }

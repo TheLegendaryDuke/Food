@@ -27,32 +27,23 @@ import itsjustaaron.food.R;
  */
 
 
-public class BasicFoodAdapter<T> extends ArrayAdapter<T> {
+public class BasicFoodAdapter extends ArrayAdapter {
     Context context;
-    ArrayList<T> data;
-    boolean forCraving;
+    ArrayList<Craving> data;
     ArrayList<Food> foods = new ArrayList<>();
 
-    public BasicFoodAdapter(Context context, ArrayList<T> data) {
+    public BasicFoodAdapter(Context context, ArrayList<Craving> data) {
         super(context, -1, data);
         this.context = context;
         this.data = data;
-        if(data.get(0) instanceof FoodOffer) {
-            forCraving = false;
-            for(T t : data) {
-                foods.add(((FoodOffer)t).food);
-            }
-        }else {
-            forCraving = true;
-            for(T t : data) {
-                foods.add(((Craving)t).food);
-            }
+        for (Craving t : data) {
+            foods.add(t.food);
         }
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        final T t = data.get(position);
+        final Craving t = data.get(position);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.food_list_item, parent, false);
         ((ImageView) rowView.findViewById(R.id.foodImage)).setImageBitmap(BitmapFactory.decodeFile(Data.fileDir + "/foods/" + foods.get(position).image));
@@ -69,13 +60,8 @@ public class BasicFoodAdapter<T> extends ArrayAdapter<T> {
             @Override
             public void onClick(View v) {
                 Intent go;
-                if(forCraving) {
-                    go = new Intent(context, CravingDetails.class);
-                    go.putExtra("cravingID", ((Craving)t).objectId);
-                }else {
-                    go = new Intent(context, OfferDetails.class);
-                    go.putExtra("offerID", ((FoodOffer)t).offerID);
-                }
+                go = new Intent(context, CravingDetails.class);
+                go.putExtra("cravingID", ((Craving)t).objectId);
                 context.startActivity(go);
             }
         });

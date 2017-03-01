@@ -300,7 +300,10 @@ public class Main extends AppCompatActivity
                     case 0:
                         findViewById(R.id.oSearchCriterias).setVisibility(View.GONE);
                         findViewById(R.id.cSearchCriterias).setVisibility(View.VISIBLE);
-                        findViewById(R.id.addNew).setVisibility(View.VISIBLE);
+                        View add = findViewById(R.id.addNew);
+                        if(add != null) {
+                            add.setVisibility(View.VISIBLE);
+                        }
                         Data.onCraving = true;
                         return;
                     case 1:
