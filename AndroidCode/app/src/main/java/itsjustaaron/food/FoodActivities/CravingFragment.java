@@ -39,8 +39,9 @@ public class CravingFragment extends Fragment {
         public void onPreExecute() {
             if(wait != null) {
                 wait.show();
+            }else {
+                swipeRefreshLayout.setRefreshing(true);
             }
-            swipeRefreshLayout.setRefreshing(true);
         }
 
         @Override

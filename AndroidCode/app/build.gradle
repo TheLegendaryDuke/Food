@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 24
+    compileSdkVersion 25
     buildToolsVersion '24.0.2'
     defaultConfig {
         applicationId "itsjustaaron.food"
         minSdkVersion 19
-        targetSdkVersion 23
+        targetSdkVersion 25
         versionCode 1
         versionName "1.0"
     }
@@ -22,10 +22,11 @@ android {
         main {
             res.srcDirs =
                     [
+                            'src/main/res',
                             'src/main/res/layouts/list_items',
                             'src/main/res/layouts/dialogs',
                             'src/main/res/layouts/food_layouts',
-                            'src/main/res'
+                            'src/main/res/layouts/food_shop_layouts'
                     ]
         }
     }
@@ -35,7 +36,7 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     compile files('libs/backendless.jar')
-    compile 'com.android.support:appcompat-v7:24.1.1'
-    compile 'com.android.support:design:24.1.1'
+    compile 'com.android.support:appcompat-v7:25.1.1'
+    compile 'com.android.support:design:25.1.1'
     compile 'com.android.volley:volley:1.0.0'
 }

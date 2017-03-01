@@ -24,4 +24,11 @@
             android:id="@+id/logoff" />
     </group>
 
+    <group android:id="@+id/nav_footer">
+        <item
+            android:id="@+id/swap"
+            android:icon="@drawable/swap"
+            android:title="I can cook!" />
+        </group>
+
 </menu>

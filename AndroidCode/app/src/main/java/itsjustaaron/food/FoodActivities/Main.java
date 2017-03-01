@@ -40,6 +40,7 @@ import java.util.TimeZone;
 import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
 import itsjustaaron.food.Back.MyHandler;
+import itsjustaaron.food.FoodShopActivities.FoodShopMain;
 import itsjustaaron.food.Model.Craving;
 import itsjustaaron.food.Model.Food;
 import itsjustaaron.food.Model.FoodOffer;
@@ -494,6 +495,12 @@ public class Main extends AppCompatActivity
                 case R.id.drawerOption:
                     Intent options = new Intent(this, Options.class);
                     startActivity(options);
+                    break;
+
+                case R.id.swap:
+                    Intent swap = new Intent(this, FoodShopMain.class);
+                    startActivity(swap);
+                    overridePendingTransition(R.anim.right_slide_in, R.anim.right_slide_out);
                     break;
             }
         }
