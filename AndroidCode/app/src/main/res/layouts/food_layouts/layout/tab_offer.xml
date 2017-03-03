@@ -16,7 +16,7 @@
             android:src="@mipmap/radar"
             android:onClick="Scan"/>
 
-        <TextView
+        <itsjustaaron.food.Utilities.DefaultTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Find the Most Popular Food in your City"
@@ -30,7 +30,7 @@
         android:id="@+id/nothingNear"
         android:gravity="center"
         android:orientation="vertical">
-        <TextView
+        <itsjustaaron.food.Utilities.DefaultTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="There is nothing near you..."/>
