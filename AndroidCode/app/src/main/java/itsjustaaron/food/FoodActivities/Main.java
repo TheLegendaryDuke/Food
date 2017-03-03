@@ -1,10 +1,13 @@
 package itsjustaaron.food.FoodActivities;
 
+import android.animation.Animator;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -23,10 +26,14 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,6 +65,8 @@ public class Main extends AppCompatActivity
     public OfferFragment offerFragment;
     protected PagerAdapter adapter;
     private Toast backPressed = null;
+    private Dialog popup;
+    private int screenSizeX;
 
     //helpers to implement wait
     public static void showWait() {
@@ -200,6 +209,15 @@ public class Main extends AppCompatActivity
         return true;
     }
 
+    private void enterReveal() {
+        View searchButton = findViewById(R.id.search);
+        // get the center for the clipping circle
+        int cx = searchButton.getLeft() + searchButton.getMeasuredWidth() / 2;
+        int cy = searchButton.getTop() + searchButton.getMeasuredHeight() / 2;
+
+        // get the final radius for the clipping circle
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Data.handler = new MyHandler(this);
@@ -212,12 +230,40 @@ public class Main extends AppCompatActivity
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
 
+
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Please wait...");
 
-
         TimeZone tz = TimeZone.getDefault();
         Data.standardDateFormat.setTimeZone(tz);
+
+        //from: http://blog.aimanbaharum.com/2015/11/01/android-dialog-reveal-effect/
+
+        Point size = new Point();
+        getWindowManager().getDefaultDisplay().getSize(size);
+        screenSizeX = size.x;
+        popup = new Dialog(this, R.style.DialogTheme);
+        popup.setContentView(R.layout.search_bar);
+        WindowManager.LayoutParams params = popup.getWindow().getAttributes();
+        params.horizontalMargin = 0;
+        params.verticalMargin = 0;
+        params.width = screenSizeX;
+        params.gravity = Gravity.LEFT|Gravity.TOP;
+        params.x = 0;
+        params.y = 0;
+
+        popup.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                View searchButton = popup.findViewById(R.id.searchClear);
+                int cx = searchButton.getLeft() + searchButton.getMeasuredWidth() / 2;
+                int cy = searchButton.getTop() + searchButton.getMeasuredHeight() / 2;
+                int finalRadius = screenSizeX - searchButton.getMeasuredWidth();
+                // create the animator for this view (the start radius is zero)
+                Animator anim = ViewAnimationUtils.createCircularReveal(popup.findViewById(R.id.searchBar), cx, cy, 0, finalRadius);
+                anim.start();
+            }
+        });
 
         Data.tags = new ArrayList<String>();
         new AsyncTask<Void, Void, Void>() {
@@ -372,17 +418,20 @@ public class Main extends AppCompatActivity
         int id = item.getItemId();
         final boolean onCraving = Data.onCraving;
         switch (id) {
-            case R.id.addNew:
-                if (checkUser(this)) {
-                    Intent next = new Intent(this, NewFood.class);
-                    next.putExtra("onCraving", onCraving);
-                    if (onCraving) {
-                        startActivity(next);
-                    } else {
-                        startActivityForResult(next, 0);
-                    }
-                }
-                break;
+//            case R.id.addNew:
+//                if (checkUser(this)) {
+//                    Intent next = new Intent(this, NewFood.class);
+//                    next.putExtra("onCraving", onCraving);
+//                    if (onCraving) {
+//                        startActivity(next);
+//                    } else {
+//                        startActivityForResult(next, 0);
+//                    }
+//                }
+//                break;
+            case R.id.search:
+                popup.show();
+                enterReveal();
         }
         return super.onOptionsItemSelected(item);
     }

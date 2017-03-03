@@ -5,7 +5,7 @@ android {
     buildToolsVersion '24.0.2'
     defaultConfig {
         applicationId "itsjustaaron.food"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -22,10 +22,10 @@ android {
         main {
             res.srcDirs =
                     [
+                            'src/main/res',
                             'src/main/res/layouts/list_items',
                             'src/main/res/layouts/dialogs',
-                            'src/main/res/layouts/food_layouts',
-                            'src/main/res'
+                            'src/main/res/layouts/food_layouts'
                     ]
         }
     }
