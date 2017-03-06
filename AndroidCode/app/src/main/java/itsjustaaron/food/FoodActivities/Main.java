@@ -32,6 +32,7 @@ import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -166,12 +167,14 @@ public class Main extends AppCompatActivity
                 if (Data.onCraving) {
                     if (v == 1) {
                         Toast.makeText(getApplicationContext(), "Your search yields no results", Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
                     } else {
                         searchCallBack();
                     }
                 } else {
                     if (v == 1) {
                         Toast.makeText(getApplicationContext(), "Your search yields no results", Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
                     } else {
                         searchCallBack();
                     }
@@ -295,7 +298,15 @@ public class Main extends AppCompatActivity
                 if (keyCode == KeyEvent.KEYCODE_BACK) {
                     revealShow(false);
                     return true;
-                }else if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                }
+                return false;
+            }
+        });
+
+        ((EditText)popup.findViewById(R.id.searchText)).setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     doMySearch(((EditText)popup.findViewById(R.id.searchText)).getText().toString());
                     revealShow(false);
                     return true;
