@@ -491,18 +491,6 @@ public class Main extends AppCompatActivity
         int id = item.getItemId();
         final boolean onCraving = Data.onCraving;
         switch (id) {
-            //TODO: add a floating button
-//            case R.id.addNew:
-//                if (checkUser(this)) {
-//                    Intent next = new Intent(this, NewFood.class);
-//                    next.putExtra("onCraving", onCraving);
-//                    if (onCraving) {
-//                        startActivity(next);
-//                    } else {
-//                        startActivityForResult(next, 0);
-//                    }
-//                }
-//                break;
             case R.id.search:
                 popup.show();
         }

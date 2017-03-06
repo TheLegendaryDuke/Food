@@ -1,10 +1,13 @@
 package itsjustaaron.food.FoodActivities;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -86,6 +89,26 @@ public class CravingFragment extends Fragment {
             public void onRefresh() {
                 Data.cravings.clear();
                 refresh(srl);
+            }
+        });
+
+        rootView.findViewById(R.id.fab).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (Data.user != null) {
+                    Intent next = new Intent(getActivity(), NewFood.class);
+                    next.putExtra("onCraving", true);
+                    startActivity(next);
+                }else {
+                    new AlertDialog.Builder(getActivity()).setTitle("Hello Guest").setMessage("Please log in!").setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            Intent goBack = new Intent(getActivity(), Welcome.class);
+                            startActivity(goBack);
+                            getActivity().finish();
+                        }
+                    }).show();
+                }
             }
         });
 
