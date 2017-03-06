@@ -21,6 +21,8 @@ import itsjustaaron.food.Model.Food;
 import itsjustaaron.food.Model.FoodOffer;
 import itsjustaaron.food.R;
 import itsjustaaron.food.Utilities.EndlessScroll;
+import pl.droidsonroids.gif.GifDrawable;
+import pl.droidsonroids.gif.GifImageView;
 
 /**
  * Created by Aaron-Work on 8/7/2016.
@@ -81,6 +83,15 @@ public class OfferFragment extends Fragment {
         recyclerView.setAdapter(myAdapter);
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
+        final GifDrawable gif = (GifDrawable) ((GifImageView)rootView.findViewById(R.id.radar)).getDrawable();
+        gif.stop();
+        rootView.findViewById(R.id.radar).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gif.start();
+                start();
+            }
+        });
         return rootView;
     }
 
