@@ -21,48 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@android:color/holo_orange_dark"
-            app:popupTheme="@style/PopupOverlay">
-                <LinearLayout
-                    android:layout_width="0px"
-                    android:layout_height="0px"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true" />
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="5dp"
-                    android:background="@drawable/search_bar_rect">
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_alignParentStart="true"
-                            android:id="@+id/search_bar_icon"
-                            android:src="@drawable/search"/>
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:id="@+id/search_bar_go"
-                            android:src="@drawable/ic_go"/>
-                        <HorizontalScrollView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_toEndOf="@id/search_bar_icon"
-                            android:layout_toStartOf="@id/search_bar_go"
-                            android:scrollbars="none">
-                                <itsjustaaron.food.FoodActivities.MyEditText
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:background="@color/lightOrange"
-                                    android:hint="Search for a Food"
-                                    android:maxLines="1"
-                                    android:textColorHint="@color/colorPrimaryDark"
-                                    android:id="@+id/menuSearchBar"/>
-                        </HorizontalScrollView>
-                </RelativeLayout>
-        </android.support.v7.widget.Toolbar>
+            app:popupTheme="@style/PopupOverlay"/>
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tab_layout"
