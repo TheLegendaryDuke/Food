@@ -1,6 +1,7 @@
 package itsjustaaron.food.FoodActivities;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -23,6 +24,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,6 +33,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -181,19 +184,6 @@ public class Main extends AppCompatActivity
         offerFragment.start();
     }
 
-    public void search() {
-        MyEditText editText = (MyEditText) findViewById(R.id.menuSearchBar);
-        String search = editText.getText().toString();
-        if (search.equals("")) {
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
-            editText.clearFocus();
-            editText.setHint("Search for a Food");
-            return;
-        }
-        doMySearch(search);
-    }
-
     public boolean checkUser(final Context context) {
         if (Data.user == null) {
             new AlertDialog.Builder(context).setTitle("Hello Guest").setMessage("Please log in!").setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -209,13 +199,31 @@ public class Main extends AppCompatActivity
         return true;
     }
 
-    private void enterReveal() {
-        View searchButton = findViewById(R.id.search);
-        // get the center for the clipping circle
+    private void revealShow(boolean reveal) {
+        final View view = popup.findViewById(R.id.searchBar);
+        View searchButton = popup.findViewById(R.id.searchClear);
         int cx = searchButton.getLeft() + searchButton.getMeasuredWidth() / 2;
         int cy = searchButton.getTop() + searchButton.getMeasuredHeight() / 2;
+        int finalRadius = screenSizeX - searchButton.getMeasuredWidth();
 
-        // get the final radius for the clipping circle
+        if(reveal){
+            // create the animator for this view (the start radius is zero)
+            Animator anim = ViewAnimationUtils.createCircularReveal(view, cx, cy, 0, finalRadius);
+            view.setVisibility(View.VISIBLE);
+            anim.start();
+        } else {
+            Animator anim = ViewAnimationUtils.createCircularReveal(view, cx, cy, finalRadius, 0);
+            anim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    popup.dismiss();
+                    view.setVisibility(View.INVISIBLE);
+
+                }
+            });
+            anim.start();
+        }
     }
 
     @Override
@@ -255,13 +263,42 @@ public class Main extends AppCompatActivity
         popup.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
-                View searchButton = popup.findViewById(R.id.searchClear);
-                int cx = searchButton.getLeft() + searchButton.getMeasuredWidth() / 2;
-                int cy = searchButton.getTop() + searchButton.getMeasuredHeight() / 2;
-                int finalRadius = screenSizeX - searchButton.getMeasuredWidth();
-                // create the animator for this view (the start radius is zero)
-                Animator anim = ViewAnimationUtils.createCircularReveal(popup.findViewById(R.id.searchBar), cx, cy, 0, finalRadius);
-                anim.start();
+                revealShow(true);
+            }
+        });
+
+        popup.findViewById(R.id.searchBack).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                revealShow(false);
+            }
+        });
+
+        popup.findViewById(R.id.searchSearch).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doMySearch(((EditText)popup.findViewById(R.id.searchText)).getText().toString());
+                revealShow(false);
+            }
+        });
+
+        popup.findViewById(R.id.searchClear).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((EditText)popup.findViewById(R.id.searchText)).setText("");
+            }
+        });
+
+        popup.setOnKeyListener(new DialogInterface.OnKeyListener() {
+            @Override
+            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_BACK) {
+                    revealShow(false);
+                }else if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                    doMySearch(((EditText)popup.findViewById(R.id.searchText)).getText().toString());
+                    revealShow(false);
+                }
+                return true;
             }
         });
 
@@ -277,28 +314,6 @@ public class Main extends AppCompatActivity
                 return null;
             }
         }.execute();
-
-        final MyEditText searchBar = (MyEditText) findViewById(R.id.menuSearchBar);
-        searchBar.setMain(this);
-        searchBar.setCursorVisible(false);
-        searchBar.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    searchBar.setCursorVisible(true);
-                    searchBar.setHint("Press ENTER to search");
-                } else {
-                    searchBar.setCursorVisible(false);
-                }
-            }
-        });
-
-        findViewById(R.id.search_bar_go).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                search();
-            }
-        });
 
         final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -418,6 +433,7 @@ public class Main extends AppCompatActivity
         int id = item.getItemId();
         final boolean onCraving = Data.onCraving;
         switch (id) {
+            //TODO: add a floating button
 //            case R.id.addNew:
 //                if (checkUser(this)) {
 //                    Intent next = new Intent(this, NewFood.class);
@@ -431,7 +447,6 @@ public class Main extends AppCompatActivity
 //                break;
             case R.id.search:
                 popup.show();
-                enterReveal();
         }
         return super.onOptionsItemSelected(item);
     }
