@@ -294,11 +294,13 @@ public class Main extends AppCompatActivity
             public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
                 if (keyCode == KeyEvent.KEYCODE_BACK) {
                     revealShow(false);
+                    return true;
                 }else if (keyCode == KeyEvent.KEYCODE_ENTER) {
                     doMySearch(((EditText)popup.findViewById(R.id.searchText)).getText().toString());
                     revealShow(false);
+                    return true;
                 }
-                return true;
+                return false;
             }
         });
 
