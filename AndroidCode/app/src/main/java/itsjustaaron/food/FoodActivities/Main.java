@@ -277,6 +277,42 @@ public class Main extends AppCompatActivity
         popup.findViewById(R.id.searchSearch).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                doMySearch(((EditText)popup.findViewById(R.id.searchText)).getText().toString());
+                revealShow(false);
+            }
+        });
+
+        popup.findViewById(R.id.searchClear).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((EditText)popup.findViewById(R.id.searchText)).setText("");
+            }
+        });
+
+        popup.setOnKeyListener(new DialogInterface.OnKeyListener() {
+            @Override
+            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_BACK) {
+                    revealShow(false);
+                }else if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                    doMySearch(((EditText)popup.findViewById(R.id.searchText)).getText().toString());
+                    revealShow(false);
+                }
+                return true;
+                revealShow(true);
+            }
+        });
+
+        popup.findViewById(R.id.searchBack).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                revealShow(false);
+            }
+        });
+
+        popup.findViewById(R.id.searchSearch).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 String search = ((EditText)popup.findViewById(R.id.searchText)).getText().toString();
                 if (!search.equals("")) {
                     doMySearch(search);
