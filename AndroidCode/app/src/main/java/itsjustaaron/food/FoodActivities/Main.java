@@ -25,15 +25,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -69,7 +68,8 @@ public class Main extends AppCompatActivity
     public OfferFragment offerFragment;
     protected PagerAdapter adapter;
     private Toast backPressed = null;
-    private Dialog popup;
+    private Dialog searchDialog;
+    private PopupWindow sortMenu;
     private int screenSizeX;
 
     //helpers to implement wait
@@ -203,8 +203,8 @@ public class Main extends AppCompatActivity
     }
 
     private void revealShow(boolean reveal) {
-        final View view = popup.findViewById(R.id.searchBar);
-        View searchButton = popup.findViewById(R.id.searchClear);
+        final View view = searchDialog.findViewById(R.id.searchBar);
+        View searchButton = searchDialog.findViewById(R.id.searchClear);
         int cx = searchButton.getLeft() + searchButton.getMeasuredWidth() / 2;
         int cy = searchButton.getTop() + searchButton.getMeasuredHeight() / 2;
         int finalRadius = screenSizeX - searchButton.getMeasuredWidth();
@@ -220,7 +220,7 @@ public class Main extends AppCompatActivity
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     super.onAnimationEnd(animation);
-                    popup.dismiss();
+                    searchDialog.dismiss();
                     view.setVisibility(View.INVISIBLE);
 
                 }
@@ -253,9 +253,9 @@ public class Main extends AppCompatActivity
         Point size = new Point();
         getWindowManager().getDefaultDisplay().getSize(size);
         screenSizeX = size.x;
-        popup = new Dialog(this, R.style.DialogTheme);
-        popup.setContentView(R.layout.search_bar);
-        WindowManager.LayoutParams params = popup.getWindow().getAttributes();
+        searchDialog = new Dialog(this, R.style.DialogTheme);
+        searchDialog.setContentView(R.layout.search_bar);
+        WindowManager.LayoutParams params = searchDialog.getWindow().getAttributes();
         params.horizontalMargin = 0;
         params.verticalMargin = 0;
         params.width = screenSizeX;
@@ -263,36 +263,36 @@ public class Main extends AppCompatActivity
         params.x = 0;
         params.y = 0;
 
-        popup.setOnShowListener(new DialogInterface.OnShowListener() {
+        searchDialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
                 revealShow(true);
             }
         });
 
-        popup.findViewById(R.id.searchBack).setOnClickListener(new View.OnClickListener() {
+        searchDialog.findViewById(R.id.searchBack).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 revealShow(false);
             }
         });
 
-        popup.findViewById(R.id.searchSearch).setOnClickListener(new View.OnClickListener() {
+        searchDialog.findViewById(R.id.searchSearch).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                doMySearch(((EditText)popup.findViewById(R.id.searchText)).getText().toString());
+                doMySearch(((EditText) searchDialog.findViewById(R.id.searchText)).getText().toString());
                 revealShow(false);
             }
         });
 
-        popup.findViewById(R.id.searchClear).setOnClickListener(new View.OnClickListener() {
+        searchDialog.findViewById(R.id.searchClear).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((EditText)popup.findViewById(R.id.searchText)).setText("");
+                ((EditText) searchDialog.findViewById(R.id.searchText)).setText("");
             }
         });
 
-        popup.setOnKeyListener(new DialogInterface.OnKeyListener() {
+        searchDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
             @Override
             public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
                 if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -303,11 +303,11 @@ public class Main extends AppCompatActivity
             }
         });
 
-        ((EditText)popup.findViewById(R.id.searchText)).setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        ((EditText) searchDialog.findViewById(R.id.searchText)).setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    doMySearch(((EditText)popup.findViewById(R.id.searchText)).getText().toString());
+                    doMySearch(((EditText) searchDialog.findViewById(R.id.searchText)).getText().toString());
                     revealShow(false);
                     return true;
                 }
@@ -315,50 +315,55 @@ public class Main extends AppCompatActivity
             }
         });
 
-        popup.findViewById(R.id.searchBack).setOnClickListener(new View.OnClickListener() {
+        searchDialog.findViewById(R.id.searchBack).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 revealShow(false);
             }
         });
 
-        popup.findViewById(R.id.searchSearch).setOnClickListener(new View.OnClickListener() {
+        searchDialog.findViewById(R.id.searchSearch).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String search = ((EditText)popup.findViewById(R.id.searchText)).getText().toString();
+                String search = ((EditText) searchDialog.findViewById(R.id.searchText)).getText().toString();
                 if (!search.equals("")) {
                     doMySearch(search);
                     revealShow(false);
                 }else {
-                    ((EditText)popup.findViewById(R.id.searchText)).setHint("Enter a keyword or some comma separated tags");
+                    ((EditText) searchDialog.findViewById(R.id.searchText)).setHint("Enter a keyword or some comma separated tags");
                 }
             }
         });
 
-        popup.findViewById(R.id.searchClear).setOnClickListener(new View.OnClickListener() {
+        searchDialog.findViewById(R.id.searchClear).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((EditText)popup.findViewById(R.id.searchText)).setText("");
+                ((EditText) searchDialog.findViewById(R.id.searchText)).setText("");
             }
         });
 
-        popup.setOnKeyListener(new DialogInterface.OnKeyListener() {
+        searchDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
             @Override
             public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
                 if (keyCode == KeyEvent.KEYCODE_BACK) {
                     revealShow(false);
                 }else if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                    String search = ((EditText)popup.findViewById(R.id.searchText)).getText().toString();
+                    String search = ((EditText) searchDialog.findViewById(R.id.searchText)).getText().toString();
                     if (!search.equals("")) {
                         doMySearch(search);
                         revealShow(false);
                     }else {
-                        ((EditText)popup.findViewById(R.id.searchText)).setHint("Enter a keyword or comma separated tags");
+                        ((EditText) searchDialog.findViewById(R.id.searchText)).setHint("Enter a keyword or comma separated tags");
                     }
                 }
                 return true;
             }
         });
+
+        LayoutInflater inflater = getLayoutInflater();
+        View customSortMenu = inflater.inflate(R.layout.sort_popup, null);
+        sortMenu = new PopupWindow(customSortMenu, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        sortMenu.setElevation(5.0f);
 
         Data.tags = new ArrayList<String>();
         new AsyncTask<Void, Void, Void>() {
@@ -492,7 +497,15 @@ public class Main extends AppCompatActivity
         final boolean onCraving = Data.onCraving;
         switch (id) {
             case R.id.search:
-                popup.show();
+                searchDialog.show();
+                break;
+            case R.id.sort:
+                if(sortMenu.isShowing()) {
+                    sortMenu.dismiss();
+                }else {
+                    sortMenu.showAsDropDown(findViewById(R.id.sort));
+                }
+
         }
         return super.onOptionsItemSelected(item);
     }
