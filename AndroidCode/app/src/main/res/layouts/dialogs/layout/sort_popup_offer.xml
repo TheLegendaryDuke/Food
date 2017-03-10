@@ -14,28 +14,41 @@
     <RadioGroup
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/sorts"
         android:background="#ffffff">
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:checked="true"
+            android:id="@+id/sortPopularity"
             android:text="Popuarity"/>
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/sortScore"
+            android:text="Score"/>
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/sortLocation"
             android:text="Location"/>
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/sortPrice"
             android:text="Price"/>
     </RadioGroup>
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:id="@+id/inMyCity">
 
         <CheckBox
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:id="@+id/inMyCityCheck"/>
 
         <TextView
             android:layout_width="wrap_content"

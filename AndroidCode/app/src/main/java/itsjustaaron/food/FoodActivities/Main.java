@@ -12,6 +12,7 @@ import android.graphics.Point;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
@@ -37,6 +38,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -69,7 +71,8 @@ public class Main extends AppCompatActivity
     protected PagerAdapter adapter;
     private Toast backPressed = null;
     private Dialog searchDialog;
-    private PopupWindow sortMenu;
+    private PopupWindow sortMenuO;
+    private PopupWindow sortMenuC;
     private int screenSizeX;
 
     //helpers to implement wait
@@ -360,10 +363,67 @@ public class Main extends AppCompatActivity
             }
         });
 
+        //TODO: add checkbox onclick, location logic, and backend support for cravings
         LayoutInflater inflater = getLayoutInflater();
-        View customSortMenu = inflater.inflate(R.layout.sort_popup, null);
-        sortMenu = new PopupWindow(customSortMenu, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        sortMenu.setElevation(5.0f);
+        View customSortMenu = inflater.inflate(R.layout.sort_popup_offer, null);
+        ((RadioGroup)customSortMenu.findViewById(R.id.sorts)).setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+                switch (checkedId) {
+                    case R.id.sortPopularity:
+                        Data.sortByO = 0;
+                        offerFragment.notifySortChange();
+                        break;
+                    case R.id.sortScore:
+                        Data.sortByO = 1;
+                        offerFragment.notifySortChange();
+                        break;
+                    case R.id.sortLocation:
+                        new AlertDialog.Builder(Main.this)
+                                .setMessage("Update your current location?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //Data.sortByO = 2;
+                                //offerFragment.notifySortChange();
+                                dialog.dismiss();
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        }).show();
+                        break;
+                    case R.id.sortPrice:
+                        Data.sortByO = 3;
+                        offerFragment.notifySortChange();
+                        break;
+                }
+            }
+        });
+        sortMenuO = new PopupWindow(customSortMenu, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        sortMenuO.setElevation(5.0f);
+
+        View sortMenuCraving = inflater.inflate(R.layout.sort_popup_craving, null);
+        ((RadioGroup)sortMenuCraving.findViewById(R.id.sorts)).setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+                switch (checkedId) {
+                    case R.id.sortPopularity:
+                        Data.sortByC = 0;
+                        cravingFragment.notifySortChange();
+                        break;
+                    case R.id.sortPrice:
+                        Data.sortByC = 1;
+                        offerFragment.notifySortChange();
+                        break;
+                }
+            }
+        });
+        sortMenuC = new PopupWindow(sortMenuCraving, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        sortMenuC.setElevation(5.0f);
 
         Data.tags = new ArrayList<String>();
         new AsyncTask<Void, Void, Void>() {
@@ -419,13 +479,11 @@ public class Main extends AppCompatActivity
                     case 0:
                         findViewById(R.id.oSearchCriterias).setVisibility(View.GONE);
                         findViewById(R.id.cSearchCriterias).setVisibility(View.VISIBLE);
-                        //findViewById(R.id.addNew).setVisibility(View.VISIBLE);
                         Data.onCraving = true;
                         return;
                     case 1:
                         findViewById(R.id.cSearchCriterias).setVisibility(View.GONE);
                         findViewById(R.id.oSearchCriterias).setVisibility(View.VISIBLE);
-                        //findViewById(R.id.addNew).setVisibility(View.GONE);
                         Data.onCraving = false;
                         return;
                     default:
@@ -500,12 +558,21 @@ public class Main extends AppCompatActivity
                 searchDialog.show();
                 break;
             case R.id.sort:
-                if(sortMenu.isShowing()) {
-                    sortMenu.dismiss();
-                }else {
-                    sortMenu.showAsDropDown(findViewById(R.id.sort));
-                }
+                if(Data.onCraving) {
+                    if (sortMenuC.isShowing()) {
+                        sortMenuC.dismiss();
+                    } else {
+                        sortMenuC.showAsDropDown(findViewById(R.id.sort));
+                    }
 
+                }else {
+                    if (sortMenuO.isShowing()) {
+                        sortMenuO.dismiss();
+                    } else {
+                        sortMenuO.showAsDropDown(findViewById(R.id.sort));
+                    }
+                }
+                break;
         }
         return super.onOptionsItemSelected(item);
     }

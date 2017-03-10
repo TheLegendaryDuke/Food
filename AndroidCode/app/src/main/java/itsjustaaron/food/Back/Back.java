@@ -20,6 +20,8 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import itsjustaaron.food.Model.Craving;
@@ -247,6 +249,37 @@ public class Back {
             return "";
         } catch (BackendlessException ex) {
             return ex.getCode();
+        }
+    }
+
+    public static void generateOffers() {
+        BackendlessDataQuery dataQuery = new BackendlessDataQuery();
+        if(Data.cityRestricted) {
+            dataQuery.setWhereClause("city='" + Data.user.getProperty("city") + "'");
+        }
+        List<String> sort = new ArrayList<>();
+        switch (Data.sortByO) {
+            case 0:
+                //TODO: finish this
+                sort.add("visits DESC");
+                break;
+            case 1:
+                sort.add("score DESC");
+                break;
+            case 2:
+                //sort by distance
+                break;
+            case 3:
+                sort.add("price");
+                break;
+        }
+        if(Data.sortByO != 2) {
+            QueryOptions queryOptions = new QueryOptions();
+            queryOptions.setSortBy(sort);
+            dataQuery.setQueryOptions(queryOptions);
+            Data.offerPaged = new PagedList<>(Backendless.Data.of("foodOffer").find(dataQuery));
+        }else {
+
         }
     }
 

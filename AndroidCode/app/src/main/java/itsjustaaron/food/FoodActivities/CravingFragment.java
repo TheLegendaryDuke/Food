@@ -146,6 +146,9 @@ public class CravingFragment extends Fragment {
         mAdapter.notifyDataSetChanged();
     }
 
+    public void notifySortChange() {
+    }
+
     private class start extends AsyncTask<Void, Void, Void> {
 
         @Override

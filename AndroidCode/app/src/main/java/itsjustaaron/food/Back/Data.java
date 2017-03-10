@@ -28,5 +28,8 @@ public class Data {
     public static SimpleDateFormat standardDateFormat = new SimpleDateFormat("yyyy MMM dd");
     public static ArrayList<String> cSearchCriteria = new ArrayList<>();
     public static ArrayList<String> oSearchCriteria = new ArrayList<>();
+    public static int sortByO = 0;
+    public static boolean cityRestricted = true;
     public static MyHandler handler;
+    public static int sortByC;
 }

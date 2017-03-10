@@ -136,6 +136,10 @@ public class OfferFragment extends Fragment {
         }
     }
 
+    public void notifySortChange() {
+        new Start().execute();
+    }
+
     private class Start extends AsyncTask<Void, Void, Void> {
 
         @Override
@@ -156,7 +160,7 @@ public class OfferFragment extends Fragment {
                     f.delete();
                 }
             }
-            Data.offerPaged = Back.findObjectByWhere("city='" + Data.user.getProperty("city") + "'", Back.object.foodoffer);
+            Back.generateOffers();
             ArrayList<Map> temp = new ArrayList<>(Data.offerPaged.getCurPage());
             for (int i = 0; i < temp.size(); i++) {
                 Data.foodOffers.add(new FoodOffer(temp.get(i)));
