@@ -8,7 +8,7 @@ import java.util.Map;
 
 import itsjustaaron.food.Model.Craving;
 import itsjustaaron.food.Model.Food;
-import itsjustaaron.food.Model.FoodOffer;
+import itsjustaaron.food.Model.Offer;
 
 /**
  * Created by Aaron-Work on 8/4/2016.
@@ -17,7 +17,7 @@ public class Data {
     public static int loadCount = 15;
     public static BackendlessUser user;
     public static ArrayList<Craving> cravings;
-    public static ArrayList<FoodOffer> foodOffers;
+    public static ArrayList<Offer> offers;
     public static PagedList<Map> cravingPaged;
     public static PagedList<Map> offerPaged;
     public static ArrayList<String> tags;
@@ -31,5 +31,5 @@ public class Data {
     public static int sortByO = 0;
     public static boolean cityRestricted = true;
     public static MyHandler handler;
-    public static int sortByC;
+    public static int sortByC = 0;
 }

@@ -18,7 +18,7 @@ import java.util.Map;
 import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
 import itsjustaaron.food.Model.Food;
-import itsjustaaron.food.Model.FoodOffer;
+import itsjustaaron.food.Model.Offer;
 import itsjustaaron.food.R;
 import itsjustaaron.food.Utilities.EndlessScroll;
 import pl.droidsonroids.gif.GifDrawable;
@@ -29,7 +29,7 @@ import pl.droidsonroids.gif.GifImageView;
  */
 public class OfferFragment extends Fragment {
     public SwipeRefreshLayout swipeRefreshLayout;
-    MyAdapter<FoodOffer> myAdapter;
+    MyAdapter<Offer> myAdapter;
     boolean started = false;
     LinearLayoutManager layoutManager;
     View rootView;
@@ -40,7 +40,7 @@ public class OfferFragment extends Fragment {
         if (s != null) {
             s.setRefreshing(true);
         }
-        if (Data.foodOffers.size() == 0 || Data.oSearchCriteria.size() == 0) {
+        if (Data.offers.size() == 0 || Data.oSearchCriteria.size() == 0) {
             new Start().execute();
         } else {
             new AsyncTask<Void, Void, Void>() {
@@ -48,7 +48,7 @@ public class OfferFragment extends Fragment {
                 @Override
                 public Void doInBackground(Void... voids) {
 
-                    Data.foodOffers.clear();
+                    Data.offers.clear();
                     String query = Food.listToCsv(Data.oSearchCriteria);
                     ((Main) getActivity()).doMySearch(query);
                     return null;
@@ -77,8 +77,8 @@ public class OfferFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.tab_offer, container, false);
-        Data.foodOffers = new ArrayList<>();
-        myAdapter = new MyAdapter<>(Data.foodOffers, 'o', getActivity());
+        Data.offers = new ArrayList<>();
+        myAdapter = new MyAdapter<>(Data.offers, 'o', getActivity());
         recyclerView = (RecyclerView) rootView.findViewById(R.id.offerList);
         recyclerView.setAdapter(myAdapter);
         layoutManager = new LinearLayoutManager(getActivity());
@@ -102,7 +102,7 @@ public class OfferFragment extends Fragment {
             srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
-                    Data.foodOffers.clear();
+                    Data.offers.clear();
                     refresh(srl);
                 }
             });
@@ -116,11 +116,11 @@ public class OfferFragment extends Fragment {
                         @Override
                         public Void doInBackground(Void... voids) {
                             Data.offerPaged.nextPage();
-                            ArrayList<Map> temp = new ArrayList<Map>(Data.offerPaged.getCurPage());
+                            ArrayList<Map> temp = new ArrayList<>(Data.offerPaged.getCurPage());
                             for (int i = 0; i < temp.size(); i++) {
                                 Map obj = temp.get(i);
-                                FoodOffer offer = new FoodOffer(obj);
-                                Data.foodOffers.add(offer);
+                                Offer offer = new Offer(obj);
+                                Data.offers.add(offer);
                             }
                             return null;
                         }
@@ -151,7 +151,7 @@ public class OfferFragment extends Fragment {
 
         @Override
         public Void doInBackground(Void... voids) {
-            Data.foodOffers.clear();
+            Data.offers.clear();
             File offerers = new File(Data.fileDir + "/offers/offerers/");
             if(!offerers.exists()) {
                 offerers.mkdirs();
@@ -160,10 +160,10 @@ public class OfferFragment extends Fragment {
                     f.delete();
                 }
             }
-            Back.generateOffers();
+            Back.generateData(Back.object.offer);
             ArrayList<Map> temp = new ArrayList<>(Data.offerPaged.getCurPage());
             for (int i = 0; i < temp.size(); i++) {
-                Data.foodOffers.add(new FoodOffer(temp.get(i)));
+                Data.offers.add(new Offer(temp.get(i)));
             }
             return null;
         }
@@ -174,7 +174,7 @@ public class OfferFragment extends Fragment {
                 getActivity().findViewById(R.id.findNear).setVisibility(View.GONE);
                 swipeRefreshLayout.setVisibility(View.VISIBLE);
                 started = true;
-                if(Data.foodOffers.size() == 0) {
+                if(Data.offers.size() == 0) {
                     getActivity().findViewById(R.id.nothingNear).setVisibility(View.VISIBLE);
                 }
             } else {

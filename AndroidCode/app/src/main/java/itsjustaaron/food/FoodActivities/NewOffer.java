@@ -134,7 +134,6 @@ public class NewOffer extends AppCompatActivity {
             @Override
             public Integer doInBackground(Void... voids) {
                 Map o = Back.store(offer, Back.object.offer);
-                HashMap<String, String> foodOffer = new HashMap<>();
                 if (!Data.user.getProperty("portrait").equals("")) {
                     try {
                         File newFile = new File(Data.fileDir + "/offers/offerers/" + Data.user.getObjectId() + ".png");
@@ -150,16 +149,6 @@ public class NewOffer extends AppCompatActivity {
                         Log.e("IO", e.toString(), e);
                     }
                 }
-                //foodOffer.put("offererPortrait", Data.user.getProperty("portrait").toString());
-                foodOffer.put("offererPortrait", Data.user.getObjectId() + ".png");
-                foodOffer.put("city", offer.get("city"));
-                foodOffer.put("expire", offer.get("expire"));
-                foodOffer.put("foodID", offer.get("foodID"));
-                foodOffer.put("offerer", offer.get("offerer"));
-                foodOffer.put("offerID", o.get("objectId").toString());
-                foodOffer.put("price", offer.get("price"));
-                foodOffer.put("ownerId", Data.user.getObjectId());
-                Back.store(foodOffer, Back.object.foodoffer);
                 return 0;
             }
 

@@ -430,7 +430,7 @@ public class Main extends AppCompatActivity
             @Override
             public Void doInBackground(Void... voids) {
                 //download all the available food tags
-                List<Map> result = Back.getAll(Back.object.tag).getCurPage();
+                List<Map> result = Back.getAllTags(Back.object.tag).getCurPage();
                 for (int i = 0; i < result.size(); i++) {
                     Data.tags.add(result.get(i).get("tag").toString());
                 }

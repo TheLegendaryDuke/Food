@@ -19,7 +19,7 @@ import itsjustaaron.food.FoodActivities.CravingDetails;
 import itsjustaaron.food.FoodActivities.OfferDetails;
 import itsjustaaron.food.Model.Craving;
 import itsjustaaron.food.Model.Food;
-import itsjustaaron.food.Model.FoodOffer;
+import itsjustaaron.food.Model.Offer;
 import itsjustaaron.food.R;
 
 /**
@@ -37,10 +37,10 @@ public class BasicFoodAdapter<T> extends ArrayAdapter<T> {
         super(context, -1, data);
         this.context = context;
         this.data = data;
-        if (data.get(0) instanceof FoodOffer) {
+        if (data.get(0) instanceof Offer) {
             forCraving = false;
             for (T t : data) {
-                foods.add(((FoodOffer) t).food);
+                foods.add(((Offer) t).food);
             }
         } else {
             forCraving = true;
@@ -74,7 +74,7 @@ public class BasicFoodAdapter<T> extends ArrayAdapter<T> {
                     go.putExtra("cravingID", ((Craving) t).objectId);
                 } else {
                     go = new Intent(context, OfferDetails.class);
-                    go.putExtra("offerID", ((FoodOffer) t).offerID);
+                    go.putExtra("offerID", ((Offer) t).objectId);
                 }
                 context.startActivity(go);
             }
