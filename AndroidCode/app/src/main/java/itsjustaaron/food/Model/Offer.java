@@ -2,9 +2,11 @@ package itsjustaaron.food.Model;
 
 import android.util.Log;
 
+import java.io.File;
 import java.util.Date;
 import java.util.Map;
 
+import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
 
 /**
@@ -25,9 +27,35 @@ public class Offer {
     public Offer(Map map) {
         offerer = map.get("offerer").toString();
         objectId = map.get("objectId").toString();
-        for (Food f : Data.foods) {
-            if (f.objectId.equals(map.get("foodID"))) {
-                food = f;
+        boolean found = false;
+        String foodID = map.get("foodID").toString();
+        for (int i = 0; i < Data.foods.size(); i++) {
+            if (Data.foods.get(i).objectId.equals(foodID)) {
+                food = Data.foods.get(i);
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            food = (Food) Back.getObjectByID(foodID, Back.object.food);
+            final String imagePath = Data.fileDir + "/foods/" + food.image;
+            final File file = new File(imagePath);
+            File dir = new File(Data.fileDir + "/foods/");
+            if (!dir.exists()) {
+                dir.mkdir();
+            }
+            if (!file.exists()) {
+                String path = "/foods/" + food.image;
+                Back.downloadToLocal(path);
+            }
+            Data.foods.add(food);
+        }
+        offererPortrait = map.get("offererPortrait").toString();
+        if (offererPortrait != null && !offererPortrait.equals("")) {
+            final String path = "/offers/offerers/" + offererPortrait;
+            File file = new File(Data.fileDir + path);
+            if (!file.exists()) {
+                Back.downloadToLocal(path);
             }
         }
         address = map.get("address").toString();
@@ -35,7 +63,6 @@ public class Offer {
         comment = map.get("comment").toString();
         zipCode = map.get("zipCode").toString();
         price = Double.parseDouble(map.get("price").toString());
-        offererPortrait = map.get("offererPortrait").toString();
         try {
             expire = Data.serverDateFormat.parse(map.get("expire").toString());
         } catch (Exception e) {

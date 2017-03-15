@@ -21,7 +21,32 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@android:color/holo_orange_dark"
-            app:popupTheme="@style/PopupOverlay"/>
+            app:popupTheme="@style/PopupOverlay">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end">
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_alignParentEnd="true"
+                            android:layout_margin="10dp"
+                            android:background="@drawable/ripple_effect"
+                            android:id="@+id/sort"
+                            android:visibility="gone"
+                            android:onClick="barOnClick"
+                            android:src="@drawable/ic_filter"/>
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:id="@+id/search"
+                            android:layout_margin="10dp"
+                            android:onClick="barOnClick"
+                            android:background="@drawable/ripple_effect"
+                            android:layout_toLeftOf="@id/sort"
+                            android:src="@drawable/search"/>
+                </RelativeLayout>
+        </android.support.v7.widget.Toolbar>
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tab_layout"

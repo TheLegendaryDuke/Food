@@ -163,7 +163,7 @@ public class CravingFragment extends Fragment {
         @Override
         public Void doInBackground(Void... voids) {
             Data.cravings.clear();
-            Back.generateData(Back.object.craving);
+            Data.cravingPaged = Back.getAll(Back.object.craving);
             ArrayList<Map> temp = new ArrayList<>(Data.cravingPaged.getCurPage());
             for (int i = 0; i < temp.size(); i++) {
                 Data.cravings.add(new Craving(temp.get(i)));

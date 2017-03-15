@@ -64,7 +64,50 @@ public class OfferFragment extends Fragment {
     }
 
     public void notifyChanges() {
-        myAdapter.notifyDataSetChanged();
+        if(started) {
+            myAdapter.notifyDataSetChanged();
+        }else {
+            started = true;
+            final SwipeRefreshLayout srl = (SwipeRefreshLayout) rootView.findViewById(R.id.oSwipeRefresh);
+            swipeRefreshLayout = srl;
+            srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    Data.offers.clear();
+                    refresh(srl);
+                }
+            });
+
+            getActivity().findViewById(R.id.sort).setVisibility(View.VISIBLE);
+
+            final EndlessScroll endlessScroll = new EndlessScroll(layoutManager) {
+                @Override
+                public void onLoadMore(int page, final RecyclerView view) {
+                    new AsyncTask<Void, Void, Void>() {
+                        @Override
+                        public Void doInBackground(Void... voids) {
+                            Data.offerPaged.nextPage();
+                            ArrayList<Map> temp = new ArrayList<>(Data.offerPaged.getCurPage());
+                            for (int i = 0; i < temp.size(); i++) {
+                                Map obj = temp.get(i);
+                                Offer offer = new Offer(obj);
+                                Data.offers.add(offer);
+                            }
+                            return null;
+                        }
+
+                        @Override
+                        public void onPostExecute(Void v) {
+                            myAdapter.notifyDataSetChanged();
+                        }
+                    }.execute();
+                }
+            };
+            recyclerView.addOnScrollListener(endlessScroll);
+            getActivity().findViewById(R.id.findNear).setVisibility(View.GONE);
+            swipeRefreshLayout.setVisibility(View.VISIBLE);
+        }
+
     }
 
     @Override
@@ -106,6 +149,8 @@ public class OfferFragment extends Fragment {
                     refresh(srl);
                 }
             });
+
+            getActivity().findViewById(R.id.sort).setVisibility(View.VISIBLE);
 
             new Start().execute();
 
@@ -160,7 +205,7 @@ public class OfferFragment extends Fragment {
                     f.delete();
                 }
             }
-            Back.generateData(Back.object.offer);
+            Back.generateOffers();
             ArrayList<Map> temp = new ArrayList<>(Data.offerPaged.getCurPage());
             for (int i = 0; i < temp.size(); i++) {
                 Data.offers.add(new Offer(temp.get(i)));

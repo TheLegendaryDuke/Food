@@ -136,14 +136,21 @@ public class Back {
         }
     }
 
-    public static PagedList<Map> getAllTags() {
+    public static PagedList<Map> getAll(object object) {
         try {
             BackendlessDataQuery backendlessDataQuery = new BackendlessDataQuery();
             QueryOptions queryOptions = new QueryOptions();
             queryOptions.setOffset(0);
             queryOptions.setPageSize(Data.loadCount);
+            List<String> sorts = new ArrayList<>();
+            sorts.add("numFollowers DESC");
+            queryOptions.setSortBy(sorts);
             backendlessDataQuery.setQueryOptions(queryOptions);
-            return new PagedList<>(Backendless.Persistence.of("tags").find());
+            if(object == Back.object.tag) {
+                return new PagedList<>(Backendless.Persistence.of("tags").find());
+            }else {
+                return new PagedList<>(Backendless.Persistence.of("cravings").find(backendlessDataQuery));
+            }
         } catch (Exception e) {
             errorHandle(e);
         }
@@ -239,39 +246,36 @@ public class Back {
         }
     }
 
-    public static void generateData(object object) {
+    public static void generateOffers() {
         BackendlessDataQuery dataQuery = new BackendlessDataQuery();
-        if(object == Back.object.offer) {
-            if (Data.cityRestricted) {
-                dataQuery.setWhereClause("city='" + Data.user.getProperty("city") + "'");
-            }
-            List<String> sort = new ArrayList<>();
-            switch (Data.sortByO) {
-                case 0:
-                    //TODO: finish this
-                    sort.add("visits DESC");
-                    break;
-                case 1:
-                    sort.add("score DESC");
-                    break;
-                case 2:
-                    //sort by distance
-                    break;
-                case 3:
-                    sort.add("price");
-                    break;
-            }
-            if (Data.sortByO != 2) {
-                QueryOptions queryOptions = new QueryOptions();
-                queryOptions.setSortBy(sort);
-                dataQuery.setQueryOptions(queryOptions);
-                Data.offerPaged = new PagedList<>(Backendless.Data.of("foodOffer").find(dataQuery));
-            } else {
-
-            }
-        }else {
+        if (Data.cityRestricted) {
+            dataQuery.setWhereClause("city='" + Data.user.getProperty("city") + "'");
+        }
+        List<String> sort = new ArrayList<>();
+        switch (Data.sortByO) {
+            case 0:
+                //TODO: finish this
+                sort.add("visits DESC");
+                break;
+            case 1:
+                sort.add("score DESC");
+                break;
+            case 2:
+                //sort by distance
+                break;
+            case 3:
+                sort.add("price");
+                break;
+        }
+        if (Data.sortByO != 2) {
+            QueryOptions queryOptions = new QueryOptions();
+            queryOptions.setSortBy(sort);
+            dataQuery.setQueryOptions(queryOptions);
+            Data.offerPaged = new PagedList<>(Backendless.Data.of("offers").find(dataQuery));
+        } else {
 
         }
+
     }
 
     public enum object {

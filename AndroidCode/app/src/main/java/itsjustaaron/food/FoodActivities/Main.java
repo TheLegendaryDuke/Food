@@ -27,13 +27,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -53,7 +54,7 @@ import itsjustaaron.food.Back.Data;
 import itsjustaaron.food.Back.MyHandler;
 import itsjustaaron.food.Model.Craving;
 import itsjustaaron.food.Model.Food;
-import itsjustaaron.food.Model.FoodOffer;
+import itsjustaaron.food.Model.Offer;
 import itsjustaaron.food.R;
 
 
@@ -72,7 +73,6 @@ public class Main extends AppCompatActivity
     private Toast backPressed = null;
     private Dialog searchDialog;
     private PopupWindow sortMenuO;
-    private PopupWindow sortMenuC;
     private int screenSizeX;
 
     //helpers to implement wait
@@ -146,16 +146,16 @@ public class Main extends AppCompatActivity
                             }
                         }
                     } else {
-                        Data.offerPaged = Back.findObjectByWhere(where, Back.object.foodoffer);
+                        Data.offerPaged = Back.findObjectByWhere(where, Back.object.offer);
                         List<Map> mapResult = Data.offerPaged.getCurPage();
                         if (mapResult.size() == 0) {
                             return 1;
                         } else {
-                            Data.foodOffers.clear();
+                            Data.offers.clear();
                             for (int i = 0; i < mapResult.size(); i++) {
                                 Map obj = mapResult.get(i);
-                                final FoodOffer foodOffer = new FoodOffer(obj);
-                                Data.foodOffers.add(foodOffer);
+                                final Offer foodOffer = new Offer(obj);
+                                Data.offers.add(foodOffer);
                             }
                         }
                     }
@@ -207,7 +207,12 @@ public class Main extends AppCompatActivity
 
     private void revealShow(boolean reveal) {
         final View view = searchDialog.findViewById(R.id.searchBar);
-        View searchButton = searchDialog.findViewById(R.id.searchClear);
+        View searchButton;
+        if(Data.onCraving) {
+            searchButton = searchDialog.findViewById(R.id.searchSearch);
+        }else {
+            searchButton = searchDialog.findViewById(R.id.searchClear);
+        }
         int cx = searchButton.getLeft() + searchButton.getMeasuredWidth() / 2;
         int cy = searchButton.getTop() + searchButton.getMeasuredHeight() / 2;
         int finalRadius = screenSizeX - searchButton.getMeasuredWidth();
@@ -310,9 +315,13 @@ public class Main extends AppCompatActivity
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    doMySearch(((EditText) searchDialog.findViewById(R.id.searchText)).getText().toString());
-                    revealShow(false);
-                    return true;
+                    String search = ((EditText) searchDialog.findViewById(R.id.searchText)).getText().toString();
+                    if (!search.equals("")) {
+                        doMySearch(search);
+                        revealShow(false);
+                    }else {
+                        ((EditText) searchDialog.findViewById(R.id.searchText)).setHint("Enter a keyword or comma separated tags");
+                    }
                 }
                 return false;
             }
@@ -350,87 +359,79 @@ public class Main extends AppCompatActivity
             public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
                 if (keyCode == KeyEvent.KEYCODE_BACK) {
                     revealShow(false);
-                }else if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                    String search = ((EditText) searchDialog.findViewById(R.id.searchText)).getText().toString();
-                    if (!search.equals("")) {
-                        doMySearch(search);
-                        revealShow(false);
-                    }else {
-                        ((EditText) searchDialog.findViewById(R.id.searchText)).setHint("Enter a keyword or comma separated tags");
-                    }
+                    return true;
                 }
-                return true;
+                return false;
             }
         });
 
-        //TODO: add checkbox onclick, location logic, and backend support for cravings
+        //TODO: add checkbox onclick, location logic
         LayoutInflater inflater = getLayoutInflater();
-        View customSortMenu = inflater.inflate(R.layout.sort_popup_offer, null);
+        final View customSortMenu = inflater.inflate(R.layout.sort_popup_offer, null);
+
+        final CheckBox checkBox = (CheckBox)customSortMenu.findViewById(R.id.inMyCityCheck);
+
+        customSortMenu.findViewById(R.id.inMyCity).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean checked = !checkBox.isChecked();
+                checkBox.setChecked(checked);
+            }
+        });
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Data.cityRestricted = isChecked;
+                offerFragment.notifySortChange();
+            }
+        });
+
         ((RadioGroup)customSortMenu.findViewById(R.id.sorts)).setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
-                switch (checkedId) {
-                    case R.id.sortPopularity:
-                        Data.sortByO = 0;
-                        offerFragment.notifySortChange();
-                        break;
-                    case R.id.sortScore:
-                        Data.sortByO = 1;
-                        offerFragment.notifySortChange();
-                        break;
-                    case R.id.sortLocation:
-                        new AlertDialog.Builder(Main.this)
-                                .setMessage("Update your current location?")
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                //Data.sortByO = 2;
-                                //offerFragment.notifySortChange();
-                                dialog.dismiss();
-                            }
-                        })
-                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        }).show();
-                        break;
-                    case R.id.sortPrice:
-                        Data.sortByO = 3;
-                        offerFragment.notifySortChange();
-                        break;
-                }
+            switch (checkedId) {
+                case R.id.sortPopularity:
+                    Data.sortByO = 0;
+                    offerFragment.notifySortChange();
+                    break;
+                case R.id.sortScore:
+                    Data.sortByO = 1;
+                    offerFragment.notifySortChange();
+                    break;
+                case R.id.sortLocation:
+                    new AlertDialog.Builder(Main.this)
+                            .setMessage("Update your current location?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //Data.sortByO = 2;
+                            //offerFragment.notifySortChange();
+                            dialog.dismiss();
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    }).show();
+                    break;
+                case R.id.sortPrice:
+                    Data.sortByO = 3;
+                    offerFragment.notifySortChange();
+                    break;
+            }
             }
         });
         sortMenuO = new PopupWindow(customSortMenu, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
         sortMenuO.setElevation(5.0f);
 
-        View sortMenuCraving = inflater.inflate(R.layout.sort_popup_craving, null);
-        ((RadioGroup)sortMenuCraving.findViewById(R.id.sorts)).setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
-                switch (checkedId) {
-                    case R.id.sortPopularity:
-                        Data.sortByC = 0;
-                        cravingFragment.notifySortChange();
-                        break;
-                    case R.id.sortPrice:
-                        Data.sortByC = 1;
-                        offerFragment.notifySortChange();
-                        break;
-                }
-            }
-        });
-        sortMenuC = new PopupWindow(sortMenuCraving, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        sortMenuC.setElevation(5.0f);
-
-        Data.tags = new ArrayList<String>();
+        Data.tags = new ArrayList<>();
         new AsyncTask<Void, Void, Void>() {
             @Override
             public Void doInBackground(Void... voids) {
                 //download all the available food tags
-                List<Map> result = Back.getAllTags(Back.object.tag).getCurPage();
+                List<Map> result = Back.getAll(Back.object.tag).getCurPage();
                 for (int i = 0; i < result.size(); i++) {
                     Data.tags.add(result.get(i).get("tag").toString());
                 }
@@ -538,43 +539,25 @@ public class Main extends AppCompatActivity
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
     //Action bar actions
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public void barOnClick(View item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        int id = item.getId();
         final boolean onCraving = Data.onCraving;
         switch (id) {
             case R.id.search:
                 searchDialog.show();
                 break;
             case R.id.sort:
-                if(Data.onCraving) {
-                    if (sortMenuC.isShowing()) {
-                        sortMenuC.dismiss();
-                    } else {
-                        sortMenuC.showAsDropDown(findViewById(R.id.sort));
-                    }
-
-                }else {
-                    if (sortMenuO.isShowing()) {
-                        sortMenuO.dismiss();
-                    } else {
-                        sortMenuO.showAsDropDown(findViewById(R.id.sort));
-                    }
+                if (sortMenuO.isShowing()) {
+                    sortMenuO.dismiss();
+                } else {
+                    sortMenuO.showAsDropDown(findViewById(R.id.sort));
                 }
                 break;
         }
-        return super.onOptionsItemSelected(item);
     }
 
     public void searchCallBack() {
@@ -615,7 +598,7 @@ public class Main extends AppCompatActivity
                             Data.cravings.clear();
                             cravingFragment.refresh(cravingFragment.swipeRefreshLayout);
                         } else {
-                            Data.foodOffers.clear();
+                            Data.offers.clear();
                             offerFragment.refresh(offerFragment.swipeRefreshLayout);
                         }
                     } else {
