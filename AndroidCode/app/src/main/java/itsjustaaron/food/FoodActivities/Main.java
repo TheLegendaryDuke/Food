@@ -54,6 +54,7 @@ import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
 import itsjustaaron.food.Back.MyHandler;
 import itsjustaaron.food.FoodShopActivities.FoodShopMain;
+import itsjustaaron.food.FoodShopActivities.FoodShopWelcome;
 import itsjustaaron.food.Model.Craving;
 import itsjustaaron.food.Model.Food;
 import itsjustaaron.food.Model.Offer;
@@ -669,7 +670,12 @@ public class Main extends AppCompatActivity
                     break;
 
                 case R.id.swap:
-                    Intent swap = new Intent(this, FoodShopMain.class);
+                    Intent swap;
+                    if(Data.user.getProperty("offerer") == null || Data.user.getProperty("offerer").toString().equals("")) {
+                        swap = new Intent(this, FoodShopWelcome.class);
+                    }else {
+                        swap = new Intent(this, FoodShopMain.class);
+                    }
                     startActivity(swap);
                     overridePendingTransition(R.anim.right_slide_in, R.anim.right_slide_out);
                     break;

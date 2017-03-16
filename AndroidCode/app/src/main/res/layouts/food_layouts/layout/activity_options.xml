@@ -20,6 +20,7 @@
         <Switch
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/switchDefault"
             android:layout_alignParentEnd="true"/>
     </RelativeLayout>
 

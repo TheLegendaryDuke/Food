@@ -44,7 +44,8 @@
             android:parentActivityName=".FoodActivities.Main" />
         <activity
             android:name=".FoodShopActivities.FoodShopMain"
-            android:label="@string/title_activity_food_shop_main"/>
+            android:label="@string/title_activity_food_shop_main" />
+        <activity android:name=".FoodShopActivities.FoodShopWelcome"></activity>
     </application>
 
 </manifest>

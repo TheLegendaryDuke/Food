@@ -32,6 +32,7 @@ import java.util.TimerTask;
 import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
 import itsjustaaron.food.Back.MyHandler;
+import itsjustaaron.food.FoodShopActivities.FoodShopMain;
 import itsjustaaron.food.R;
 
 
@@ -43,9 +44,15 @@ public class Welcome extends AppCompatActivity {
     private ProgressDialog wait;
 
     private void Proceed() {
-        Intent intent = new Intent(this, Main.class);
-        startActivity(intent);
-        this.finish();
+        if((Boolean) Data.user.getProperty("defaultFood")) {
+            Intent intent = new Intent(this, Main.class);
+            startActivity(intent);
+            this.finish();
+        }else {
+            Intent intent = new Intent(this, FoodShopMain.class);
+            startActivity(intent);
+            this.finish();
+        }
     }
 
     @Override

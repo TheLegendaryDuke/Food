@@ -6,10 +6,13 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Toast;
 
+import itsjustaaron.food.Back.Data;
 import itsjustaaron.food.R;
 
 public class FoodShopMain extends AppCompatActivity {
+    private Toast backPressed = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,8 +33,18 @@ public class FoodShopMain extends AppCompatActivity {
     @Override
     public void onBackPressed()
     {
-
-        this.finish();
-        overridePendingTransition  (R.anim.left_slide_in, R.anim.left_slide_out);
+        if(backPressed == null) {
+            backPressed = Toast.makeText(this, "Press again to exit the application.", Toast.LENGTH_LONG);
+        }
+        if((Boolean) Data.user.getProperty("defaultFood")) {
+            this.finish();
+            overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
+        }else {
+            if(backPressed.getView().getWindowVisibility() == View.VISIBLE) {
+                super.onBackPressed();
+            }else {
+                backPressed.show();
+            }
+        }
     }
 }
