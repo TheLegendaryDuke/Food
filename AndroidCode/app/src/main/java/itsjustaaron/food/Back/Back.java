@@ -20,6 +20,8 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import itsjustaaron.food.Model.Craving;
@@ -37,10 +39,6 @@ public class Back {
         Backendless.initApp(context, "0020F1DC-E584-AD36-FF74-6D3E9E917400", "7DCC75D9-058A-6830-FF54-817317E0C000", "v1");
     }
 
-    public enum object {
-        food, foodoffer, offer, craving, cravingfollower, tag
-    }
-
     public static Object getObjectByID(String id, object object) {
         try {
             switch (object) {
@@ -51,7 +49,7 @@ public class Back {
                 case offer:
                     return new Offer(Backendless.Persistence.of("offers").findById(id));
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             errorHandle(e);
         }
         return null;
@@ -63,17 +61,15 @@ public class Back {
             dataQuery.setWhereClause(where);
             switch (object) {
                 case cravingfollower:
-                    return new PagedList<Map>(Backendless.Persistence.of("cravingFollowers").find(dataQuery));
+                    return new PagedList<>(Backendless.Persistence.of("cravingFollowers").find(dataQuery));
                 case craving:
-                    return new PagedList<Map>(Backendless.Persistence.of("cravings").find(dataQuery));
+                    return new PagedList<>(Backendless.Persistence.of("cravings").find(dataQuery));
                 case food:
-                    return new PagedList<Map>(Backendless.Persistence.of("foods").find(dataQuery));
-                case foodoffer:
-                    return new PagedList<Map>(Backendless.Persistence.of("foodOffers").find(dataQuery));
+                    return new PagedList<>(Backendless.Persistence.of("foods").find(dataQuery));
                 case offer:
-                    return new PagedList<Map>(Backendless.Persistence.of("offers").find(dataQuery));
+                    return new PagedList<>(Backendless.Persistence.of("offers").find(dataQuery));
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             errorHandle(e);
         }
         return null;
@@ -92,12 +88,10 @@ public class Back {
                     return Backendless.Persistence.of("tags").save(map);
                 case offer:
                     return Backendless.Persistence.of("offers").save(map);
-                case foodoffer:
-                    return Backendless.Persistence.of("foodOffers").save(map);
                 default:
                     return null;
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             errorHandle(e);
             return null;
         }
@@ -109,7 +103,7 @@ public class Back {
                 case cravingfollower:
                     Backendless.Persistence.of("cravingFollowers").remove(map);
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             errorHandle(e);
         }
     }
@@ -119,7 +113,7 @@ public class Back {
         String local = Data.fileDir + fileDir;
         try {
             File file = new File(local);
-            if(!file.getParentFile().exists()){
+            if (!file.getParentFile().exists()) {
                 file.getParentFile().mkdirs();
             }
             file.createNewFile();
@@ -136,7 +130,7 @@ public class Back {
             byte[] byteArray = outstream.toByteArray();
             fos.write(byteArray);
             fos.close();
-        }catch (Exception ex) {
+        } catch (Exception ex) {
             Log.e("Back.Download", ex.toString(), ex);
             errorHandle(ex);
         }
@@ -148,18 +142,16 @@ public class Back {
             QueryOptions queryOptions = new QueryOptions();
             queryOptions.setOffset(0);
             queryOptions.setPageSize(Data.loadCount);
+            List<String> sorts = new ArrayList<>();
+            sorts.add("numFollowers DESC");
+            queryOptions.setSortBy(sorts);
             backendlessDataQuery.setQueryOptions(queryOptions);
-            switch (object) {
-                case craving:
-                    Data.cravingPaged = new PagedList<Map>(Backendless.Persistence.of("cravings").find(backendlessDataQuery));
-                    return Data.cravingPaged;
-                case tag:
-                    return new PagedList<Map>(Backendless.Persistence.of("tags").find());
-                case foodoffer:
-                    Data.offerPaged = new PagedList<Map>(Backendless.Persistence.of("foodOffers").find(backendlessDataQuery));
-                    return Data.offerPaged;
+            if(object == Back.object.tag) {
+                return new PagedList<>(Backendless.Persistence.of("tags").find());
+            }else {
+                return new PagedList<>(Backendless.Persistence.of("cravings").find(backendlessDataQuery));
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             errorHandle(e);
         }
         return null;
@@ -182,7 +174,7 @@ public class Back {
     public static void upload(File file, String target, boolean override) {
         try {
             Backendless.Files.upload(file, target, override);
-        }catch (Exception e) {
+        } catch (Exception e) {
             errorHandle(e);
         }
     }
@@ -194,7 +186,7 @@ public class Back {
     public static void resetPassword() {
         try {
             Backendless.UserService.restorePassword(Data.user.getEmail());
-        }catch (Exception e) {
+        } catch (Exception e) {
             errorHandle(e);
         }
     }
@@ -202,7 +194,7 @@ public class Back {
     public static void resetPassword(String email) {
         try {
             Backendless.UserService.restorePassword(email);
-        }catch (Exception e) {
+        } catch (Exception e) {
             errorHandle(e);
         }
     }
@@ -210,7 +202,7 @@ public class Back {
     public static void updateUserData() {
         try {
             Backendless.UserService.update(Data.user);
-        }catch (Exception e) {
+        } catch (Exception e) {
             errorHandle(e);
         }
     }
@@ -219,10 +211,11 @@ public class Back {
         try {
             Data.user = Backendless.UserService.login(email, password, remember);
             return "";
-        }catch (BackendlessException ex) {
+        } catch (BackendlessException ex) {
             return ex.getCode();
         }
     }
+
     public static int checkUserSession() {
         try {
             if (Backendless.UserService.isValidLogin()) {
@@ -230,8 +223,8 @@ public class Back {
                 Data.user = Backendless.Data.of(BackendlessUser.class).findById(userID);
                 return 0;
             }
-        }catch (Exception e) {
-            if(((BackendlessException)e).getCode().equals("3064")) {
+        } catch (Exception e) {
+            if (((BackendlessException) e).getCode().equals("3064")) {
                 return 1;
             }
             errorHandle(e);
@@ -248,8 +241,44 @@ public class Back {
             user.setProperty("portrait", "");
             Data.user = Backendless.UserService.register(user);
             return "";
-        }catch (BackendlessException ex) {
+        } catch (BackendlessException ex) {
             return ex.getCode();
         }
+    }
+
+    public static void generateOffers() {
+        BackendlessDataQuery dataQuery = new BackendlessDataQuery();
+        if (Data.cityRestricted) {
+            dataQuery.setWhereClause("city='" + Data.user.getProperty("city") + "'");
+        }
+        List<String> sort = new ArrayList<>();
+        switch (Data.sortByO) {
+            case 0:
+                //TODO: finish this
+                sort.add("visits DESC");
+                break;
+            case 1:
+                sort.add("score DESC");
+                break;
+            case 2:
+                //sort by distance
+                break;
+            case 3:
+                sort.add("price");
+                break;
+        }
+        if (Data.sortByO != 2) {
+            QueryOptions queryOptions = new QueryOptions();
+            queryOptions.setSortBy(sort);
+            dataQuery.setQueryOptions(queryOptions);
+            Data.offerPaged = new PagedList<>(Backendless.Data.of("offers").find(dataQuery));
+        } else {
+
+        }
+
+    }
+
+    public enum object {
+        food, offer, craving, cravingfollower, tag
     }
 }

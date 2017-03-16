@@ -10,13 +10,14 @@
         android:gravity="center"
         android:id="@+id/findNear"
         android:orientation="vertical">
-        <ImageView
+        <pl.droidsonroids.gif.GifImageView
             android:layout_width="200dp"
             android:layout_height="200dp"
-            android:src="@mipmap/radar"
+            android:src="@drawable/radar"
+            android:id="@+id/radar"
             android:onClick="Scan"/>
 
-        <TextView
+        <itsjustaaron.food.Utilities.DefaultTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Find the Most Popular Food in your City"
@@ -30,7 +31,7 @@
         android:id="@+id/nothingNear"
         android:gravity="center"
         android:orientation="vertical">
-        <TextView
+        <itsjustaaron.food.Utilities.DefaultTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="There is nothing near you..."/>

@@ -62,7 +62,7 @@ public class CravingDetails extends AppCompatActivity {
             public void onPostExecute(Void v) {
                 updateUI();
             }
-        }.execute(new Void[]{});
+        }.execute();
     }
 
     public void updateUI() {
@@ -106,7 +106,7 @@ public class CravingDetails extends AppCompatActivity {
             public Void doInBackground(Void... voids) {
                 offers = null;
                 String where = "foodID='" + craving.food.objectId + "'";
-                PagedList result = Back.findObjectByWhere(where, Back.object.foodoffer);
+                PagedList result = Back.findObjectByWhere(where, Back.object.offer);
                 final List<Map> temp = result.getCurPage();
                 if (temp.size() != 0) {
                     offerIDs = new ArrayList<>();
@@ -152,6 +152,6 @@ public class CravingDetails extends AppCompatActivity {
                 }
                 progress.dismiss();
             }
-        }.execute(new Void[]{});
+        }.execute();
     }
 }

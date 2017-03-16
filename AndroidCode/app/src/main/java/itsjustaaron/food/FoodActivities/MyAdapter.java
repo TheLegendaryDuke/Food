@@ -4,26 +4,22 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.Semaphore;
 
-import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
 import itsjustaaron.food.Model.Craving;
-import itsjustaaron.food.Model.FoodOffer;
+import itsjustaaron.food.Model.Offer;
 import itsjustaaron.food.R;
 
 /**
@@ -31,11 +27,11 @@ import itsjustaaron.food.R;
  */
 
 public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
+    private final Semaphore update = new Semaphore(1, true);
     private String fileDir;
     private Context context;
     private char source;
     private ArrayList<T> mDataset;
-    private final Semaphore update = new Semaphore(1, true);
 
     // Provide a suitable constructor (depends on the kind of dataset)
     public MyAdapter(ArrayList<T> myDataset, char s, Context context) {
@@ -79,7 +75,7 @@ public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             if (craving.following) {
                 likeOrNot.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), R.mipmap.favorite, null));
             } else {
-                likeOrNot.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_favorite_border_black_48dp, null));
+                likeOrNot.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), R.mipmap.heart_grey, null));
             }
             likeOrNot.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -116,23 +112,23 @@ public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             count.setText(String.valueOf(craving.numFollowers));
         } else {
             ImageView image = (ImageView) v.findViewById(R.id.offerFoodImage);
-            final FoodOffer foodOffer = (FoodOffer) mDataset.get(position);
-            ((TextView) v.findViewById(R.id.offerFoodOfferer)).setText(foodOffer.offerer);
-            ((TextView) v.findViewById(R.id.offerFoodName)).setText(foodOffer.food.name);
-            ((TextView) v.findViewById(R.id.offerFoodCity)).setText(foodOffer.city);
-            ((TextView) v.findViewById(R.id.offerFoodPrice)).setText("$" + String.valueOf(foodOffer.price));
-            if (foodOffer.offererPortrait != null && !foodOffer.offererPortrait.equals("")) {
-                final String path = "/offers/offerers/" + foodOffer.offererPortrait;
+            final Offer offer = (Offer) mDataset.get(position);
+            ((TextView) v.findViewById(R.id.offerFoodOfferer)).setText(offer.offerer);
+            ((TextView) v.findViewById(R.id.offerFoodName)).setText(offer.food.name);
+            ((TextView) v.findViewById(R.id.offerFoodCity)).setText(offer.city);
+            ((TextView) v.findViewById(R.id.offerFoodPrice)).setText("$" + String.valueOf(offer.price));
+            if (offer.offererPortrait != null && !offer.offererPortrait.equals("")) {
+                final String path = "/offers/offerers/" + offer.offererPortrait;
                 ((ImageView) v.findViewById(R.id.offerOffererImage)).setImageBitmap(BitmapFactory.decodeFile(Data.fileDir + path));
             }
-            Date exp = foodOffer.expire;
+            Date exp = offer.expire;
             ((TextView) v.findViewById(R.id.offerFoodExpire)).setText("Expiring: " + Data.standardDateFormat.format(exp));
-            image.setImageBitmap(BitmapFactory.decodeFile(fileDir + "/offers/" + foodOffer.offerID + ".png"));
+            image.setImageBitmap(BitmapFactory.decodeFile(fileDir + "/foods/" + offer.food.image));
             v.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent detail = new Intent(context, OfferDetails.class);
-                    detail.putExtra("offerID", foodOffer.offerID);
+                    detail.putExtra("offerID", offer.objectId);
                     context.startActivity(detail);
                 }
             });

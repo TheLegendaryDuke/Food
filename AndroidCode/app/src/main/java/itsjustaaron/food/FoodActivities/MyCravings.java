@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -64,6 +63,6 @@ public class MyCravings extends AppCompatActivity {
                     progressDialog.dismiss();
                 }
             }
-        }.execute(new Void[]{});
+        }.execute();
     }
 }

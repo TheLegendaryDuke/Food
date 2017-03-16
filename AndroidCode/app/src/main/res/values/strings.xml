@@ -3,8 +3,6 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="food">Food</string>
-    <string name="searchHint">Enter food name or comma seperated tags</string>
     <string name="error">Error! Check your internet connection. If the problem persists, please contact the developer.</string>
     <string name="title_activity_food_shop_main">FoodShopMain</string>
 </resources>

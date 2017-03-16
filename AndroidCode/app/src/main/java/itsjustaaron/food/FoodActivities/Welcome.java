@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,6 +60,7 @@ public class Welcome extends AppCompatActivity {
             public void run() {
                 synchronized (timerTrigger) {
                     if (timerTrigger) {
+                        //Log.d("timer", "triggered twice");
                         if (existedUser) {
                             Proceed();
                         } else {
@@ -70,6 +72,7 @@ public class Welcome extends AppCompatActivity {
                             });
                         }
                     } else {
+                        //Log.d("timer", "triggered once from timer");
                         timerTrigger = true;
                     }
                 }
@@ -115,16 +118,20 @@ public class Welcome extends AppCompatActivity {
                 if (result != 0) {
                     synchronized (timerTrigger) {
                         if (timerTrigger) {
+                            //Log.d("timer", "triggered twice");
                             findViewById(R.id.CoverImage).setVisibility(View.GONE);
                         } else {
+                            //Log.d("timer", "triggered once");
                             timerTrigger = true;
                         }
                     }
                 } else {
                     synchronized (timerTrigger) {
                         if (timerTrigger) {
+                            //Log.d("timer", "triggered twice");
                             Proceed();
                         } else {
+                            //Log.d("timer", "triggered once");
                             timerTrigger = true;
                         }
                     }

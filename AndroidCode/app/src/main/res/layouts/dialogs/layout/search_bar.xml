@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:background="#ffffff"
+    android:id="@+id/searchBar"
+    android:layout_height="wrap_content">
+    <ImageView
+        android:layout_width="?attr/actionBarSize"
+        android:layout_height="?attr/actionBarSize"
+        android:src="@drawable/ic_action_back"
+        android:layout_alignParentStart="true"
+        android:background="@drawable/ripple_effect"
+        android:padding="10dp"
+        android:id="@+id/searchBack"
+        android:layout_weight="1"/>
+    <ImageView
+        android:layout_width="?attr/actionBarSize"
+        android:layout_height="?attr/actionBarSize"
+        android:padding="10dp"
+        android:src="@drawable/dark_search"
+        android:background="@drawable/ripple_effect"
+        android:id="@+id/searchSearch"
+        android:layout_alignParentEnd="true"
+        android:layout_weight="1"/>
+    <ImageView
+        android:layout_width="?attr/actionBarSize"
+        android:layout_height="?attr/actionBarSize"
+        android:padding="10dp"
+        android:src="@drawable/ic_action_clear"
+        android:id="@+id/searchClear"
+        android:layout_toLeftOf="@id/searchSearch"
+        android:background="@drawable/ripple_effect"
+        android:layout_weight="1"/>
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_toRightOf="@id/searchBack"
+        android:scrollbars="none"
+        android:layout_toLeftOf="@id/searchClear">
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@null"
+            android:hint="Search                            "
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:maxLines="1"
+            android:id="@+id/searchText"
+            android:layout_weight="0"/>
+
+    </HorizontalScrollView>
+</RelativeLayout>

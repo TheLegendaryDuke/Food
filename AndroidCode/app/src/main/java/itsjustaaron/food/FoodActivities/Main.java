@@ -1,13 +1,18 @@
 package itsjustaaron.food.FoodActivities;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
@@ -20,13 +25,21 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
-import android.view.Menu;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
+import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,7 +56,7 @@ import itsjustaaron.food.Back.MyHandler;
 import itsjustaaron.food.FoodShopActivities.FoodShopMain;
 import itsjustaaron.food.Model.Craving;
 import itsjustaaron.food.Model.Food;
-import itsjustaaron.food.Model.FoodOffer;
+import itsjustaaron.food.Model.Offer;
 import itsjustaaron.food.R;
 
 
@@ -55,13 +68,23 @@ import itsjustaaron.food.R;
 
 public class Main extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    private Toast backPressed = null;
-
+    private static ProgressDialog progressDialog;
     public CravingFragment cravingFragment;
     public OfferFragment offerFragment;
-
-    private static ProgressDialog progressDialog;
     protected PagerAdapter adapter;
+    private Toast backPressed = null;
+    private Dialog searchDialog;
+    private PopupWindow sortMenuO;
+    private int screenSizeX;
+
+    //helpers to implement wait
+    public static void showWait() {
+        progressDialog.show();
+    }
+
+    public static void hideWait() {
+        progressDialog.dismiss();
+    }
 
     public void doMySearch(String query) {
         progressDialog.show();
@@ -129,12 +152,12 @@ public class Main extends AppCompatActivity
                         List<Map> mapResult = Data.offerPaged.getCurPage();
                         if(mapResult.size() == 0) {
                             return 1;
-                        }else {
-                            Data.foodOffers.clear();
+                        } else {
+                            Data.offers.clear();
                             for (int i = 0; i < mapResult.size(); i++) {
                                 Map obj = mapResult.get(i);
-                                final FoodOffer foodOffer = new FoodOffer(obj);
-                                Data.foodOffers.add(foodOffer);
+                                final Offer foodOffer = new Offer(obj);
+                                Data.offers.add(foodOffer);
                             }
                         }
                     }
@@ -149,35 +172,24 @@ public class Main extends AppCompatActivity
                 if(Data.onCraving) {
                     if (v == 1) {
                         Toast.makeText(getApplicationContext(), "Your search yields no results", Toast.LENGTH_SHORT).show();
-                    }else {
+                        progressDialog.dismiss();
+                    } else {
                         searchCallBack();
                     }
                 }else {
                     if (v == 1) {
                         Toast.makeText(getApplicationContext(), "Your search yields no results", Toast.LENGTH_SHORT).show();
-                    }else {
+                        progressDialog.dismiss();
+                    } else {
                         searchCallBack();
                     }
                 }
             }
-        }.execute(new Void[]{});
+        }.execute();
     }
 
     public void Scan(View view) {
         offerFragment.start();
-    }
-
-    public void search() {
-        MyEditText editText = (MyEditText) findViewById(R.id.menuSearchBar);
-        String search = editText.getText().toString();
-        if(search.equals("")) {
-            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
-            editText.clearFocus();
-            editText.setHint("Search for a Food");
-            return;
-        }
-        doMySearch(search);
     }
 
     public boolean checkUser(final Context context) {
@@ -195,16 +207,37 @@ public class Main extends AppCompatActivity
         return true;
     }
 
-    //helpers to implement wait
-    public static void showWait() {
-        progressDialog.show();
+    private void revealShow(boolean reveal) {
+        final View view = searchDialog.findViewById(R.id.searchBar);
+        View searchButton;
+        if(Data.onCraving) {
+            searchButton = searchDialog.findViewById(R.id.searchSearch);
+        }else {
+            searchButton = searchDialog.findViewById(R.id.searchClear);
+        }
+        int cx = searchButton.getLeft() + searchButton.getMeasuredWidth() / 2;
+        int cy = searchButton.getTop() + searchButton.getMeasuredHeight() / 2;
+        int finalRadius = screenSizeX - searchButton.getMeasuredWidth();
+
+        if(reveal){
+            // create the animator for this view (the start radius is zero)
+            Animator anim = ViewAnimationUtils.createCircularReveal(view, cx, cy, 0, finalRadius);
+            view.setVisibility(View.VISIBLE);
+            anim.start();
+        } else {
+            Animator anim = ViewAnimationUtils.createCircularReveal(view, cx, cy, finalRadius, 0);
+            anim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    searchDialog.dismiss();
+                    view.setVisibility(View.INVISIBLE);
+
+                }
+            });
+            anim.start();
+        }
     }
-
-    public static void hideWait() {
-        progressDialog.dismiss();
-    }
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -221,11 +254,182 @@ public class Main extends AppCompatActivity
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Please wait...");
 
-
         TimeZone tz = TimeZone.getDefault();
         Data.standardDateFormat.setTimeZone(tz);
 
-        Data.tags = new ArrayList<String>();
+        //from: http://blog.aimanbaharum.com/2015/11/01/android-dialog-reveal-effect/
+
+        Point size = new Point();
+        getWindowManager().getDefaultDisplay().getSize(size);
+        screenSizeX = size.x;
+        searchDialog = new Dialog(this, R.style.DialogTheme);
+        searchDialog.setContentView(R.layout.search_bar);
+        WindowManager.LayoutParams params = searchDialog.getWindow().getAttributes();
+        params.horizontalMargin = 0;
+        params.verticalMargin = 0;
+        params.width = screenSizeX;
+        params.gravity = Gravity.LEFT|Gravity.TOP;
+        params.x = 0;
+        params.y = 0;
+
+        searchDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                revealShow(true);
+            }
+        });
+
+        searchDialog.findViewById(R.id.searchBack).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                revealShow(false);
+            }
+        });
+
+        searchDialog.findViewById(R.id.searchSearch).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doMySearch(((EditText) searchDialog.findViewById(R.id.searchText)).getText().toString());
+                revealShow(false);
+            }
+        });
+
+        searchDialog.findViewById(R.id.searchClear).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((EditText) searchDialog.findViewById(R.id.searchText)).setText("");
+            }
+        });
+
+        searchDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+            @Override
+            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_BACK) {
+                    revealShow(false);
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        ((EditText) searchDialog.findViewById(R.id.searchText)).setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    String search = ((EditText) searchDialog.findViewById(R.id.searchText)).getText().toString();
+                    if (!search.equals("")) {
+                        doMySearch(search);
+                        revealShow(false);
+                    }else {
+                        ((EditText) searchDialog.findViewById(R.id.searchText)).setHint("Enter a keyword or comma separated tags");
+                    }
+                }
+                return false;
+            }
+        });
+
+        searchDialog.findViewById(R.id.searchBack).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                revealShow(false);
+            }
+        });
+
+        searchDialog.findViewById(R.id.searchSearch).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String search = ((EditText) searchDialog.findViewById(R.id.searchText)).getText().toString();
+                if (!search.equals("")) {
+                    doMySearch(search);
+                    revealShow(false);
+                }else {
+                    ((EditText) searchDialog.findViewById(R.id.searchText)).setHint("Enter a keyword or some comma separated tags");
+                }
+            }
+        });
+
+        searchDialog.findViewById(R.id.searchClear).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((EditText) searchDialog.findViewById(R.id.searchText)).setText("");
+            }
+        });
+
+        searchDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+            @Override
+            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_BACK) {
+                    revealShow(false);
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        //TODO: add checkbox onclick, location logic
+        LayoutInflater inflater = getLayoutInflater();
+        final View customSortMenu = inflater.inflate(R.layout.sort_popup_offer, null);
+
+        final CheckBox checkBox = (CheckBox)customSortMenu.findViewById(R.id.inMyCityCheck);
+
+        customSortMenu.findViewById(R.id.inMyCity).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean checked = !checkBox.isChecked();
+                checkBox.setChecked(checked);
+            }
+        });
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Data.cityRestricted = isChecked;
+                offerFragment.notifySortChange();
+            }
+        });
+
+        ((RadioGroup)customSortMenu.findViewById(R.id.sorts)).setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+            switch (checkedId) {
+                case R.id.sortPopularity:
+                    Data.sortByO = 0;
+                    offerFragment.notifySortChange();
+                    break;
+                case R.id.sortScore:
+                    Data.sortByO = 1;
+                    offerFragment.notifySortChange();
+                    break;
+                case R.id.sortLocation:
+                    new AlertDialog.Builder(Main.this)
+                            .setMessage("Update your current location?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //Data.sortByO = 2;
+                            //offerFragment.notifySortChange();
+                            dialog.dismiss();
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    }).show();
+                    break;
+                case R.id.sortPrice:
+                    Data.sortByO = 3;
+                    offerFragment.notifySortChange();
+                    break;
+            }
+            }
+        });
+        sortMenuO = new PopupWindow(customSortMenu, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        sortMenuO.setElevation(5.0f);
+
+        sortMenuO.setOutsideTouchable(true);
+
+        Data.tags = new ArrayList<>();
         new AsyncTask<Void, Void, Void>() {
             @Override
             public Void doInBackground(Void... voids) {
@@ -236,29 +440,7 @@ public class Main extends AppCompatActivity
                 }
                 return null;
             }
-        }.execute(new Void[]{});
-
-        final MyEditText searchBar = (MyEditText) findViewById(R.id.menuSearchBar);
-        searchBar.setMain(this);
-        searchBar.setCursorVisible(false);
-        searchBar.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus) {
-                    searchBar.setCursorVisible(true);
-                    searchBar.setHint("Press ENTER to search");
-                }else {
-                    searchBar.setCursorVisible(false);
-                }
-            }
-        });
-
-        findViewById(R.id.search_bar_go).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                search();
-            }
-        });
+        }.execute();
 
         final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -285,7 +467,7 @@ public class Main extends AppCompatActivity
                         public void onPostExecute(Void v) {
                             ((ImageView) navigationView.getHeaderView(0).findViewById(R.id.userPortrait)).setImageBitmap(BitmapFactory.decodeFile(portrait.getAbsolutePath()));
                         }
-                    }.execute(new Void[]{});
+                    }.execute();
                 }
             }
         }
@@ -301,16 +483,13 @@ public class Main extends AppCompatActivity
                     case 0:
                         findViewById(R.id.oSearchCriterias).setVisibility(View.GONE);
                         findViewById(R.id.cSearchCriterias).setVisibility(View.VISIBLE);
-                        View add = findViewById(R.id.addNew);
-                        if(add != null) {
-                            add.setVisibility(View.VISIBLE);
-                        }
+                        findViewById(R.id.sort).setVisibility(View.GONE);
                         Data.onCraving = true;
                         return;
                     case 1:
                         findViewById(R.id.cSearchCriterias).setVisibility(View.GONE);
                         findViewById(R.id.oSearchCriterias).setVisibility(View.VISIBLE);
-                        findViewById(R.id.addNew).setVisibility(View.GONE);
+                        offerFragment.showSort();
                         Data.onCraving = false;
                         return;
                     default:
@@ -365,33 +544,25 @@ public class Main extends AppCompatActivity
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
     //Action bar actions
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public void barOnClick(View item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        int id = item.getId();
         final boolean onCraving = Data.onCraving;
         switch (id) {
-            case R.id.addNew:
-                if(checkUser(this)) {
-                    Intent next = new Intent(this, NewFood.class);
-                    next.putExtra("onCraving", onCraving);
-                    if(onCraving) {
-                        startActivity(next);
-                    }
+            case R.id.search:
+                searchDialog.show();
+                break;
+            case R.id.sort:
+                if (sortMenuO.isShowing()) {
+                    sortMenuO.dismiss();
+                } else {
+                    sortMenuO.showAsDropDown(findViewById(R.id.sort));
                 }
                 break;
         }
-        return super.onOptionsItemSelected(item);
     }
 
     public void searchCallBack() {
@@ -431,8 +602,8 @@ public class Main extends AppCompatActivity
                         if(Data.onCraving) {
                             Data.cravings.clear();
                             cravingFragment.refresh(cravingFragment.swipeRefreshLayout);
-                        }else {
-                            Data.foodOffers.clear();
+                        } else {
+                            Data.offers.clear();
                             offerFragment.refresh(offerFragment.swipeRefreshLayout);
                         }
                     }else {

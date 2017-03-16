@@ -48,7 +48,7 @@
         android:layout_marginTop="10dp"
         android:textColorHint="@color/darkOrange"/>
 
-    <TextView
+    <itsjustaaron.food.Utilities.DefaultTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/red"
@@ -68,7 +68,7 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/ripple_effect"
+            android:background="@drawable/ripple_effect_orange"
             android:text="CANCEL"
             android:layout_weight="1"
             android:textSize="25sp"
@@ -80,7 +80,7 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/ripple_effect"
+            android:background="@drawable/ripple_effect_orange"
             android:text="REGISTER"
             android:textSize="24sp"
             android:layout_weight="1"

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+<itsjustaaron.food.Utilities.DefaultTextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:textColor="@color/colorPrimary"
     android:textSize="20sp"
     android:padding="5sp"

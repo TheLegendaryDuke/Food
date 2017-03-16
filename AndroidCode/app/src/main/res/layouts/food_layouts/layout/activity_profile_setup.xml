@@ -33,7 +33,7 @@
                 android:id="@+id/profileImage"
                 android:src="@mipmap/mystery" />
 
-            <TextView
+            <itsjustaaron.food.Utilities.DefaultTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
@@ -43,7 +43,7 @@
                 android:textAlignment="center"
                 android:id="@+id/profileName" />
 
-            <TextView
+            <itsjustaaron.food.Utilities.DefaultTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
@@ -52,7 +52,7 @@
                 android:textStyle="bold"
                 android:text="Email Address:"/>
 
-            <TextView
+            <itsjustaaron.food.Utilities.DefaultTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/profileEmail"
@@ -60,7 +60,7 @@
                 android:layout_marginLeft="10dp"
                 android:textSize="30sp"/>
 
-            <TextView
+            <itsjustaaron.food.Utilities.DefaultTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
@@ -78,7 +78,7 @@
                 android:id="@+id/profileAddress"
                 android:hint="Please enter your address" />
 
-            <TextView
+            <itsjustaaron.food.Utilities.DefaultTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="City:"
@@ -92,7 +92,7 @@
                 android:id="@+id/profileCity"
                 android:hint="Please enter your city"/>
 
-            <TextView
+            <itsjustaaron.food.Utilities.DefaultTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Zip Code:"

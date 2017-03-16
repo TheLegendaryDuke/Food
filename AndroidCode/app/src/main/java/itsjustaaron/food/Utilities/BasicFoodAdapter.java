@@ -15,11 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import itsjustaaron.food.Back.Data;
-import itsjustaaron.food.Model.Craving;
 import itsjustaaron.food.FoodActivities.CravingDetails;
-import itsjustaaron.food.Model.Food;
-import itsjustaaron.food.Model.FoodOffer;
 import itsjustaaron.food.FoodActivities.OfferDetails;
+import itsjustaaron.food.Model.Craving;
+import itsjustaaron.food.Model.Food;
+import itsjustaaron.food.Model.Offer;
 import itsjustaaron.food.R;
 
 /**
@@ -27,23 +27,32 @@ import itsjustaaron.food.R;
  */
 
 
-public class BasicFoodAdapter extends ArrayAdapter {
+public class BasicFoodAdapter<T> extends ArrayAdapter<T> {
     Context context;
-    ArrayList<Craving> data;
+    ArrayList<T> data;
+    boolean forCraving;
     ArrayList<Food> foods = new ArrayList<>();
 
-    public BasicFoodAdapter(Context context, ArrayList<Craving> data) {
+    public BasicFoodAdapter(Context context, ArrayList<T> data) {
         super(context, -1, data);
         this.context = context;
         this.data = data;
-        for (Craving t : data) {
-            foods.add(t.food);
+        if (data.get(0) instanceof Offer) {
+            forCraving = false;
+            for (T t : data) {
+                foods.add(((Offer) t).food);
+            }
+        } else {
+            forCraving = true;
+            for (T t : data) {
+                foods.add(((Craving) t).food);
+            }
         }
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        final Craving t = data.get(position);
+        final T t = data.get(position);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.food_list_item, parent, false);
         ((ImageView) rowView.findViewById(R.id.foodImage)).setImageBitmap(BitmapFactory.decodeFile(Data.fileDir + "/foods/" + foods.get(position).image));
@@ -60,8 +69,13 @@ public class BasicFoodAdapter extends ArrayAdapter {
             @Override
             public void onClick(View v) {
                 Intent go;
-                go = new Intent(context, CravingDetails.class);
-                go.putExtra("cravingID", ((Craving)t).objectId);
+                if (forCraving) {
+                    go = new Intent(context, CravingDetails.class);
+                    go.putExtra("cravingID", ((Craving) t).objectId);
+                } else {
+                    go = new Intent(context, OfferDetails.class);
+                    go.putExtra("offerID", ((Offer) t).objectId);
+                }
                 context.startActivity(go);
             }
         });

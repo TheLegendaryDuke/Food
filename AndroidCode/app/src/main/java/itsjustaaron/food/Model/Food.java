@@ -1,7 +1,6 @@
 package itsjustaaron.food.Model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,7 +15,8 @@ public class Food {
     public String tags;
     public String description;
 
-    public Food(){}
+    public Food() {
+    }
 
     public Food(Map map) {
         this.objectId = map.get("objectId").toString();

@@ -1,10 +1,13 @@
 package itsjustaaron.food.FoodActivities;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -32,46 +35,17 @@ public class CravingFragment extends Fragment {
     private MyAdapter mAdapter;
     public SwipeRefreshLayout swipeRefreshLayout;
     ProgressDialog wait;
-
-    private class start extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        public void onPreExecute() {
-            if(wait != null) {
-                wait.show();
-            }else {
-                swipeRefreshLayout.setRefreshing(true);
-            }
-        }
-
-        @Override
-        public Void doInBackground(Void... voids) {
-                Data.cravings.clear();
-                ArrayList<Map> temp = new ArrayList<>(Back.getAll(Back.object.craving).getCurPage());
-                for (int i = 0; i < temp.size(); i++) {
-                    Data.cravings.add(new Craving(temp.get(i)));
-                }
-            return null;
-        }
-
-        @Override
-        public void onPostExecute(Void v) {
-            mAdapter.notifyDataSetChanged();
-            if(wait != null) {
-                wait.dismiss();
-                wait = null;
-            }
-            swipeRefreshLayout.setRefreshing(false);
-        }
-    };
+    RecyclerView mRecyclerView;
+    LinearLayoutManager mLayoutManager;
+    private MyAdapter mAdapter;
 
     public void refresh(final SwipeRefreshLayout s) {
         if(s != null) {
             s.setRefreshing(true);
         }
-        if (Data.foodOffers.size() == 0 || Data.cSearchCriteria.size() == 0) {
-            new start().execute(new Void[]{});
-        }else {
+        if (Data.offers.size() == 0 || Data.cSearchCriteria.size() == 0) {
+            new start().execute();
+        } else {
             new AsyncTask<Void, Void, Void>() {
 
                 @Override
@@ -121,7 +95,27 @@ public class CravingFragment extends Fragment {
             }
         });
 
-        new start().execute(new Void[]{});
+        rootView.findViewById(R.id.fab).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (Data.user != null) {
+                    Intent next = new Intent(getActivity(), NewFood.class);
+                    next.putExtra("onCraving", true);
+                    startActivity(next);
+                }else {
+                    new AlertDialog.Builder(getActivity()).setTitle("Hello Guest").setMessage("Please log in!").setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            Intent goBack = new Intent(getActivity(), Welcome.class);
+                            startActivity(goBack);
+                            getActivity().finish();
+                        }
+                    }).show();
+                }
+            }
+        });
+
+        new start().execute();
 
         final EndlessScroll endlessScroll = new EndlessScroll(mLayoutManager) {
             @Override
@@ -129,13 +123,13 @@ public class CravingFragment extends Fragment {
                 new AsyncTask<Void, Void, Void>() {
                     @Override
                     public Void doInBackground(Void... voids) {
-                            Data.cravingPaged.nextPage();
-                            ArrayList<Map> temp = new ArrayList<Map>(Data.cravingPaged.getCurPage());
-                            for (int i = 0; i < temp.size(); i++) {
-                                Map obj = temp.get(i);
-                                Craving craving = new Craving(obj);
-                                Data.cravings.add(craving);
-                            }
+                        Data.cravingPaged.nextPage();
+                        ArrayList<Map> temp = new ArrayList<Map>(Data.cravingPaged.getCurPage());
+                        for (int i = 0; i < temp.size(); i++) {
+                            Map obj = temp.get(i);
+                            Craving craving = new Craving(obj);
+                            Data.cravings.add(craving);
+                        }
                         return null;
                     }
 
@@ -143,7 +137,7 @@ public class CravingFragment extends Fragment {
                     public void onPostExecute(Void v) {
                         mAdapter.notifyDataSetChanged();
                     }
-                }.execute(new Void[]{});
+                }.execute();
             }
         };
         mRecyclerView.addOnScrollListener(endlessScroll);
@@ -153,5 +147,41 @@ public class CravingFragment extends Fragment {
 
     public void notifyChanges() {
         mAdapter.notifyDataSetChanged();
+    }
+
+    public void notifySortChange() {
+    }
+
+    private class start extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        public void onPreExecute() {
+            if (wait != null) {
+                wait.show();
+            }else {
+                swipeRefreshLayout.setRefreshing(true);
+            }
+        }
+
+        @Override
+        public Void doInBackground(Void... voids) {
+            Data.cravings.clear();
+            Data.cravingPaged = Back.getAll(Back.object.craving);
+            ArrayList<Map> temp = new ArrayList<>(Data.cravingPaged.getCurPage());
+            for (int i = 0; i < temp.size(); i++) {
+                Data.cravings.add(new Craving(temp.get(i)));
+            }
+            return null;
+        }
+
+        @Override
+        public void onPostExecute(Void v) {
+            mAdapter.notifyDataSetChanged();
+            if (wait != null) {
+                wait.dismiss();
+                wait = null;
+            }
+            swipeRefreshLayout.setRefreshing(false);
+        }
     }
 }
