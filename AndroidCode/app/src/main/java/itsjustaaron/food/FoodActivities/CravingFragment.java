@@ -30,9 +30,6 @@ import itsjustaaron.food.Utilities.EndlessScroll;
 public class CravingFragment extends Fragment {
 
     public View rootView;
-    private RecyclerView mRecyclerView;
-    private LinearLayoutManager mLayoutManager;
-    private MyAdapter mAdapter;
     public SwipeRefreshLayout swipeRefreshLayout;
     ProgressDialog wait;
     RecyclerView mRecyclerView;

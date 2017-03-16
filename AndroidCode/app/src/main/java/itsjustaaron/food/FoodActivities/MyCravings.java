@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -52,6 +53,7 @@ public class MyCravings extends AppCompatActivity {
                 if(cravings.size() == 0) {
                     findViewById(R.id.myCravingEmpty).setVisibility(View.VISIBLE);
                     findViewById(R.id.myCravingList).setVisibility(View.GONE);
+                    progressDialog.dismiss();
                 }else {
                     ListView listView = (ListView) findViewById(R.id.myCravingList);
                     ArrayList<Food> foods = new ArrayList<>();

@@ -148,7 +148,7 @@ public class Main extends AppCompatActivity
                             }
                         }
                     }else {
-                        Data.offerPaged = Back.findObjectByWhere(where, Back.object.foodoffer);
+                        Data.offerPaged = Back.findObjectByWhere(where, Back.object.offer);
                         List<Map> mapResult = Data.offerPaged.getCurPage();
                         if(mapResult.size() == 0) {
                             return 1;
