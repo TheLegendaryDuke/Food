@@ -426,6 +426,8 @@ public class Main extends AppCompatActivity
         sortMenuO = new PopupWindow(customSortMenu, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
         sortMenuO.setElevation(5.0f);
 
+        sortMenuO.setOutsideTouchable(true);
+
         Data.tags = new ArrayList<>();
         new AsyncTask<Void, Void, Void>() {
             @Override
@@ -480,11 +482,13 @@ public class Main extends AppCompatActivity
                     case 0:
                         findViewById(R.id.oSearchCriterias).setVisibility(View.GONE);
                         findViewById(R.id.cSearchCriterias).setVisibility(View.VISIBLE);
+                        findViewById(R.id.sort).setVisibility(View.GONE);
                         Data.onCraving = true;
                         return;
                     case 1:
                         findViewById(R.id.cSearchCriterias).setVisibility(View.GONE);
                         findViewById(R.id.oSearchCriterias).setVisibility(View.VISIBLE);
+                        offerFragment.showSort();
                         Data.onCraving = false;
                         return;
                     default:

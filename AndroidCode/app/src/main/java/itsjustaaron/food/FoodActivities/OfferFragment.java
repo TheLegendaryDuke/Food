@@ -185,6 +185,14 @@ public class OfferFragment extends Fragment {
         new Start().execute();
     }
 
+    public void showSort() {
+        if(started) {
+            getActivity().findViewById(R.id.sort).setVisibility(View.VISIBLE);
+        }else {
+            getActivity().findViewById(R.id.sort).setVisibility(View.GONE);
+        }
+    }
+
     private class Start extends AsyncTask<Void, Void, Void> {
 
         @Override
