@@ -32,15 +32,15 @@ public class CravingFragment extends Fragment {
     public View rootView;
     public SwipeRefreshLayout swipeRefreshLayout;
     ProgressDialog wait;
-    private RecyclerView mRecyclerView;
-    private LinearLayoutManager mLayoutManager;
+    RecyclerView mRecyclerView;
+    LinearLayoutManager mLayoutManager;
     private MyAdapter mAdapter;
 
     public void refresh(final SwipeRefreshLayout s) {
         if (s != null) {
             s.setRefreshing(true);
         }
-        if (Data.foodOffers.size() == 0 || Data.cSearchCriteria.size() == 0) {
+        if (Data.offers.size() == 0 || Data.cSearchCriteria.size() == 0) {
             new start().execute();
         } else {
             new AsyncTask<Void, Void, Void>() {
@@ -146,6 +146,9 @@ public class CravingFragment extends Fragment {
         mAdapter.notifyDataSetChanged();
     }
 
+    public void notifySortChange() {
+    }
+
     private class start extends AsyncTask<Void, Void, Void> {
 
         @Override
@@ -160,7 +163,8 @@ public class CravingFragment extends Fragment {
         @Override
         public Void doInBackground(Void... voids) {
             Data.cravings.clear();
-            ArrayList<Map> temp = new ArrayList<>(Back.getAll(Back.object.craving).getCurPage());
+            Data.cravingPaged = Back.getAll(Back.object.craving);
+            ArrayList<Map> temp = new ArrayList<>(Data.cravingPaged.getCurPage());
             for (int i = 0; i < temp.size(); i++) {
                 Data.cravings.add(new Craving(temp.get(i)));
             }

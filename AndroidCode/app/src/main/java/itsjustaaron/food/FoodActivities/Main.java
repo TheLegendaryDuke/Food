@@ -12,6 +12,7 @@ import android.graphics.Point;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
@@ -25,19 +26,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.Menu;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,7 +54,7 @@ import itsjustaaron.food.Back.Data;
 import itsjustaaron.food.Back.MyHandler;
 import itsjustaaron.food.Model.Craving;
 import itsjustaaron.food.Model.Food;
-import itsjustaaron.food.Model.FoodOffer;
+import itsjustaaron.food.Model.Offer;
 import itsjustaaron.food.R;
 
 
@@ -69,7 +71,8 @@ public class Main extends AppCompatActivity
     public OfferFragment offerFragment;
     protected PagerAdapter adapter;
     private Toast backPressed = null;
-    private Dialog popup;
+    private Dialog searchDialog;
+    private PopupWindow sortMenuO;
     private int screenSizeX;
 
     //helpers to implement wait
@@ -143,16 +146,16 @@ public class Main extends AppCompatActivity
                             }
                         }
                     } else {
-                        Data.offerPaged = Back.findObjectByWhere(where, Back.object.foodoffer);
+                        Data.offerPaged = Back.findObjectByWhere(where, Back.object.offer);
                         List<Map> mapResult = Data.offerPaged.getCurPage();
                         if (mapResult.size() == 0) {
                             return 1;
                         } else {
-                            Data.foodOffers.clear();
+                            Data.offers.clear();
                             for (int i = 0; i < mapResult.size(); i++) {
                                 Map obj = mapResult.get(i);
-                                final FoodOffer foodOffer = new FoodOffer(obj);
-                                Data.foodOffers.add(foodOffer);
+                                final Offer foodOffer = new Offer(obj);
+                                Data.offers.add(foodOffer);
                             }
                         }
                     }
@@ -203,8 +206,13 @@ public class Main extends AppCompatActivity
     }
 
     private void revealShow(boolean reveal) {
-        final View view = popup.findViewById(R.id.searchBar);
-        View searchButton = popup.findViewById(R.id.searchClear);
+        final View view = searchDialog.findViewById(R.id.searchBar);
+        View searchButton;
+        if(Data.onCraving) {
+            searchButton = searchDialog.findViewById(R.id.searchSearch);
+        }else {
+            searchButton = searchDialog.findViewById(R.id.searchClear);
+        }
         int cx = searchButton.getLeft() + searchButton.getMeasuredWidth() / 2;
         int cy = searchButton.getTop() + searchButton.getMeasuredHeight() / 2;
         int finalRadius = screenSizeX - searchButton.getMeasuredWidth();
@@ -220,7 +228,7 @@ public class Main extends AppCompatActivity
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     super.onAnimationEnd(animation);
-                    popup.dismiss();
+                    searchDialog.dismiss();
                     view.setVisibility(View.INVISIBLE);
 
                 }
@@ -253,9 +261,9 @@ public class Main extends AppCompatActivity
         Point size = new Point();
         getWindowManager().getDefaultDisplay().getSize(size);
         screenSizeX = size.x;
-        popup = new Dialog(this, R.style.DialogTheme);
-        popup.setContentView(R.layout.search_bar);
-        WindowManager.LayoutParams params = popup.getWindow().getAttributes();
+        searchDialog = new Dialog(this, R.style.DialogTheme);
+        searchDialog.setContentView(R.layout.search_bar);
+        WindowManager.LayoutParams params = searchDialog.getWindow().getAttributes();
         params.horizontalMargin = 0;
         params.verticalMargin = 0;
         params.width = screenSizeX;
@@ -263,36 +271,36 @@ public class Main extends AppCompatActivity
         params.x = 0;
         params.y = 0;
 
-        popup.setOnShowListener(new DialogInterface.OnShowListener() {
+        searchDialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
                 revealShow(true);
             }
         });
 
-        popup.findViewById(R.id.searchBack).setOnClickListener(new View.OnClickListener() {
+        searchDialog.findViewById(R.id.searchBack).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 revealShow(false);
             }
         });
 
-        popup.findViewById(R.id.searchSearch).setOnClickListener(new View.OnClickListener() {
+        searchDialog.findViewById(R.id.searchSearch).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                doMySearch(((EditText)popup.findViewById(R.id.searchText)).getText().toString());
+                doMySearch(((EditText) searchDialog.findViewById(R.id.searchText)).getText().toString());
                 revealShow(false);
             }
         });
 
-        popup.findViewById(R.id.searchClear).setOnClickListener(new View.OnClickListener() {
+        searchDialog.findViewById(R.id.searchClear).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((EditText)popup.findViewById(R.id.searchText)).setText("");
+                ((EditText) searchDialog.findViewById(R.id.searchText)).setText("");
             }
         });
 
-        popup.setOnKeyListener(new DialogInterface.OnKeyListener() {
+        searchDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
             @Override
             public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
                 if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -303,64 +311,124 @@ public class Main extends AppCompatActivity
             }
         });
 
-        ((EditText)popup.findViewById(R.id.searchText)).setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        ((EditText) searchDialog.findViewById(R.id.searchText)).setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    doMySearch(((EditText)popup.findViewById(R.id.searchText)).getText().toString());
-                    revealShow(false);
-                    return true;
-                }
-                return false;
-            }
-        });
-
-        popup.findViewById(R.id.searchBack).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                revealShow(false);
-            }
-        });
-
-        popup.findViewById(R.id.searchSearch).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String search = ((EditText)popup.findViewById(R.id.searchText)).getText().toString();
-                if (!search.equals("")) {
-                    doMySearch(search);
-                    revealShow(false);
-                }else {
-                    ((EditText)popup.findViewById(R.id.searchText)).setHint("Enter a keyword or some comma separated tags");
-                }
-            }
-        });
-
-        popup.findViewById(R.id.searchClear).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((EditText)popup.findViewById(R.id.searchText)).setText("");
-            }
-        });
-
-        popup.setOnKeyListener(new DialogInterface.OnKeyListener() {
-            @Override
-            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_BACK) {
-                    revealShow(false);
-                }else if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                    String search = ((EditText)popup.findViewById(R.id.searchText)).getText().toString();
+                    String search = ((EditText) searchDialog.findViewById(R.id.searchText)).getText().toString();
                     if (!search.equals("")) {
                         doMySearch(search);
                         revealShow(false);
                     }else {
-                        ((EditText)popup.findViewById(R.id.searchText)).setHint("Enter a keyword or comma separated tags");
+                        ((EditText) searchDialog.findViewById(R.id.searchText)).setHint("Enter a keyword or comma separated tags");
                     }
                 }
-                return true;
+                return false;
             }
         });
 
-        Data.tags = new ArrayList<String>();
+        searchDialog.findViewById(R.id.searchBack).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                revealShow(false);
+            }
+        });
+
+        searchDialog.findViewById(R.id.searchSearch).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String search = ((EditText) searchDialog.findViewById(R.id.searchText)).getText().toString();
+                if (!search.equals("")) {
+                    doMySearch(search);
+                    revealShow(false);
+                }else {
+                    ((EditText) searchDialog.findViewById(R.id.searchText)).setHint("Enter a keyword or some comma separated tags");
+                }
+            }
+        });
+
+        searchDialog.findViewById(R.id.searchClear).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((EditText) searchDialog.findViewById(R.id.searchText)).setText("");
+            }
+        });
+
+        searchDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+            @Override
+            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_BACK) {
+                    revealShow(false);
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        //TODO: add checkbox onclick, location logic
+        LayoutInflater inflater = getLayoutInflater();
+        final View customSortMenu = inflater.inflate(R.layout.sort_popup_offer, null);
+
+        final CheckBox checkBox = (CheckBox)customSortMenu.findViewById(R.id.inMyCityCheck);
+
+        customSortMenu.findViewById(R.id.inMyCity).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean checked = !checkBox.isChecked();
+                checkBox.setChecked(checked);
+            }
+        });
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Data.cityRestricted = isChecked;
+                offerFragment.notifySortChange();
+            }
+        });
+
+        ((RadioGroup)customSortMenu.findViewById(R.id.sorts)).setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+            switch (checkedId) {
+                case R.id.sortPopularity:
+                    Data.sortByO = 0;
+                    offerFragment.notifySortChange();
+                    break;
+                case R.id.sortScore:
+                    Data.sortByO = 1;
+                    offerFragment.notifySortChange();
+                    break;
+                case R.id.sortLocation:
+                    new AlertDialog.Builder(Main.this)
+                            .setMessage("Update your current location?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //Data.sortByO = 2;
+                            //offerFragment.notifySortChange();
+                            dialog.dismiss();
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    }).show();
+                    break;
+                case R.id.sortPrice:
+                    Data.sortByO = 3;
+                    offerFragment.notifySortChange();
+                    break;
+            }
+            }
+        });
+        sortMenuO = new PopupWindow(customSortMenu, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        sortMenuO.setElevation(5.0f);
+
+        sortMenuO.setOutsideTouchable(true);
+
+        Data.tags = new ArrayList<>();
         new AsyncTask<Void, Void, Void>() {
             @Override
             public Void doInBackground(Void... voids) {
@@ -414,13 +482,13 @@ public class Main extends AppCompatActivity
                     case 0:
                         findViewById(R.id.oSearchCriterias).setVisibility(View.GONE);
                         findViewById(R.id.cSearchCriterias).setVisibility(View.VISIBLE);
-                        //findViewById(R.id.addNew).setVisibility(View.VISIBLE);
+                        findViewById(R.id.sort).setVisibility(View.GONE);
                         Data.onCraving = true;
                         return;
                     case 1:
                         findViewById(R.id.cSearchCriterias).setVisibility(View.GONE);
                         findViewById(R.id.oSearchCriterias).setVisibility(View.VISIBLE);
-                        //findViewById(R.id.addNew).setVisibility(View.GONE);
+                        offerFragment.showSort();
                         Data.onCraving = false;
                         return;
                     default:
@@ -475,26 +543,25 @@ public class Main extends AppCompatActivity
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
     //Action bar actions
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public void barOnClick(View item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        int id = item.getId();
         final boolean onCraving = Data.onCraving;
         switch (id) {
             case R.id.search:
-                popup.show();
+                searchDialog.show();
+                break;
+            case R.id.sort:
+                if (sortMenuO.isShowing()) {
+                    sortMenuO.dismiss();
+                } else {
+                    sortMenuO.showAsDropDown(findViewById(R.id.sort));
+                }
+                break;
         }
-        return super.onOptionsItemSelected(item);
     }
 
     public void searchCallBack() {
@@ -535,7 +602,7 @@ public class Main extends AppCompatActivity
                             Data.cravings.clear();
                             cravingFragment.refresh(cravingFragment.swipeRefreshLayout);
                         } else {
-                            Data.foodOffers.clear();
+                            Data.offers.clear();
                             offerFragment.refresh(offerFragment.swipeRefreshLayout);
                         }
                     } else {

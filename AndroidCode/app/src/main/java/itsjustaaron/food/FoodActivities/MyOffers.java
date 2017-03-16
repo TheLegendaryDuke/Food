@@ -16,13 +16,13 @@ import itsjustaaron.food.Back.Data;
 import itsjustaaron.food.Back.MyHandler;
 import itsjustaaron.food.Back.PagedList;
 import itsjustaaron.food.Model.Food;
-import itsjustaaron.food.Model.FoodOffer;
+import itsjustaaron.food.Model.Offer;
 import itsjustaaron.food.R;
 import itsjustaaron.food.Utilities.BasicFoodAdapter;
 
 public class MyOffers extends AppCompatActivity {
 
-    ArrayList<FoodOffer> foodOffers = new ArrayList<>();
+    ArrayList<Offer> offers = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,16 +42,16 @@ public class MyOffers extends AppCompatActivity {
             @Override
             public Void doInBackground(Void... voids) {
                 String where = "ownerId = '" + Data.user.getObjectId() + "'";
-                PagedList<Map> result = Back.findObjectByWhere(where, Back.object.foodoffer);
+                PagedList<Map> result = Back.findObjectByWhere(where, Back.object.offer);
                 for (Map m : result.getCurPage()) {
-                    foodOffers.add(new FoodOffer(m));
+                    offers.add(new Offer(m));
                 }
                 return null;
             }
 
             @Override
             public void onPostExecute(Void v) {
-                if (foodOffers.size() == 0) {
+                if (offers.size() == 0) {
                     new AlertDialog.Builder(MyOffers.this).setMessage("You don't have any offers!")
                             .setCancelable(false)
                             .setNeutralButton("OK", new DialogInterface.OnClickListener() {
@@ -63,10 +63,10 @@ public class MyOffers extends AppCompatActivity {
                 } else {
                     ListView listView = (ListView) findViewById(R.id.myOffersList);
                     ArrayList<Food> foods = new ArrayList<>();
-                    for (FoodOffer foodOffer : foodOffers) {
-                        foods.add(foodOffer.food);
+                    for (Offer offer : offers) {
+                        foods.add(offer.food);
                     }
-                    BasicFoodAdapter foodAdapter = new BasicFoodAdapter(MyOffers.this, foodOffers);
+                    BasicFoodAdapter foodAdapter = new BasicFoodAdapter(MyOffers.this, offers);
                     listView.setAdapter(foodAdapter);
                 }
                 progressDialog.dismiss();
