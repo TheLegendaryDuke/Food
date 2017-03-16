@@ -480,11 +480,13 @@ public class Main extends AppCompatActivity
                     case 0:
                         findViewById(R.id.oSearchCriterias).setVisibility(View.GONE);
                         findViewById(R.id.cSearchCriterias).setVisibility(View.VISIBLE);
+                        findViewById(R.id.sort).setVisibility(View.GONE);
                         Data.onCraving = true;
                         return;
                     case 1:
                         findViewById(R.id.cSearchCriterias).setVisibility(View.GONE);
                         findViewById(R.id.oSearchCriterias).setVisibility(View.VISIBLE);
+                        offerFragment.showSort();
                         Data.onCraving = false;
                         return;
                     default:
