@@ -39,10 +39,11 @@
         android:layout_toRightOf="@id/searchBack"
         android:scrollbars="none"
         android:layout_toLeftOf="@id/searchClear">
-        <EditText
+        <AutoCompleteTextView
             android:layout_width="wrap_content"
             android:layout_height="?attr/actionBarSize"
             android:background="@null"
+            android:completionThreshold="1"
             android:hint="Search                            "
             android:imeOptions="actionSearch"
             android:inputType="text"
