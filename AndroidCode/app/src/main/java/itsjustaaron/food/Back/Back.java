@@ -180,7 +180,7 @@ public class Back {
     }
 
     private static void errorHandle(Exception ex) {
-        Thread.setDefaultUncaughtExceptionHandler(Data.handler);
+        Data.handler.uncaughtException(Thread.currentThread(), ex);
     }
 
     public static void resetPassword() {

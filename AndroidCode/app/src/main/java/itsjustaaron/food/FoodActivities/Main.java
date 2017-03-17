@@ -33,6 +33,8 @@ import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -311,7 +313,8 @@ public class Main extends AppCompatActivity
             }
         });
 
-        ((EditText) searchDialog.findViewById(R.id.searchText)).setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) searchDialog.findViewById(R.id.searchText);
+        autoCompleteTextView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
@@ -326,6 +329,9 @@ public class Main extends AppCompatActivity
                 return false;
             }
         });
+
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, Data.tags);
+        autoCompleteTextView.setAdapter(arrayAdapter);
 
         searchDialog.findViewById(R.id.searchBack).setOnClickListener(new View.OnClickListener() {
             @Override
