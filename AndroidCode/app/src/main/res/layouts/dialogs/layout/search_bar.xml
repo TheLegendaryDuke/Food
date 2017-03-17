@@ -12,8 +12,7 @@
         android:layout_alignParentStart="true"
         android:background="@drawable/ripple_effect"
         android:padding="10dp"
-        android:id="@+id/searchBack"
-        android:layout_weight="1"/>
+        android:id="@+id/searchBack"/>
     <ImageView
         android:layout_width="?attr/actionBarSize"
         android:layout_height="?attr/actionBarSize"
@@ -21,8 +20,7 @@
         android:src="@drawable/dark_search"
         android:background="@drawable/ripple_effect"
         android:id="@+id/searchSearch"
-        android:layout_alignParentEnd="true"
-        android:layout_weight="1"/>
+        android:layout_alignParentEnd="true"/>
     <ImageView
         android:layout_width="?attr/actionBarSize"
         android:layout_height="?attr/actionBarSize"
@@ -30,8 +28,7 @@
         android:src="@drawable/ic_action_clear"
         android:id="@+id/searchClear"
         android:layout_toLeftOf="@id/searchSearch"
-        android:background="@drawable/ripple_effect"
-        android:layout_weight="1"/>
+        android:background="@drawable/ripple_effect"/>
 
     <HorizontalScrollView
         android:layout_width="match_parent"
@@ -48,8 +45,7 @@
             android:imeOptions="actionSearch"
             android:inputType="text"
             android:maxLines="1"
-            android:id="@+id/searchText"
-            android:layout_weight="0"/>
+            android:id="@+id/searchText"/>
 
     </HorizontalScrollView>
 </RelativeLayout>
