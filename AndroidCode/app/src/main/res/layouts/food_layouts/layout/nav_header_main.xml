@@ -20,7 +20,7 @@
         android:onClick="ProfileSetup"
         android:src="@mipmap/mystery" />
 
-    <itsjustaaron.food.Utilities.DefaultTextView
+    <itsjustaaron.food.Utilities.PrettyTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"

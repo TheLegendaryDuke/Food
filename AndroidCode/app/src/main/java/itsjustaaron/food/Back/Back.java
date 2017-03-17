@@ -88,6 +88,8 @@ public class Back {
                     return Backendless.Persistence.of("tags").save(map);
                 case offer:
                     return Backendless.Persistence.of("offers").save(map);
+                case offerer:
+                    return Backendless.Persistence.of("offerers").save(map);
                 default:
                     return null;
             }
@@ -279,6 +281,6 @@ public class Back {
     }
 
     public enum object {
-        food, offer, craving, cravingfollower, tag
+        food, offer, craving, cravingfollower, tag, offerer
     }
 }

@@ -17,7 +17,7 @@
             android:id="@+id/radar"
             android:onClick="Scan"/>
 
-        <itsjustaaron.food.Utilities.DefaultTextView
+        <itsjustaaron.food.Utilities.PrettyTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Find the Most Popular Food in your City"
@@ -31,7 +31,7 @@
         android:id="@+id/nothingNear"
         android:gravity="center"
         android:orientation="vertical">
-        <itsjustaaron.food.Utilities.DefaultTextView
+        <itsjustaaron.food.Utilities.PrettyTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="There is nothing near you..."/>

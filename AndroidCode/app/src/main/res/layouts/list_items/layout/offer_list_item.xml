@@ -11,7 +11,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <itsjustaaron.food.Utilities.DefaultTextView
+        <itsjustaaron.food.Utilities.PrettyTextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentEnd="true"
@@ -21,7 +21,7 @@
             android:textStyle="bold"
             android:gravity="center"/>
 
-        <itsjustaaron.food.Utilities.DefaultTextView
+        <itsjustaaron.food.Utilities.PrettyTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
@@ -50,7 +50,7 @@
                         android:id="@+id/offerOffererImage"
                         android:src="@mipmap/mystery"/>
 
-                    <itsjustaaron.food.Utilities.DefaultTextView
+                    <itsjustaaron.food.Utilities.PrettyTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/offerFoodOfferer"
@@ -70,13 +70,13 @@
                     android:layout_height="match_parent"
                     android:orientation="horizontal">
 
-                    <itsjustaaron.food.Utilities.DefaultTextView
+                    <itsjustaaron.food.Utilities.PrettyTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="offers"
                         android:textSize="10sp"
                         android:textColor="@color/colorAccent"/>
-                    <itsjustaaron.food.Utilities.DefaultTextView
+                    <itsjustaaron.food.Utilities.PrettyTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/offerFoodName"
@@ -96,13 +96,13 @@
                     android:layout_height="match_parent"
                     android:orientation="horizontal">
 
-                <itsjustaaron.food.Utilities.DefaultTextView
+                <itsjustaaron.food.Utilities.PrettyTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="in"
                     android:textSize="10sp"
                     android:textColor="@color/colorAccent"/>
-            <itsjustaaron.food.Utilities.DefaultTextView
+            <itsjustaaron.food.Utilities.PrettyTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/offerFoodCity"
