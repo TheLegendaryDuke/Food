@@ -670,15 +670,17 @@ public class Main extends AppCompatActivity
                     break;
 
                 case R.id.swap:
-                    Intent swap;
-                    if(Data.user.getProperty("offerer") == null || Data.user.getProperty("offerer").toString().equals("")) {
-                        swap = new Intent(this, FoodShopWelcome.class);
-                    }else {
-                        swap = new Intent(this, FoodShopMain.class);
+                    if(checkUser(this)) {
+                        Intent swap;
+                        if (Data.user.getProperty("offerer") == null || Data.user.getProperty("offerer").toString().equals("")) {
+                            swap = new Intent(this, FoodShopWelcome.class);
+                        } else {
+                            swap = new Intent(this, FoodShopMain.class);
+                        }
+                        startActivity(swap);
+                        overridePendingTransition(R.anim.right_slide_in, R.anim.right_slide_out);
+                        break;
                     }
-                    startActivity(swap);
-                    overridePendingTransition(R.anim.right_slide_in, R.anim.right_slide_out);
-                    break;
             }
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

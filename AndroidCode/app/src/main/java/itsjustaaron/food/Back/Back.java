@@ -279,6 +279,6 @@ public class Back {
     }
 
     public enum object {
-        food, offer, craving, cravingfollower, tag
+        food, offer, craving, cravingfollower, tag, offerer
     }
 }

@@ -9,18 +9,18 @@ import android.widget.TextView;
  * Created by aozhang on 3/3/2017.
  */
 
-public class DefaultTextView extends TextView {
+public class PrettyTextView extends android.support.v7.widget.AppCompatTextView {
 
-    public DefaultTextView(Context context) {
+    public PrettyTextView(Context context) {
         super(context);
     }
 
-    public DefaultTextView(Context context, AttributeSet attrs) {
+    public PrettyTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
         setCustomFont();
     }
 
-    public DefaultTextView(Context context, AttributeSet attrs, int defStyle) {
+    public PrettyTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         setCustomFont();
     }
