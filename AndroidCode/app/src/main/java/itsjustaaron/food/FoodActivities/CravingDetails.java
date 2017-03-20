@@ -98,6 +98,7 @@ public class CravingDetails extends AppCompatActivity {
                     }
                     next.putExtra("food", craving.food.objectId);
                     startActivity(next);
+                    finish();
                 }else {
                     Toast.makeText(CravingDetails.this, "Please login first!", Toast.LENGTH_SHORT).show();
                 }
@@ -117,7 +118,7 @@ public class CravingDetails extends AppCompatActivity {
                 if (temp.size() != 0) {
                     offerIDs = new ArrayList<>();
                     for (int i = 0; i < temp.size(); i++) {
-                        offerIDs.add(temp.get(i).get("offerID").toString());
+                        offerIDs.add(temp.get(i).get("objectId").toString());
                     }
                     offers = new ArrayList<>();
                     for (int i = 0; i < offerIDs.size(); i++) {
