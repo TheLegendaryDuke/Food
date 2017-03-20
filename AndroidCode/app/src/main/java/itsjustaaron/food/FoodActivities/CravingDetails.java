@@ -25,6 +25,8 @@ import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
 import itsjustaaron.food.Back.MyHandler;
 import itsjustaaron.food.Back.PagedList;
+import itsjustaaron.food.FoodShopActivities.FoodShopMain;
+import itsjustaaron.food.FoodShopActivities.FoodShopWelcome;
 import itsjustaaron.food.Model.Craving;
 import itsjustaaron.food.Model.Food;
 import itsjustaaron.food.Model.Offer;
@@ -83,20 +85,24 @@ public class CravingDetails extends AppCompatActivity {
         ((TextView) findViewById(R.id.detailTags)).setText(list);
         ((TextView) findViewById(R.id.detailDescription)).setText(craving.food.description);
 
-//        TODO:use the button to direct to Food-Shop
-//        Button propose = (Button) findViewById(R.id.proposeOffer);
-//        propose.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if(Data.user != null) {
-//                    Intent next = new Intent(getApplicationContext(), NewOffer.class);
-//                    next.putExtra("food", craving.food.objectId);
-//                    startActivity(next);
-//                }else {
-//                    Toast.makeText(CravingDetails.this, "Please login first!", Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        });
+        Button propose = (Button) findViewById(R.id.proposeOffer);
+        propose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(Data.user != null) {
+                    Intent next;
+                    if (Data.user.getProperty("offerer") == null || Data.user.getProperty("offerer").equals("")) {
+                        next = new Intent(CravingDetails.this, FoodShopWelcome.class);
+                    } else {
+                        next = new Intent(CravingDetails.this, FoodShopMain.class);
+                    }
+                    next.putExtra("food", craving.food.objectId);
+                    startActivity(next);
+                }else {
+                    Toast.makeText(CravingDetails.this, "Please login first!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
         new AsyncTask<Void, Void, Void>() {
             List<String> offers;
