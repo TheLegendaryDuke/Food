@@ -28,7 +28,7 @@
         <item
             android:id="@+id/swap"
             android:icon="@drawable/swap"
-            android:title="Go to FoodShop" />
-        </group>
+            android:title="Go to Food" />
+    </group>
 
 </menu>

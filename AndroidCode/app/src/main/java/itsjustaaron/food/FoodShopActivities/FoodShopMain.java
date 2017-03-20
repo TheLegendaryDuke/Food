@@ -1,35 +1,136 @@
 package itsjustaaron.food.FoodShopActivities;
 
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
+import itsjustaaron.food.Back.MyHandler;
+import itsjustaaron.food.FoodActivities.Main;
+import itsjustaaron.food.FoodActivities.MainPagerAdapter;
+import itsjustaaron.food.FoodActivities.MyCravings;
+import itsjustaaron.food.FoodActivities.Options;
+import itsjustaaron.food.FoodActivities.Welcome;
 import itsjustaaron.food.R;
 
-public class FoodShopMain extends AppCompatActivity {
+public class FoodShopMain extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
+
+    public MenuFragment menuFragment;
+    public DemandFragment demandFragment;
     private Toast backPressed = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Data.handler = new MyHandler(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food_shop_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("");
         setSupportActionBar(toolbar);
+        final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+            public void onTabSelected(TabLayout.Tab tab) {
+                //provide title for tabs
+                int position = tab.getPosition();
+                switch (position) {
+                    case 0:
+                        findViewById(R.id.oSearchCriterias).setVisibility(View.GONE);
+                        findViewById(R.id.cSearchCriterias).setVisibility(View.VISIBLE);
+                        findViewById(R.id.sort).setVisibility(View.GONE);
+                        return;
+                    case 1:
+                        findViewById(R.id.cSearchCriterias).setVisibility(View.GONE);
+                        findViewById(R.id.oSearchCriterias).setVisibility(View.VISIBLE);
+                        //a method to show actions when switching to other tab
+                        Data.onCraving = false;
+                        return;
+                    default:
+                        return;
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
             }
         });
+
+        final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
+        FoodShopPagerAdapter adapter = new FoodShopPagerAdapter(getSupportFragmentManager(), this);
+        viewPager.setAdapter(adapter);
+        tabLayout.setupWithViewPager(viewPager);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout2);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        toggle.syncState();
     }
+
+    //Side drawer actions
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        switch (id) {
+            case R.id.logoff:
+                Back.logOff();
+                Intent intent = new Intent(this, Welcome.class);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.contactDev:
+                Intent email = new Intent(Intent.ACTION_SENDTO);
+                email.setData(Uri.parse("mailto:"));
+                email.putExtra(Intent.EXTRA_EMAIL, new String[]{"contactfoodapp@gmail.com"});
+                email.putExtra(Intent.EXTRA_SUBJECT, "To the developer of \"Food\"");
+                email.putExtra(Intent.EXTRA_TEXT, "Please enter the message you want to send to me, any feedback is welcomed and appreciated :)");
+                if (email.resolveActivity(getPackageManager()) != null) {
+                    startActivity(email);
+                }
+                break;
+            case R.id.drawerOption:
+                Intent options = new Intent(this, Options.class);
+                startActivity(options);
+                break;
+            case R.id.swap:
+                startActivity(new Intent(this, Main.class));
+                overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
+                this.finish();
+                break;
+        }
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout2);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
     @Override
     public void onBackPressed()
     {
@@ -37,8 +138,9 @@ public class FoodShopMain extends AppCompatActivity {
             backPressed = Toast.makeText(this, "Press again to exit the application.", Toast.LENGTH_LONG);
         }
         if((Boolean) Data.user.getProperty("defaultFood")) {
-            this.finish();
+            startActivity(new Intent(this, Main.class));
             overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
+            this.finish();
         }else {
             if(backPressed.getView().getWindowVisibility() == View.VISIBLE) {
                 super.onBackPressed();

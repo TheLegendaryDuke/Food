@@ -679,8 +679,9 @@ public class Main extends AppCompatActivity
                         }
                         startActivity(swap);
                         overridePendingTransition(R.anim.right_slide_in, R.anim.right_slide_out);
-                        break;
+                        finish();
                     }
+                    break;
             }
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
