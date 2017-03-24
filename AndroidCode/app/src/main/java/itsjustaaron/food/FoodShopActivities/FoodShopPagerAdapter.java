@@ -44,9 +44,9 @@ public class FoodShopPagerAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         switch (position) {
             case 0:
-                return "Menu";
-            case 1:
                 return "Demands";
+            case 1:
+                return "Menu";
             default:
                 return null;
         }

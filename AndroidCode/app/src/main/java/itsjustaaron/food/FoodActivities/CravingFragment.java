@@ -32,8 +32,6 @@ public class CravingFragment extends Fragment {
     public View rootView;
     public SwipeRefreshLayout swipeRefreshLayout;
     ProgressDialog wait;
-    RecyclerView mRecyclerView;
-    LinearLayoutManager mLayoutManager;
     private MyAdapter mAdapter;
 
     public void refresh(final SwipeRefreshLayout s) {
@@ -75,11 +73,11 @@ public class CravingFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         rootView = inflater.inflate(R.layout.tab_craving, container, false);
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.cravingList);
+        RecyclerView mRecyclerView = (RecyclerView) rootView.findViewById(R.id.cravingList);
         mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(getActivity());
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new MyAdapter<Craving>(Data.cravings, 'c', getActivity());
+        mAdapter = new MyAdapter<>(Data.cravings, 'c', getActivity());
         mRecyclerView.setAdapter(mAdapter);
 
         final SwipeRefreshLayout srl = (SwipeRefreshLayout) rootView.findViewById(R.id.cSwipeRefresh);
@@ -144,9 +142,6 @@ public class CravingFragment extends Fragment {
 
     public void notifyChanges() {
         mAdapter.notifyDataSetChanged();
-    }
-
-    public void notifySortChange() {
     }
 
     private class start extends AsyncTask<Void, Void, Void> {
