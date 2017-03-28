@@ -124,25 +124,6 @@ public class DemandFragment extends Fragment {
                 refresh(srl);
             }
         });
-        rootView.findViewById(R.id.fab).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (Data.user != null) {
-                    Intent next = new Intent(getActivity(), NewFood.class);
-                    next.putExtra("onCraving", true);
-                    startActivity(next);
-                }else {
-                    new AlertDialog.Builder(getActivity()).setTitle("Hello Guest").setMessage("Please log in!").setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            Intent goBack = new Intent(getActivity(), Welcome.class);
-                            startActivity(goBack);
-                            getActivity().finish();
-                        }
-                    }).show();
-                }
-            }
-        });
 
         new start().execute();
 

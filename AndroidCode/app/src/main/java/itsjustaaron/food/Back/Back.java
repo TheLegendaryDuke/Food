@@ -27,6 +27,7 @@ import java.util.Map;
 import itsjustaaron.food.Model.Craving;
 import itsjustaaron.food.Model.Food;
 import itsjustaaron.food.Model.Offer;
+import itsjustaaron.food.Model.Offerer;
 
 /**
  * Created by Aaron-Home on 2017-02-11.
@@ -48,6 +49,8 @@ public class Back {
                     return new Craving(Backendless.Persistence.of("cravings").findById(id));
                 case offer:
                     return new Offer(Backendless.Persistence.of("offers").findById(id));
+                case offerer:
+                    return new Offerer(Backendless.Persistence.of("offerers").findById(id));
             }
         } catch (Exception e) {
             errorHandle(e);

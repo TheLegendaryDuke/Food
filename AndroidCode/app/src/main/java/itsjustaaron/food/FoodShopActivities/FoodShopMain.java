@@ -62,6 +62,7 @@ public class FoodShopMain extends AppCompatActivity
                     case 1:
                         findViewById(R.id.cSearchCriterias).setVisibility(View.GONE);
                         findViewById(R.id.oSearchCriterias).setVisibility(View.VISIBLE);
+                        getSupportActionBar().setTitle("Your Menu");
                         //a method to show actions when switching to other tab
                         Data.onCraving = false;
                         return;
