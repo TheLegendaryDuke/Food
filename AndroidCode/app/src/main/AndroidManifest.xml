@@ -45,7 +45,8 @@
         <activity
             android:name=".FoodShopActivities.FoodShopMain"
             android:label="@string/title_activity_food_shop_main" />
-        <activity android:name=".FoodShopActivities.FoodShopWelcome"></activity>
+        <activity android:name=".FoodShopActivities.FoodShopWelcome" />
+        <activity android:name=".FoodShopActivities.NewOffer"></activity>
     </application>
 
 </manifest>

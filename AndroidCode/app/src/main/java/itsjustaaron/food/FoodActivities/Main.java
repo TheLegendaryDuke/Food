@@ -44,6 +44,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import org.w3c.dom.Text;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,11 +61,6 @@ import itsjustaaron.food.Model.Craving;
 import itsjustaaron.food.Model.Food;
 import itsjustaaron.food.Model.Offer;
 import itsjustaaron.food.R;
-
-
-//TODO: side nav actions, guest restriction
-
-//not so urgent TODO: caching Data
 
 //future add-ons: in-app communication, in-app payment
 
@@ -243,13 +240,10 @@ public class Main extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Data.handler = new MyHandler(this);
-        Data.cravings = new ArrayList<>();
-        Data.foods = new ArrayList<Food>();
-        Data.fileDir = getFilesDir().toString();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ((TextView)findViewById(R.id.actionBarTitle)).setText("");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("");
         setSupportActionBar(toolbar);
 
         progressDialog = new ProgressDialog(this);
@@ -429,19 +423,6 @@ public class Main extends AppCompatActivity
         sortMenuO.setElevation(5.0f);
 
         sortMenuO.setOutsideTouchable(true);
-
-        Data.tags = new ArrayList<>();
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            public Void doInBackground(Void... voids) {
-                //download all the available food tags
-                List<Map> result = Back.getAll(Back.object.tag).getCurPage();
-                for (int i = 0; i < result.size(); i++) {
-                    Data.tags.add(result.get(i).get("tag").toString());
-                }
-                return null;
-            }
-        }.execute();
 
         final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -687,10 +668,5 @@ public class Main extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
     }
 }

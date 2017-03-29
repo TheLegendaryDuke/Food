@@ -26,6 +26,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -33,6 +36,7 @@ import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
 import itsjustaaron.food.Back.MyHandler;
 import itsjustaaron.food.FoodShopActivities.FoodShopMain;
+import itsjustaaron.food.Model.Food;
 import itsjustaaron.food.R;
 
 
@@ -58,6 +62,9 @@ public class Welcome extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Data.handler = new MyHandler(this);
+        Data.cravings = new ArrayList<>();
+        Data.foods = new ArrayList<Food>();
+        Data.fileDir = getFilesDir().toString();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
         Back.init(getApplicationContext());
@@ -85,6 +92,18 @@ public class Welcome extends AppCompatActivity {
                 }
             }
         }, 2000);
+        Data.tags = new ArrayList<>();
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            public Void doInBackground(Void... voids) {
+                //download all the available food tags
+                List<Map> result = Back.getAll(Back.object.tag).getCurPage();
+                for (int i = 0; i < result.size(); i++) {
+                    Data.tags.add(result.get(i).get("tag").toString());
+                }
+                return null;
+            }
+        }.execute();
         ConnectivityManager cm =
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();

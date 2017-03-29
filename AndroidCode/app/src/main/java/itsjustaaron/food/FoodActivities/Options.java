@@ -37,5 +37,6 @@ public class Options extends AppCompatActivity {
                 }.execute();
             }
         });
+        ((Switch)findViewById(R.id.switchDefault)).setChecked(!(Boolean) Data.user.getProperty("defaultFood"));
     }
 }

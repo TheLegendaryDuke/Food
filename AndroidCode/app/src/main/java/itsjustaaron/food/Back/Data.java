@@ -32,4 +32,6 @@ public class Data {
     public static boolean cityRestricted = true;
     public static MyHandler handler;
     public static int sortByC = 0;
+    public static ArrayList<Offer> menu;
+    public static boolean menuUpdated = false;
 }

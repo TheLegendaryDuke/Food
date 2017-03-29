@@ -17,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import itsjustaaron.food.Back.Back;
@@ -41,8 +42,7 @@ public class FoodShopMain extends AppCompatActivity
         Data.handler = new MyHandler(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food_shop_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("");
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -55,15 +55,16 @@ public class FoodShopMain extends AppCompatActivity
                 int position = tab.getPosition();
                 switch (position) {
                     case 0:
-                        findViewById(R.id.oSearchCriterias).setVisibility(View.GONE);
                         findViewById(R.id.cSearchCriterias).setVisibility(View.VISIBLE);
-                        findViewById(R.id.sort).setVisibility(View.GONE);
+                        findViewById(R.id.sort).setVisibility(View.VISIBLE);
+                        findViewById(R.id.search).setVisibility(View.VISIBLE);
+                        ((TextView)findViewById(R.id.actionBarTitle)).setText("");
                         return;
                     case 1:
                         findViewById(R.id.cSearchCriterias).setVisibility(View.GONE);
-                        findViewById(R.id.oSearchCriterias).setVisibility(View.VISIBLE);
-                        getSupportActionBar().setTitle("Your Menu");
-                        //a method to show actions when switching to other tab
+                        findViewById(R.id.sort).setVisibility(View.GONE);
+                        findViewById(R.id.search).setVisibility(View.GONE);
+                        ((TextView)findViewById(R.id.actionBarTitle)).setText("Your Menu");
                         Data.onCraving = false;
                         return;
                     default:
@@ -148,6 +149,39 @@ public class FoodShopMain extends AppCompatActivity
             }else {
                 backPressed.show();
             }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK) {
+            String id = data.getStringExtra("id");
+            Intent intent = new Intent(this, NewOffer.class);
+            intent.putExtra("food", id);
+            startActivity(intent);
+        }else {
+            Toast.makeText(this, R.string.error, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(Data.menuUpdated) {
+            Data.menuUpdated = false;
+            menuFragment.update();
+        }
+    }
+
+    //TODO: implement the logic for search and sort
+    public void barOnClick(View view) {
+        int id = view.getId();
+        switch (id) {
+            case R.id.search:
+                break;
+            case R.id.sort:
+                break;
         }
     }
 }

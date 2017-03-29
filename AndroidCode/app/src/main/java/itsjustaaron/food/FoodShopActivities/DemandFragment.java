@@ -1,13 +1,10 @@
 package itsjustaaron.food.FoodShopActivities;
 
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,11 +16,8 @@ import java.util.Map;
 
 import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
-import itsjustaaron.food.FoodActivities.CravingFragment;
 import itsjustaaron.food.FoodActivities.Main;
-import itsjustaaron.food.FoodActivities.MyAdapter;
-import itsjustaaron.food.FoodActivities.NewFood;
-import itsjustaaron.food.FoodActivities.Welcome;
+import itsjustaaron.food.Utilities.MyAdapter;
 import itsjustaaron.food.Model.Craving;
 import itsjustaaron.food.Model.Food;
 import itsjustaaron.food.R;
@@ -153,9 +147,5 @@ public class DemandFragment extends Fragment {
         mRecyclerView.addOnScrollListener(endlessScroll);
 
         return rootView;
-    }
-
-    public void notifyChanges() {
-        mAdapter.notifyDataSetChanged();
     }
 }

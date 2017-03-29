@@ -43,6 +43,7 @@ import itsjustaaron.food.Back.PagedList;
 import itsjustaaron.food.Model.Food;
 import itsjustaaron.food.R;
 
+//returns a string "id" as the foodID created/selected, consumes a boolean "onCraving" to indicate calling activity
 
 public class NewFood extends AppCompatActivity {
 

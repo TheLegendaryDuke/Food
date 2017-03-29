@@ -23,6 +23,7 @@ import itsjustaaron.food.Model.Craving;
 import itsjustaaron.food.Model.Food;
 import itsjustaaron.food.R;
 import itsjustaaron.food.Utilities.EndlessScroll;
+import itsjustaaron.food.Utilities.MyAdapter;
 
 /**
  * Created by Aaron-Work on 8/7/2016.

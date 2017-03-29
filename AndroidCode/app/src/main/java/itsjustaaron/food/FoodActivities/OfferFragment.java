@@ -21,6 +21,7 @@ import itsjustaaron.food.Model.Food;
 import itsjustaaron.food.Model.Offer;
 import itsjustaaron.food.R;
 import itsjustaaron.food.Utilities.EndlessScroll;
+import itsjustaaron.food.Utilities.MyAdapter;
 import pl.droidsonroids.gif.GifDrawable;
 import pl.droidsonroids.gif.GifImageView;
 
