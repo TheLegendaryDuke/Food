@@ -93,28 +93,7 @@ public class Main extends AppCompatActivity
             searchCriteria = Data.oSearchCriteria;
         }
         searchCriteria.clear();
-        List<String> tagResult = Food.csvToList(query.toUpperCase());
-        boolean tagCheck = true;
-        for (int i = 0; i < tagResult.size(); i++) {
-            if (!Data.tags.contains(tagResult.get(i))) {
-                tagCheck = false;
-                break;
-            }
-        }
-        String whereClause = "";
-        if (tagCheck) {
-            searchCriteria.addAll(tagResult);
-            for (int i = 0; i < tagResult.size(); i++) {
-                whereClause = whereClause + "tags LIKE '%" + tagResult.get(i) + "%'";
-                if (i != tagResult.size() - 1) {
-                    whereClause = whereClause + " and ";
-                }
-            }
-        } else {
-            searchCriteria.add(query);
-            whereClause = "name LIKE '%" + query + "%'";
-        }
-        final String where = whereClause;
+        final String where = Back.queryToSearchCriteria(query, searchCriteria);
         new AsyncTask<Void, Void, Integer>() {
             @Override
             public Integer doInBackground(Void... voids) {

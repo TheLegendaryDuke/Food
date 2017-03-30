@@ -52,8 +52,7 @@ public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         // create a new view
         switch (source) {
             case 'c':
-                v = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.craving_list_item, parent, false);
+                v = LayoutInflater.from(parent.getContext()).inflate(R.layout.craving_list_item, parent, false);
                 break;
             case 'o':
                 v = LayoutInflater.from(parent.getContext()).inflate(R.layout.offer_list_item, parent, false);

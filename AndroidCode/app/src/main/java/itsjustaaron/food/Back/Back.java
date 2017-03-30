@@ -36,6 +36,31 @@ import itsjustaaron.food.Model.Offerer;
 public class Back {
     private final static String downloadLink = "https://api.backendless.com/0020F1DC-E584-AD36-FF74-6D3E9E917400/v1/files";
 
+    public static String queryToSearchCriteria(String query, ArrayList<String> searchCriteria) {
+        List<String> tagResult = Food.csvToList(query.toUpperCase());
+        boolean tagCheck = true;
+        for (int i = 0; i < tagResult.size(); i++) {
+            if (!Data.tags.contains(tagResult.get(i))) {
+                tagCheck = false;
+                break;
+            }
+        }
+        String whereClause = "";
+        if (tagCheck) {
+            searchCriteria.addAll(tagResult);
+            for (int i = 0; i < tagResult.size(); i++) {
+                whereClause = whereClause + "tags LIKE '%" + tagResult.get(i) + "%'";
+                if (i != tagResult.size() - 1) {
+                    whereClause = whereClause + " and ";
+                }
+            }
+        } else {
+            searchCriteria.add(query);
+            whereClause = "name LIKE '%" + query + "%'";
+        }
+        return whereClause;
+    }
+
     public static void init(Context context) {
         Backendless.initApp(context, "0020F1DC-E584-AD36-FF74-6D3E9E917400", "7DCC75D9-058A-6830-FF54-817317E0C000", "v1");
     }

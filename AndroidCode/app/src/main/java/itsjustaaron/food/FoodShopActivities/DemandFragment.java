@@ -36,7 +36,7 @@ public class DemandFragment extends Fragment {
         if(s != null) {
             s.setRefreshing(true);
         }
-        if (Data.offers.size() == 0 || Data.cSearchCriteria.size() == 0) {
+        if (Data.cravings.size() == 0 || Data.cSearchCriteria.size() == 0) {
             new start().execute();
         } else {
             new AsyncTask<Void, Void, Void>() {
@@ -57,6 +57,10 @@ public class DemandFragment extends Fragment {
                 }
             }.execute(new Void[]{});
         }
+    }
+
+    public void updateData() {
+        mAdapter.notifyDataSetChanged();
     }
 
     private class start extends AsyncTask<Void, Void, Void> {
