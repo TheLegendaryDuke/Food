@@ -4,11 +4,6 @@
     <group android:checkableBehavior="single">
 
         <item
-            android:icon="@drawable/ic_favorite_black_24dp"
-            android:title="My Cravings"
-            android:id="@+id/drawerFavorites" />
-
-        <item
             android:id="@+id/drawerOption"
             android:icon="@drawable/ic_menu_manage"
             android:title="Settings" />
