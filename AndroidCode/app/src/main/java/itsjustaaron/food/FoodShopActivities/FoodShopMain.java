@@ -287,13 +287,11 @@ public class FoodShopMain extends AppCompatActivity
                 switch (position) {
                     case 0:
                         findViewById(R.id.cSearchCriterias).setVisibility(View.VISIBLE);
-                        findViewById(R.id.sort).setVisibility(View.VISIBLE);
                         findViewById(R.id.search).setVisibility(View.VISIBLE);
                         ((TextView)findViewById(R.id.actionBarTitle)).setText("");
                         return;
                     case 1:
                         findViewById(R.id.cSearchCriterias).setVisibility(View.GONE);
-                        findViewById(R.id.sort).setVisibility(View.GONE);
                         findViewById(R.id.search).setVisibility(View.GONE);
                         ((TextView)findViewById(R.id.actionBarTitle)).setText("Your Menu");
                         Data.onCraving = false;
@@ -461,14 +459,11 @@ public class FoodShopMain extends AppCompatActivity
         }
     }
 
-    //TODO: implement the logic for search and sort
     public void barOnClick(View view) {
         int id = view.getId();
         switch (id) {
             case R.id.search:
                 searchDialog.show();
-                break;
-            case R.id.sort:
                 break;
         }
     }
