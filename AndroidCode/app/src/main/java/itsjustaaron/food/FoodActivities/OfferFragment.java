@@ -1,6 +1,7 @@
 package itsjustaaron.food.FoodActivities;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,6 +18,8 @@ import java.util.Map;
 
 import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
+import itsjustaaron.food.FoodShopActivities.FoodShopMain;
+import itsjustaaron.food.FoodShopActivities.FoodShopWelcome;
 import itsjustaaron.food.Model.Food;
 import itsjustaaron.food.Model.Offer;
 import itsjustaaron.food.R;

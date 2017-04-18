@@ -161,6 +161,20 @@ public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                 imageView.setImageBitmap(BitmapFactory.decodeFile(fileDir + "/foods/" + menuItem.food.image));
                 break;
             }
+            case 'd': {
+                final ImageView image = (ImageView) v.findViewById(R.id.cravingItemImage);
+                TextView description = (TextView) v.findViewById(R.id.cravingItemDescription);
+                TextView tags = (TextView) v.findViewById(R.id.cravingItemTags);
+                final TextView count = (TextView) v.findViewById(R.id.cravingFollowerCount);
+                final Craving craving = (Craving) mDataset.get(position);
+                final String imagePath = fileDir + "/foods/" + craving.food.image;
+                image.setImageBitmap(BitmapFactory.decodeFile(imagePath));
+                ((TextView) v.findViewById(R.id.cravingItemName)).setText(craving.food.name);
+                description.setText(craving.food.description);
+                tags.setText(craving.food.tags);
+                count.setText(String.valueOf(craving.numFollowers));
+                break;
+            }
             //TODO: add a new design for demand
         }
     }

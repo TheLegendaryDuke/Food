@@ -110,7 +110,7 @@ public class DemandFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new MyAdapter<>(Data.cravings, 'c', getActivity());
+        mAdapter = new MyAdapter<>(Data.cravings, 'd', getActivity());
         mRecyclerView.setAdapter(mAdapter);
 
         final SwipeRefreshLayout srl = (SwipeRefreshLayout) rootView.findViewById(R.id.cSwipeRefresh);

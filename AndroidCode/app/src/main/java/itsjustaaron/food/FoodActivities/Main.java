@@ -630,22 +630,26 @@ public class Main extends AppCompatActivity
                     break;
 
                 case R.id.swap:
-                    if(checkUser(this)) {
-                        Intent swap;
-                        if (Data.user.getProperty("offerer") == null || Data.user.getProperty("offerer").toString().equals("")) {
-                            swap = new Intent(this, FoodShopWelcome.class);
-                        } else {
-                            swap = new Intent(this, FoodShopMain.class);
-                        }
-                        startActivity(swap);
-                        overridePendingTransition(R.anim.right_slide_in, R.anim.right_slide_out);
-                        finish();
-                    }
+                    goToFoodShop(null);
                     break;
             }
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void goToFoodShop(View view) {
+        if(checkUser(this)) {
+            Intent swap;
+            if (Data.user.getProperty("offerer") == null || Data.user.getProperty("offerer").toString().equals("")) {
+                swap = new Intent(this, FoodShopWelcome.class);
+            } else {
+                swap = new Intent(this, FoodShopMain.class);
+            }
+            startActivity(swap);
+            overridePendingTransition(R.anim.right_slide_in, R.anim.right_slide_out);
+            finish();
+        }
     }
 }
