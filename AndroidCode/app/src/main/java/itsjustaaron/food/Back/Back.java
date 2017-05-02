@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
+import android.util.Pair;
 
 import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
@@ -63,6 +64,13 @@ public class Back {
 
     public static void init(Context context) {
         Backendless.initApp(context, "0020F1DC-E584-AD36-FF74-6D3E9E917400", "7DCC75D9-058A-6830-FF54-817317E0C000", "v1");
+        Data.tags = new ArrayList<>();
+        List<Map> result = Back.getAll(Back.object.tag).getCurPage();
+        for (int i = 0; i < result.size(); i++) {
+            Data.tags.add(result.get(i).get("tag").toString());
+            Data.tagColors.put(result.get(i).get("tag").toString(),
+                    (Integer)result.get(i).get("color"));
+        }
     }
 
     public static Object getObjectByID(String id, object object) {

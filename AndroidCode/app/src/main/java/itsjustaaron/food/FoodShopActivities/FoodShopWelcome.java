@@ -22,6 +22,7 @@ import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
 import itsjustaaron.food.Model.Food;
 import itsjustaaron.food.R;
+import itsjustaaron.food.Utilities.Helpers;
 
 public class FoodShopWelcome extends AppCompatActivity {
 
@@ -36,6 +37,7 @@ public class FoodShopWelcome extends AppCompatActivity {
             String tag = Data.tags.get(i);
             final CheckedTextView checkedTextView = new CheckedTextView(this);
             checkedTextView.setText(tag);
+            checkedTextView.setBackgroundResource(Helpers.getTagDrawable(Data.tagColors.get(tag)));
             checkedTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

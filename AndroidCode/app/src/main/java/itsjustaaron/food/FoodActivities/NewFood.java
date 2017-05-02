@@ -13,6 +13,7 @@ import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.ThemedSpinnerAdapter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,6 +43,7 @@ import itsjustaaron.food.Back.MyHandler;
 import itsjustaaron.food.Back.PagedList;
 import itsjustaaron.food.Model.Food;
 import itsjustaaron.food.R;
+import itsjustaaron.food.Utilities.Helpers;
 
 //returns a string "id" as the foodID created/selected, consumes a boolean "onCraving" to indicate calling activity
 
@@ -116,6 +118,7 @@ public class NewFood extends AppCompatActivity {
             String tag = Data.tags.get(i);
             final CheckedTextView checkedTextView = new CheckedTextView(this);
             checkedTextView.setText(tag);
+            checkedTextView.setBackgroundResource(Helpers.getTagDrawable(Data.tagColors.get(tag)));
             checkedTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -157,7 +160,6 @@ public class NewFood extends AppCompatActivity {
                             Toast.makeText(NewFood.this, "There is already a tag with the same name!", Toast.LENGTH_LONG).show();
                         } else {
                             Data.tags.add(tag);
-
                             new AsyncTask<Void, Void, Integer>() {
                                 @Override
                                 public Integer doInBackground(Void... voids) {

@@ -74,12 +74,13 @@
         <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-        <itsjustaaron.food.Utilities.PrettyTextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="something"
-            android:id="@+id/cravingItemTags"
-            android:maxLines="1"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:id="@+id/cravingItemTags">
+
+            </LinearLayout>
         </HorizontalScrollView>
 
 

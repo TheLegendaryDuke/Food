@@ -11,11 +11,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 import java.util.concurrent.Semaphore;
 
@@ -23,6 +27,7 @@ import itsjustaaron.food.Back.Data;
 import itsjustaaron.food.FoodActivities.CravingDetails;
 import itsjustaaron.food.FoodActivities.OfferDetails;
 import itsjustaaron.food.Model.Craving;
+import itsjustaaron.food.Model.Food;
 import itsjustaaron.food.Model.Offer;
 import itsjustaaron.food.R;
 
@@ -78,7 +83,7 @@ public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             case 'c': {
                 final ImageView image = (ImageView) v.findViewById(R.id.cravingItemImage);
                 TextView description = (TextView) v.findViewById(R.id.cravingItemDescription);
-                TextView tags = (TextView) v.findViewById(R.id.cravingItemTags);
+                LinearLayout tags = (LinearLayout) v.findViewById(R.id.cravingItemTags);
                 final ImageView likeOrNot = (ImageView) v.findViewById(R.id.cravingFollowingOrNot);
                 final TextView count = (TextView) v.findViewById(R.id.cravingFollowerCount);
                 final Craving craving = (Craving) mDataset.get(position);
@@ -86,7 +91,14 @@ public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                 image.setImageBitmap(BitmapFactory.decodeFile(imagePath));
                 ((TextView) v.findViewById(R.id.cravingItemName)).setText(craving.food.name);
                 description.setText(craving.food.description);
-                tags.setText(craving.food.tags);
+                List<String> tagList = Food.csvToList(craving.food.tags);
+                for(String tag : tagList) {
+                    int resID = Helpers.getTagDrawable(Data.tagColors.get(tag));
+                    TextView tagView = new TextView(context);
+                    tagView.setText(tag);
+                    tagView.setBackgroundResource(resID);
+                    tags.addView(tagView);
+                }
                 if (craving.following) {
                     likeOrNot.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), R.mipmap.favorite, null));
                 } else {

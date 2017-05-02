@@ -92,18 +92,6 @@ public class Welcome extends AppCompatActivity {
                 }
             }
         }, 2000);
-        Data.tags = new ArrayList<>();
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            public Void doInBackground(Void... voids) {
-                //download all the available food tags
-                List<Map> result = Back.getAll(Back.object.tag).getCurPage();
-                for (int i = 0; i < result.size(); i++) {
-                    Data.tags.add(result.get(i).get("tag").toString());
-                }
-                return null;
-            }
-        }.execute();
         ConnectivityManager cm =
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();

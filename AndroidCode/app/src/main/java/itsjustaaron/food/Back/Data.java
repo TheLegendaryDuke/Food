@@ -1,5 +1,7 @@
 package itsjustaaron.food.Back;
 
+import android.util.Pair;
+
 import com.backendless.BackendlessUser;
 
 import java.text.SimpleDateFormat;
@@ -21,6 +23,7 @@ public class Data {
     public static PagedList<Map> cravingPaged;
     public static PagedList<Map> offerPaged;
     public static ArrayList<String> tags;
+    public static Map<String, Integer> tagColors;
     public static ArrayList<Food> foods;
     public static String fileDir;
     public static boolean onCraving;
@@ -31,7 +34,6 @@ public class Data {
     public static int sortByO = 0;
     public static boolean cityRestricted = true;
     public static MyHandler handler;
-    public static int sortByC = 0;
     public static ArrayList<Offer> menu;
     public static boolean menuUpdated = false;
 }
