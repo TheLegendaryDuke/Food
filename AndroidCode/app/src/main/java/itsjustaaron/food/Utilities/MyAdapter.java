@@ -14,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.backendless.geo.Units;
+
 import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
@@ -96,6 +98,8 @@ public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                     int resID = Helpers.getTagDrawable(Data.tagColors.get(tag));
                     TextView tagView = new TextView(context);
                     tagView.setText(tag);
+                    tagView.setTextSize(5);
+                    tagView.setPadding(0,0,0,0);
                     tagView.setBackgroundResource(resID);
                     tags.addView(tagView);
                 }

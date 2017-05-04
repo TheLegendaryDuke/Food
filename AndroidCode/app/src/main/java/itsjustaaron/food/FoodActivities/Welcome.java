@@ -67,7 +67,13 @@ public class Welcome extends AppCompatActivity {
         Data.fileDir = getFilesDir().toString();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
-        Back.init(getApplicationContext());
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            public Void doInBackground(Void... voids) {
+                Back.init(getApplicationContext());
+                return null;
+            }
+        }.execute();
         timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override

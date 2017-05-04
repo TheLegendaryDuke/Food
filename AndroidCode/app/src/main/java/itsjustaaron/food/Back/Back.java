@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -65,6 +66,7 @@ public class Back {
     public static void init(Context context) {
         Backendless.initApp(context, "0020F1DC-E584-AD36-FF74-6D3E9E917400", "7DCC75D9-058A-6830-FF54-817317E0C000", "v1");
         Data.tags = new ArrayList<>();
+        Data.tagColors = new HashMap<>();
         List<Map> result = Back.getAll(Back.object.tag).getCurPage();
         for (int i = 0; i < result.size(); i++) {
             Data.tags.add(result.get(i).get("tag").toString());
