@@ -27,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
@@ -48,6 +49,20 @@ public class Welcome extends AppCompatActivity {
     private ProgressDialog wait;
 
     private void Proceed() {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            public Void doInBackground(Void... voids) {
+                Data.tags = new ArrayList<>();
+                Data.tagColors = new HashMap<>();
+                List<Map> result = Back.getAll(Back.object.tag).getCurPage();
+                for (int i = 0; i < result.size(); i++) {
+                    Data.tags.add(result.get(i).get("tag").toString());
+                    Data.tagColors.put(result.get(i).get("tag").toString(),
+                            (Integer)result.get(i).get("color"));
+                }
+                return null;
+            }
+        }.execute();
         if((Boolean) Data.user.getProperty("defaultFood")) {
             Intent intent = new Intent(this, Main.class);
             startActivity(intent);

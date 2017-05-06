@@ -38,7 +38,6 @@ import itsjustaaron.food.R;
  */
 
 public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
-    private final Semaphore update = new Semaphore(1, true);
     private String fileDir;
     private Context context;
     private char source;
@@ -94,13 +93,17 @@ public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                 ((TextView) v.findViewById(R.id.cravingItemName)).setText(craving.food.name);
                 description.setText(craving.food.description);
                 List<String> tagList = Food.csvToList(craving.food.tags);
+                tags.removeAllViews();
                 for(String tag : tagList) {
                     int resID = Helpers.getTagDrawable(Data.tagColors.get(tag));
                     TextView tagView = new TextView(context);
                     tagView.setText(tag);
-                    tagView.setTextSize(5);
-                    tagView.setPadding(0,0,0,0);
+                    tagView.setTextSize(10);
                     tagView.setBackgroundResource(resID);
+                    tagView.setPadding(7,5,7,5);
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    params.setMargins(0,0,5,0);
+                    tagView.setLayoutParams(params);
                     tags.addView(tagView);
                 }
                 if (craving.following) {

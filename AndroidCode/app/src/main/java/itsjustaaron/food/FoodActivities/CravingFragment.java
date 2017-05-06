@@ -24,6 +24,7 @@ import itsjustaaron.food.Model.Food;
 import itsjustaaron.food.R;
 import itsjustaaron.food.Utilities.EndlessScroll;
 import itsjustaaron.food.Utilities.MyAdapter;
+import itsjustaaron.food.Utilities.SimpleDividerItemDecoration;
 
 /**
  * Created by Aaron-Work on 8/7/2016.
@@ -75,6 +76,7 @@ public class CravingFragment extends Fragment {
 
         rootView = inflater.inflate(R.layout.tab_craving, container, false);
         RecyclerView mRecyclerView = (RecyclerView) rootView.findViewById(R.id.cravingList);
+        mRecyclerView.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
         mRecyclerView.setHasFixedSize(true);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);

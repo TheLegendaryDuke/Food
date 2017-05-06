@@ -21,16 +21,18 @@ public class Helpers {
                 return R.drawable.tag_five;
             case 6:
                 return R.drawable.tag_six;
-            case 7:
-                return R.drawable.tag_seven;
-            case 8:
-                return R.drawable.tag_eight;
-            case 9:
-                return R.drawable.tag_nine;
-            case 10:
-                return R.drawable.tag_ten;
+//            case 7:
+//                return R.drawable.tag_seven;
+//            case 8:
+//                return R.drawable.tag_eight;
+//            case 9:
+//                return R.drawable.tag_nine;
+//            case 10:
+//                return R.drawable.tag_ten;
+//            default:
+//                return R.drawable.tag_eleven;
             default:
-                return R.drawable.tag_eleven;
+                return 0;
         }
     }
 }
