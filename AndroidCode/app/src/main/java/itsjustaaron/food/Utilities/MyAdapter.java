@@ -93,6 +93,7 @@ public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                 ((TextView) v.findViewById(R.id.cravingItemName)).setText(craving.food.name);
                 description.setText(craving.food.description);
                 List<String> tagList = Food.csvToList(craving.food.tags);
+<<<<<<< Updated upstream
                 tags.removeAllViews();
                 for(String tag : tagList) {
                     int resID = Helpers.getTagDrawable(Data.tagColors.get(tag));
@@ -105,6 +106,10 @@ public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                     params.setMargins(0,0,5,0);
                     tagView.setLayoutParams(params);
                     tags.addView(tagView);
+=======
+                for(String tag : tagList) {
+
+>>>>>>> Stashed changes
                 }
                 if (craving.following) {
                     likeOrNot.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), R.mipmap.favorite, null));

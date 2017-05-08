@@ -2,10 +2,13 @@ package itsjustaaron.food.FoodActivities;
 
 import android.app.ProgressDialog;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Display;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import itsjustaaron.food.Back.Back;
@@ -51,7 +54,13 @@ public class OfferDetails extends AppCompatActivity {
 
     public void updateUI() {
         ImageView image = (ImageView) findViewById(R.id.offerDetailFoodImage);
-        image.setImageBitmap(BitmapFactory.decodeFile(getFilesDir() + "/foods/" + offer.food.image));
+        ImageView mat = (ImageView) findViewById(R.id.offerDetailFoodImageMat);
+        //image.setImageBitmap(BitmapFactory.decodeFile(getFilesDir() + "/foods/" + offer.food.image));
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;
+        mat.setLayoutParams(new RelativeLayout.LayoutParams(width, (int)(width * 0.526)));
         ((TextView) findViewById(R.id.offerDetailFoodName)).setText(offer.food.name);
         ((TextView) findViewById(R.id.offerDetailFoodDesc)).setText(offer.food.description);
         ((TextView) findViewById(R.id.offerDetailFoodTags)).setText(offer.food.tags);
