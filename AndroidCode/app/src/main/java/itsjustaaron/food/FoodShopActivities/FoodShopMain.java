@@ -288,7 +288,7 @@ public class FoodShopMain extends AppCompatActivity
                     case 0:
                         findViewById(R.id.cSearchCriterias).setVisibility(View.VISIBLE);
                         findViewById(R.id.search).setVisibility(View.VISIBLE);
-                        ((TextView)findViewById(R.id.actionBarTitle)).setText("");
+                        ((TextView)findViewById(R.id.actionBarTitle)).setText("Popular Demands");
                         return;
                     case 1:
                         findViewById(R.id.cSearchCriterias).setVisibility(View.GONE);
