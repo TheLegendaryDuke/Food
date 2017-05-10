@@ -28,6 +28,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -214,33 +217,27 @@ public class NewFood extends AppCompatActivity {
             if (data != null) {
                 Uri image = data.getData();
                 rawImage = image;
-                Intent cropIntent = new Intent("com.android.camera.action.CROP");
-                cropIntent.setDataAndType(image, "image/*");
-                cropIntent.putExtra("crop", "true");
-                cropIntent.putExtra("aspectX", 10);
-                cropIntent.putExtra("aspectY", 10);
-                cropIntent.putExtra("outputX", 128);
-                cropIntent.putExtra("outputY", 128);
-                cropIntent.putExtra("return-data", true);
-                startActivityForResult(cropIntent, 1);
+                CropImage.activity(image)
+                        .setCropShape(CropImageView.CropShape.OVAL)
+                        .setFixAspectRatio(true)
+                        .setGuidelines(CropImageView.Guidelines.ON)
+                        .start(this);
             }
         } else {
-            if (resultCode == RESULT_OK) {
-                if (data != null) {
+            if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+                CropImage.ActivityResult result = CropImage.getActivityResult(data);
+                if (resultCode == RESULT_OK) {
+                    Uri resultUri = result.getUri();
                     imageUpdated = true;
-                    pic = data.getExtras().getParcelable("data");
-                    ((ImageView) findViewById(R.id.createFoodImage)).setImageBitmap(pic);
-                }
-            } else {
-                if (rawImage != null) {
                     try {
-                        pic = MediaStore.Images.Media.getBitmap(this.getContentResolver(), rawImage);
-                        pic = Bitmap.createScaledBitmap(pic, 200, 200, true);
-                        ((ImageView) findViewById(R.id.createFoodImage)).setImageURI(rawImage);
-                        imageUpdated = true;
-                    } catch (Exception e) {
-                        Log.d("error", e.toString(), e);
+                        pic = MediaStore.Images.Media.getBitmap(this.getContentResolver(), resultUri);
+                        ((ImageView) findViewById(R.id.createFoodImage)).setImageBitmap(pic);
+                    }catch (Exception e) {
+                        Data.handler.uncaughtException(Thread.currentThread(), e);
                     }
+
+                } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                    Data.handler.uncaughtException(Thread.currentThread(), result.getError());
                 }
             }
         }

@@ -19,6 +19,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -69,44 +72,33 @@ public class ProfileSetup extends AppCompatActivity {
             if (data != null) {
                 Uri image = data.getData();
                 rawImage = image;
-                Intent cropIntent = new Intent("com.android.camera.action.CROP");
-                cropIntent.setDataAndType(image, "image/*");
-                cropIntent.putExtra("crop", "true");
-                cropIntent.putExtra("aspectX", 10);
-                cropIntent.putExtra("aspectY", 10);
-                cropIntent.putExtra("outputX", 128);
-                cropIntent.putExtra("outputY", 128);
-                cropIntent.putExtra("return-data", true);
-                startActivityForResult(cropIntent, 1);
+                CropImage.activity(image)
+                        .setCropShape(CropImageView.CropShape.OVAL)
+                        .setFixAspectRatio(true)
+                        .setGuidelines(CropImageView.Guidelines.ON)
+                        .start(this);
             }
         } else {
-            try {
+            if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+                CropImage.ActivityResult result = CropImage.getActivityResult(data);
                 if (resultCode == RESULT_OK) {
                     if (portrait.equals("")) {
                         portrait = Data.user.getObjectId() + ".png";
                     }
-                    imageUpdated = true;
-                    Bitmap result = data.getExtras().getParcelable("data");
-                    File dest = new File(Data.fileDir + "/users/" + Data.user.getObjectId() + "/" + portrait);
-                    OutputStream out = new FileOutputStream(dest);
-                    result.compress(Bitmap.CompressFormat.PNG, 100, out);
-                    ((ImageView) findViewById(R.id.profileImage)).setImageBitmap(result);
-                } else {
-                    if (rawImage != null) {
-                        if (portrait.equals("")) {
-                            portrait = Data.user.getObjectId() + ".png";
-                        }
+                    try {
+                        Uri resultUri = result.getUri();
+                        Bitmap pic = MediaStore.Images.Media.getBitmap(this.getContentResolver(), resultUri);
                         imageUpdated = true;
                         File dest = new File(Data.fileDir + "/users/" + Data.user.getObjectId() + "/" + portrait);
-                        FileOutputStream out = new FileOutputStream(dest);
-                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), rawImage);
-                        bitmap = Bitmap.createScaledBitmap(bitmap, 200, 200, true);
-                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
-                        ((ImageView) findViewById(R.id.profileImage)).setImageBitmap(bitmap);
+                        OutputStream out = new FileOutputStream(dest);
+                        pic.compress(Bitmap.CompressFormat.PNG, 100, out);
+                        ((ImageView) findViewById(R.id.profileImage)).setImageBitmap(pic);
+                    }catch (Exception e) {
+                        Data.handler.uncaughtException(Thread.currentThread(), e);
                     }
+                } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                    Data.handler.uncaughtException(Thread.currentThread(), result.getError());
                 }
-            } catch (Exception e) {
-                Log.d("loooooooookheree", e.toString(), e);
             }
         }
     }
