@@ -25,15 +25,17 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:gravity="center">
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/offerDetailFoodImageMat"
-            android:src="@mipmap/mat"/>
+            android:scaleType="centerCrop"
+            android:src="@mipmap/mat_transparent"/>
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="1px"
+            android:layout_height="1px"
             android:id="@+id/offerDetailFoodImage"/>
     </RelativeLayout>
 
