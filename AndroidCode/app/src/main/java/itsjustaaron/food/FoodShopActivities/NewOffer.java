@@ -4,16 +4,23 @@ import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +32,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
@@ -34,6 +42,7 @@ import itsjustaaron.food.Back.MyHandler;
 import itsjustaaron.food.Model.Food;
 import itsjustaaron.food.Model.Offer;
 import itsjustaaron.food.R;
+import itsjustaaron.food.Utilities.Helpers;
 
 public class NewOffer extends AppCompatActivity {
     private Food food;
@@ -54,10 +63,36 @@ public class NewOffer extends AppCompatActivity {
             }
         }
         ImageView image = (ImageView) findViewById(R.id.newOfferFoodImage);
+        ImageView mat = (ImageView) findViewById(R.id.newOfferMat);
         image.setImageBitmap(BitmapFactory.decodeFile(getFilesDir() + "/foods/" + food.image));
+
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;
+        CardView cardView = (CardView) findViewById(R.id.newOfferCardView);
+        mat.setLayoutParams(new RelativeLayout.LayoutParams(width, (int)(width * 0.526)));
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams((int)(width * 0.526) - 100, (int)(width * 0.526) - 100);
+        params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
+        image.setLayoutParams(new FrameLayout.LayoutParams((int)(width * 0.526) - 100, (int)(width * 0.526) - 100));
+        cardView.setLayoutParams(params);
+        cardView.setRadius((int)((width * 0.526 - 100) / 2));
+        LinearLayout tags = (LinearLayout) findViewById(R.id.newOfferFoodTags);
+        List<String> tagList = Food.csvToList(food.tags);
+        tags.removeAllViews();
+        for(String tag : tagList) {
+            int resID = Helpers.getTagDrawable(Data.tagColors.get(tag));
+            TextView tagView = new TextView(this);
+            tagView.setText(tag);
+            tagView.setTextSize(20);
+            tagView.setBackgroundResource(resID);
+            tagView.setPadding(7,5,7,5);
+            LinearLayout.LayoutParams tagParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            tagParams.setMargins(0,0,20,0);
+            tags.addView(tagView, tagParams);
+        }
         ((TextView) findViewById(R.id.newOfferFoodName)).setText(food.name);
         ((TextView) findViewById(R.id.newOfferFoodDesc)).setText(food.description);
-        ((TextView) findViewById(R.id.newOfferFoodTags)).setText(food.tags);
         final Calendar calendar = Calendar.getInstance();
         date = calendar.getTime();
         String curDate = Data.standardDateFormat.format(date);

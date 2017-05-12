@@ -13,7 +13,6 @@ import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.ThemedSpinnerAdapter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -98,7 +97,7 @@ public class NewFood extends AppCompatActivity {
             public void onClick(DialogInterface dialogInterface, int i) {
                 new AlertDialog.Builder(NewFood.this)
                         .setTitle("Caution")
-                        .setMessage("Please make sure that you cannot find the food you are looking for before creating a new Food\n(Did you know you can enter tags of a food like \"noodle\" in the search?")
+                        .setMessage("Please make sure that you cannot find the food you are looking for before creating a new Food\n(Did you know you can enter tags of a food like \"noodle\" in the search?)")
                         .setPositiveButton("Proceed", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -527,5 +526,12 @@ public class NewFood extends AppCompatActivity {
             });
             return rowView;
         }
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        setResult(RESULT_CANCELED);
+        finish();
     }
 }

@@ -11,16 +11,13 @@ import android.graphics.Point;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
@@ -34,7 +31,6 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,13 +44,10 @@ import itsjustaaron.food.Back.Data;
 import itsjustaaron.food.Back.MyHandler;
 import itsjustaaron.food.Back.PagedList;
 import itsjustaaron.food.FoodActivities.Main;
-import itsjustaaron.food.FoodActivities.MainPagerAdapter;
-import itsjustaaron.food.FoodActivities.MyCravings;
 import itsjustaaron.food.FoodActivities.Options;
 import itsjustaaron.food.FoodActivities.Welcome;
 import itsjustaaron.food.Model.Craving;
 import itsjustaaron.food.Model.Food;
-import itsjustaaron.food.Model.Offer;
 import itsjustaaron.food.R;
 
 public class FoodShopMain extends AppCompatActivity
@@ -445,7 +438,7 @@ public class FoodShopMain extends AppCompatActivity
             Intent intent = new Intent(this, NewOffer.class);
             intent.putExtra("food", id);
             startActivity(intent);
-        }else {
+        }else if(requestCode != RESULT_CANCELED) {
             Toast.makeText(this, R.string.error, Toast.LENGTH_LONG).show();
         }
     }

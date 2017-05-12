@@ -51,10 +51,23 @@
             android:src="@mipmap/mat_transparent"/>
     </RelativeLayout>
 
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/offerDetailFoodTags"/>
+    </HorizontalScrollView>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical"
+        android:padding="20px">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -70,96 +83,141 @@
                     android:textSize="15sp"/>
             </ScrollView>
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center_vertical">
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@mipmap/logo_chef"/>
+
+            <itsjustaaron.food.Utilities.PrettyTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Offered by:"
+                android:textSize="20sp"
+                android:textColor="#000000"
+                android:textStyle="bold"/>
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="10dp"
+                android:src="@mipmap/mystery"
+                android:id="@+id/offerDetailOffererImage"/>
+
+            <itsjustaaron.food.Utilities.PrettyTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/offerDetailOfferer"
+                android:textColor="#000000"
+                android:textSize="25sp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            android:gravity="top">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@mipmap/logo_house"/>
+
+            <itsjustaaron.food.Utilities.PrettyTextView
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:textSize="20sp"
+                android:text="Address: "
+                android:gravity="center"
+                android:textColor="#000000"/>
+
+            <itsjustaaron.food.Utilities.PrettyTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/offerDetailFoodLocation"
+                android:layout_marginLeft="10dp"
+                android:textColor="#000000"
+                android:textSize="20sp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            android:gravity="center_vertical">
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@mipmap/logo_money"/>
+            <itsjustaaron.food.Utilities.PrettyTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#000000"
+                android:text="Price: "
+                android:textSize="20sp"/>
+            <itsjustaaron.food.Utilities.PrettyTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/offerDetailFoodPrice"
+                android:layout_marginLeft="10dp"
+                android:textColor="#000000"
+                android:textSize="25sp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            android:gravity="center_vertical">
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@mipmap/logo_calendar"/>
+            <itsjustaaron.food.Utilities.PrettyTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Expires by: "
+                android:textColor="#000000"
+                android:textSize="20sp"/>
+            <itsjustaaron.food.Utilities.PrettyTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/offerDetailFoodExpire"
+                android:layout_marginLeft="10dp"
+                android:textColor="#000000"
+                android:textSize="25sp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            android:gravity="center_vertical">
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@mipmap/logo_warning"/>
+            <itsjustaaron.food.Utilities.PrettyTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Note: "
+                android:textColor="#000000"
+                android:textSize="20sp"/>
+        </LinearLayout>
+
+        <itsjustaaron.food.Utilities.PrettyTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:textColor="#000000"
+            android:textSize="15sp"
+            android:id="@+id/offerDetailFoodComment"/>
+
     </LinearLayout>
-
-    <HorizontalScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <itsjustaaron.food.Utilities.PrettyTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:id="@+id/offerDetailFoodTags"/>
-    </HorizontalScrollView>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="bottom">
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:src="@mipmap/mystery"
-            android:id="@+id/offerDetailOffererImage"/>
-
-        <itsjustaaron.food.Utilities.PrettyTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/offerDetailOfferer"
-            android:textSize="25sp"/>
-        <itsjustaaron.food.Utilities.PrettyTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="offers this food"
-            android:layout_marginLeft="10dp"
-            android:textColor="@color/colorAccent"/>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="bottom">
-
-        <itsjustaaron.food.Utilities.PrettyTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="at"
-            android:textColor="@color/colorAccent"/>
-
-        <itsjustaaron.food.Utilities.PrettyTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/offerDetailFoodLocation"
-            android:layout_marginLeft="10dp"
-            android:textSize="20sp"/>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <itsjustaaron.food.Utilities.PrettyTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="for"
-            android:textColor="@color/colorAccent"/>
-        <itsjustaaron.food.Utilities.PrettyTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/offerDetailFoodPrice"
-            android:layout_marginLeft="10dp"
-            android:textSize="25sp"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <itsjustaaron.food.Utilities.PrettyTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="until"
-            android:textColor="@color/colorAccent"/>
-        <itsjustaaron.food.Utilities.PrettyTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/offerDetailFoodExpire"
-            android:layout_marginLeft="10dp"
-            android:textSize="25sp"/>
-    </LinearLayout>
-
-    <itsjustaaron.food.Utilities.PrettyTextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:id="@+id/offerDetailFoodComment"/>
-
 </LinearLayout>

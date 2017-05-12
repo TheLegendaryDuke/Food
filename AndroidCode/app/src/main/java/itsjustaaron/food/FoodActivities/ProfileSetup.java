@@ -72,8 +72,11 @@ public class ProfileSetup extends AppCompatActivity {
             if (data != null) {
                 Uri image = data.getData();
                 rawImage = image;
+                //crop image activity written by ArthurHub
+                //https://github.com/ArthurHub/Android-Image-Cropper
                 CropImage.activity(image)
-                        .setCropShape(CropImageView.CropShape.OVAL)
+                        .setCropShape(CropImageView.CropShape.RECTANGLE)
+                        .setAspectRatio(1, 1)
                         .setFixAspectRatio(true)
                         .setGuidelines(CropImageView.Guidelines.ON)
                         .start(this);
