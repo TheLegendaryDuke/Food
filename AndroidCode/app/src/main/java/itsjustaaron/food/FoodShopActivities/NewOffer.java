@@ -62,6 +62,7 @@ public class NewOffer extends AppCompatActivity {
                 break;
             }
         }
+        //todo: allow user to add their photo of the food
         ImageView image = (ImageView) findViewById(R.id.newOfferFoodImage);
         ImageView mat = (ImageView) findViewById(R.id.newOfferMat);
         image.setImageBitmap(BitmapFactory.decodeFile(getFilesDir() + "/foods/" + food.image));

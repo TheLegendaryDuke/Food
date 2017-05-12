@@ -14,7 +14,6 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.PasswordTransformationMethod;
-import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
@@ -222,7 +221,7 @@ public class Welcome extends AppCompatActivity {
                                 message = "Too many failed attempts, account is reset! Check your entered email for new password";
                                 Back.resetPassword(email);
                             } else {
-                                message = "Error code " + errorCode + ", please contact developer at contactfoodapp@gmail.com";
+                                message = "Error code " + errorCode + ", please contact us at contactfoodapp@gmail.com";
                             }
                             return 1;
                         }
