@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
@@ -13,17 +14,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import com.backendless.geo.Units;
-
-import org.w3c.dom.Text;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
-import java.util.concurrent.Semaphore;
 
 import itsjustaaron.food.Back.Data;
 import itsjustaaron.food.FoodActivities.CravingDetails;
@@ -115,14 +112,28 @@ public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                     @Override
                     public void onClick(View view) {
                         if (Data.user != null) {
-                            craving.followSwitch();
-                            if (craving.following) {
-                                likeOrNot.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), R.mipmap.favorite, null));
-                                count.setText(String.valueOf(Integer.parseInt(count.getText().toString()) + 1));
-                            } else {
-                                likeOrNot.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), R.mipmap.heart_grey, null));
-                                count.setText(String.valueOf(Integer.parseInt(count.getText().toString()) - 1));
-                            }
+                            new AsyncTask<Void, Void, Void>() {
+                                public void onPreExecute() {
+                                    Toast.makeText(context, "working on it...", Toast.LENGTH_SHORT).show();
+                                }
+
+                                @Override
+                                public Void doInBackground(Void... voids) {
+                                    craving.followSwitch();
+                                    return null;
+                                }
+
+                                @Override
+                                public void onPostExecute(Void v) {
+                                    if (craving.following) {
+                                        likeOrNot.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), R.mipmap.favorite, null));
+                                        count.setText(String.valueOf(Integer.parseInt(count.getText().toString()) + 1));
+                                    } else {
+                                        likeOrNot.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), R.mipmap.heart_grey, null));
+                                        count.setText(String.valueOf(Integer.parseInt(count.getText().toString()) - 1));
+                                    }
+                                }
+                            }.execute();
                         } else {
                             new AlertDialog.Builder(context).setMessage("Please login first!").setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 @Override

@@ -43,9 +43,6 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
-import org.w3c.dom.Text;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -365,32 +362,33 @@ public class Main extends AppCompatActivity
             @Override
             public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
             switch (checkedId) {
-                case R.id.sortPopularity:
-                    Data.sortByO = 0;
-                    offerFragment.notifySortChange();
-                    break;
-                case R.id.sortScore:
-                    Data.sortByO = 1;
-                    offerFragment.notifySortChange();
-                    break;
-                case R.id.sortLocation:
-                    new AlertDialog.Builder(Main.this)
-                            .setMessage("Update your current location?")
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            //Data.sortByO = 2;
-                            //offerFragment.notifySortChange();
-                            dialog.dismiss();
-                        }
-                    })
-                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    }).show();
-                    break;
+                //todo: add back sort options
+//                case R.id.sortPopularity:
+//                    Data.sortByO = 0;
+//                    offerFragment.notifySortChange();
+//                    break;
+//                case R.id.sortScore:
+//                    Data.sortByO = 1;
+//                    offerFragment.notifySortChange();
+//                    break;
+//                case R.id.sortLocation:
+//                    new AlertDialog.Builder(Main.this)
+//                            .setMessage("Update your current location?")
+//                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            //Data.sortByO = 2;
+//                            //offerFragment.notifySortChange();
+//                            dialog.dismiss();
+//                        }
+//                    })
+//                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            dialog.dismiss();
+//                        }
+//                    }).show();
+//                    break;
                 case R.id.sortPrice:
                     Data.sortByO = 3;
                     offerFragment.notifySortChange();

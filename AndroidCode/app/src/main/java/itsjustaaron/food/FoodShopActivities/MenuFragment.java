@@ -1,11 +1,9 @@
 package itsjustaaron.food.FoodShopActivities;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,11 +17,10 @@ import java.util.Map;
 import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
 import itsjustaaron.food.FoodActivities.NewFood;
-import itsjustaaron.food.FoodActivities.Welcome;
 import itsjustaaron.food.Model.Offer;
-import itsjustaaron.food.Model.Offerer;
 import itsjustaaron.food.R;
 import itsjustaaron.food.Utilities.MyAdapter;
+import itsjustaaron.food.Utilities.SimpleDividerItemDecoration;
 
 /**
  * Created by aozhang on 3/20/2017.
@@ -69,6 +66,8 @@ public class MenuFragment extends Fragment {
                 RecyclerView mRecyclerView = (RecyclerView) root.findViewById(R.id.menuRecycler);
                 mRecyclerView.setHasFixedSize(true);
                 LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+                mRecyclerView.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
+                mRecyclerView.setHasFixedSize(true);
                 mRecyclerView.setLayoutManager(mLayoutManager);
                 mAdapter = new MyAdapter<>(Data.menu, 'm', getActivity());
                 mRecyclerView.setAdapter(mAdapter);

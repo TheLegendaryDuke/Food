@@ -438,7 +438,7 @@ public class FoodShopMain extends AppCompatActivity
             Intent intent = new Intent(this, NewOffer.class);
             intent.putExtra("food", id);
             startActivity(intent);
-        }else if(requestCode != RESULT_CANCELED) {
+        }else if(resultCode != RESULT_CANCELED) {
             Toast.makeText(this, R.string.error, Toast.LENGTH_LONG).show();
         }
     }

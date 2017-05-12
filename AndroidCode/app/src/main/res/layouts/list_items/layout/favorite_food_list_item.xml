@@ -9,11 +9,29 @@
         android:layout_height="100dp"
         android:id="@+id/foodImage"/>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/remove"
+        android:background="@drawable/ripple_effect"
+        android:orientation="vertical">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_action_clear"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="REMOVE"/>
+    </LinearLayout>
+
     <ScrollView
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:paddingLeft="5dp"
-        android:layout_alignParentRight="true"
+        android:layout_toLeftOf="@id/remove"
         android:id="@+id/internalID2">
         <LinearLayout
             android:layout_width="match_parent"

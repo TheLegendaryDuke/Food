@@ -1,7 +1,6 @@
 package itsjustaaron.food.FoodActivities;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -18,13 +17,12 @@ import java.util.Map;
 
 import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
-import itsjustaaron.food.FoodShopActivities.FoodShopMain;
-import itsjustaaron.food.FoodShopActivities.FoodShopWelcome;
 import itsjustaaron.food.Model.Food;
 import itsjustaaron.food.Model.Offer;
 import itsjustaaron.food.R;
 import itsjustaaron.food.Utilities.EndlessScroll;
 import itsjustaaron.food.Utilities.MyAdapter;
+import itsjustaaron.food.Utilities.SimpleDividerItemDecoration;
 import pl.droidsonroids.gif.GifDrawable;
 import pl.droidsonroids.gif.GifImageView;
 
@@ -128,6 +126,8 @@ public class OfferFragment extends Fragment {
         myAdapter = new MyAdapter<>(Data.offers, 'o', getActivity());
         recyclerView = (RecyclerView) rootView.findViewById(R.id.offerList);
         recyclerView.setAdapter(myAdapter);
+        recyclerView.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
+        recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         final GifDrawable gif = (GifDrawable) ((GifImageView)rootView.findViewById(R.id.radar)).getDrawable();
@@ -153,8 +153,6 @@ public class OfferFragment extends Fragment {
                     refresh(srl);
                 }
             });
-
-            getActivity().findViewById(R.id.sort).setVisibility(View.VISIBLE);
 
             new Start().execute();
 
@@ -234,6 +232,7 @@ public class OfferFragment extends Fragment {
                 if(Data.offers.size() == 0) {
                     getActivity().findViewById(R.id.nothingNear).setVisibility(View.VISIBLE);
                 }
+                getActivity().findViewById(R.id.sort).setVisibility(View.VISIBLE);
             } else {
                 myAdapter.notifyDataSetChanged();
                 swipeRefreshLayout.setRefreshing(false);

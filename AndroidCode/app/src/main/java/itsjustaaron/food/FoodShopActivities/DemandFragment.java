@@ -17,11 +17,12 @@ import java.util.Map;
 import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
 import itsjustaaron.food.FoodActivities.Main;
-import itsjustaaron.food.Utilities.MyAdapter;
 import itsjustaaron.food.Model.Craving;
 import itsjustaaron.food.Model.Food;
 import itsjustaaron.food.R;
 import itsjustaaron.food.Utilities.EndlessScroll;
+import itsjustaaron.food.Utilities.MyAdapter;
+import itsjustaaron.food.Utilities.SimpleDividerItemDecoration;
 
 /**
  * Created by aozhang on 3/20/2017.
@@ -109,6 +110,8 @@ public class DemandFragment extends Fragment {
         RecyclerView mRecyclerView = (RecyclerView) rootView.findViewById(R.id.cravingList);
         mRecyclerView.setHasFixedSize(true);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+        mRecyclerView.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
+        mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new MyAdapter<>(Data.cravings, 'd', getActivity());
         mRecyclerView.setAdapter(mAdapter);

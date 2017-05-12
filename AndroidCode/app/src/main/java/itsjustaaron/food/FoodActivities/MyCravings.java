@@ -2,8 +2,8 @@ package itsjustaaron.food.FoodActivities;
 
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ListView;
 
@@ -17,7 +17,7 @@ import itsjustaaron.food.Back.PagedList;
 import itsjustaaron.food.Model.Craving;
 import itsjustaaron.food.Model.Food;
 import itsjustaaron.food.R;
-import itsjustaaron.food.Utilities.BasicFoodAdapter;
+import itsjustaaron.food.Utilities.favoriteCravingAdapter;
 
 public class MyCravings extends AppCompatActivity {
     ArrayList<Craving> cravings = new ArrayList<>();
@@ -60,7 +60,7 @@ public class MyCravings extends AppCompatActivity {
                     for (Craving craving : cravings) {
                         foods.add(craving.food);
                     }
-                    BasicFoodAdapter foodAdapter = new BasicFoodAdapter(MyCravings.this, cravings);
+                    favoriteCravingAdapter foodAdapter = new favoriteCravingAdapter(MyCravings.this, cravings);
                     listView.setAdapter(foodAdapter);
                     progressDialog.dismiss();
                 }
