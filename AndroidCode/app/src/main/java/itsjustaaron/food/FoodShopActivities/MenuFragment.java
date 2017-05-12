@@ -37,6 +37,7 @@ public class MenuFragment extends Fragment {
     
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // TODO: add an "end offer" option
         final View rootView = inflater.inflate(R.layout.tab_menu, container, false);
         root = rootView;
         Data.menu = new ArrayList<>();
