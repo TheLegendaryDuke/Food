@@ -76,6 +76,7 @@ public class OfferDetails extends AppCompatActivity {
         cardView.setLayoutParams(params);
         cardView.setRadius((int)((width * 0.526 - 100) / 2));
         ((TextView) findViewById(R.id.offerDetailFoodName)).setText(offer.food.name);
+        ((TextView) findViewById(R.id.offerDetailFoodContact)).setText(offer.contact);
         ((TextView) findViewById(R.id.offerDetailFoodDesc)).setText(offer.food.description);
         LinearLayout tags = (LinearLayout) findViewById(R.id.offerDetailFoodTags);
         List<String> tagList = Food.csvToList(offer.food.tags);

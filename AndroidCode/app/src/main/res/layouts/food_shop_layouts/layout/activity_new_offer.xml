@@ -258,6 +258,33 @@
                 <ImageView
                     android:layout_width="30dp"
                     android:layout_height="30dp"
+                    android:src="@mipmap/logo_chat"/>
+                <itsjustaaron.food.Utilities.PrettyTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#000000"
+                    android:text="Contact: "
+                    android:textSize="20sp"/>
+
+                <EditText
+                    android:layout_width="200sp"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+                    android:textSize="20sp"
+                    android:textColor="#000000"
+                    android:hint="email, phone, etc."
+                    android:id="@+id/newOfferContact"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical">
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:src="@mipmap/logo_calendar"/>
                 <itsjustaaron.food.Utilities.PrettyTextView
                     android:layout_width="wrap_content"
@@ -301,7 +328,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:text="any additional information about this offer: \n(ingredients used, how you made it, delivery method, means of contact, etc.)"/>
+                android:text="any additional information about this offer: \n(ingredients used, how you made it, delivery method, etc.)"/>
 
             <EditText
                 android:layout_width="match_parent"

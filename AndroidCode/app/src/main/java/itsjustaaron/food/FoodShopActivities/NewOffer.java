@@ -139,6 +139,7 @@ public class NewOffer extends AppCompatActivity {
 
         String price = ((EditText) findViewById(R.id.newOfferPrice)).getText().toString();
         String comment = ((EditText) findViewById(R.id.newOfferComment)).getText().toString();
+        String contact = ((EditText) findViewById(R.id.newOfferContact)).getText().toString();
 
         if(price.equals("")) {
             Toast.makeText(this, "Please enter a price", Toast.LENGTH_SHORT).show();
@@ -148,9 +149,14 @@ public class NewOffer extends AppCompatActivity {
             Toast.makeText(this, "Please enter a description for this item", Toast.LENGTH_SHORT).show();
             return;
         }
+        if(contact.equals("")) {
+            Toast.makeText(this, "Please enter your contact information", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         offer.put("price", price);
         offer.put("expire", String.valueOf(date.getTime()));
+        offer.put("contact", contact);
         offer.put("ownerId", Data.user.getObjectId());
         String city, address, zip;
         if (defaultAddress) {

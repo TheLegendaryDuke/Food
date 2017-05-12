@@ -23,6 +23,7 @@ public class Offer {
     public String zipCode;
     public double price;
     public String offererPortrait;
+    public String contact;
 
     public Offer(Map map) {
         offerer = map.get("offerer").toString();
@@ -63,6 +64,7 @@ public class Offer {
         comment = map.get("comment").toString();
         zipCode = map.get("zipCode").toString();
         price = Double.parseDouble(map.get("price").toString());
+        contact = map.get("contact").toString();
         try {
             expire = Data.serverDateFormat.parse(map.get("expire").toString());
         } catch (Exception e) {
