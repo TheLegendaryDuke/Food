@@ -82,11 +82,30 @@
                 <ScrollView
                     android:layout_width="match_parent"
                     android:layout_height="85dp">
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="50dp"
+                        android:layout_alignParentStart="true"
+                        android:id="@+id/startQuote"
+                        android:src="@mipmap/quote1"/>
                     <itsjustaaron.food.Utilities.PrettyTextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/newOfferFoodDesc"
+                        android:layout_toRightOf="@id/startQuote"
+                        android:layout_weight="1"
                         android:textSize="15sp"/>
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="50dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentBottom="true"
+                        android:src="@mipmap/quote2"/>
+
+                    </RelativeLayout>
                 </ScrollView>
             </LinearLayout>
 
