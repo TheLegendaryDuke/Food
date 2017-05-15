@@ -134,6 +134,10 @@ public class Back {
             switch (object) {
                 case cravingfollower:
                     Backendless.Persistence.of("cravingFollowers").remove(map);
+                    return;
+                case offer:
+                    Backendless.Persistence.of("offers").remove(map);
+                    return;
             }
         } catch (Exception e) {
             errorHandle(e);

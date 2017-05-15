@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
+import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
 import itsjustaaron.food.FoodActivities.CravingDetails;
 import itsjustaaron.food.FoodActivities.OfferDetails;
@@ -75,7 +76,7 @@ public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
         final View v = holder.view;
         switch (source) {
             case 'c': {
@@ -183,12 +184,41 @@ public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             }
             case 'm': {
                 ImageView imageView = (ImageView) v.findViewById(R.id.menuItemImage);
-                Offer menuItem = (Offer) mDataset.get(position);
+                final Offer menuItem = (Offer) mDataset.get(position);
                 ((TextView)v.findViewById(R.id.menuItemName)).setText(menuItem.food.name);
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy MMM dd");
                 sdf.setTimeZone(TimeZone.getDefault());
                 ((TextView)v.findViewById(R.id.menuItemDescription)).setText("Expiring on: " + sdf.format(menuItem.expire));
                 imageView.setImageBitmap(BitmapFactory.decodeFile(fileDir + "/foods/" + menuItem.food.image));
+                v.findViewById(R.id.removeItem).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        new AlertDialog.Builder(context).setMessage("Are you sure?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                new AsyncTask<Void, Void, Void>() {
+                                    @Override
+                                    public void onPreExecute() {
+                                        mDataset.remove(position);
+                                        notifyItemRemoved(position);
+                                    }
+
+                                    @Override
+                                    public Void doInBackground(Void... voids) {
+                                        Back.remove(menuItem.returnMap(), Back.object.offer);
+                                        return null;
+                                    }
+                                }.execute();
+                            }
+                        }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        }).show();
+                    }
+                });
                 break;
             }
             case 'd': {

@@ -11,6 +11,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_weight="1"
         android:orientation="vertical">
         <TextView
             android:layout_width="wrap_content"
@@ -31,5 +32,21 @@
                 android:layout_gravity="bottom"/>
         </ScrollView>
 
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:background="@drawable/ripple_effect"
+        android:id="@+id/removeItem"
+        android:orientation="vertical">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_action_clear"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="REMOVE"/>
     </LinearLayout>
 </LinearLayout>

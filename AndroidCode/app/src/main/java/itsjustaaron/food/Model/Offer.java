@@ -4,7 +4,9 @@ import android.util.Log;
 
 import java.io.File;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
@@ -24,8 +26,10 @@ public class Offer {
     public double price;
     public String offererPortrait;
     public String contact;
+    public Map map;
 
     public Offer(Map map) {
+        this.map = map;
         offerer = map.get("offerer").toString();
         objectId = map.get("objectId").toString();
         boolean found = false;
@@ -71,5 +75,9 @@ public class Offer {
             Log.d("dateParse", e.toString());
         }
 
+    }
+
+    public Map returnMap() {
+        return map;
     }
 }
