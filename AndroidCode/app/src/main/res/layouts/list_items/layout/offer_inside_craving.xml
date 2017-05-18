@@ -29,14 +29,11 @@
             android:text="I can make this!"/>
 
     </LinearLayout>
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="none">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="0dp"
             android:background="@drawable/offer_card"
             android:padding="10dp"
             android:id="@+id/normalCase">
@@ -49,7 +46,9 @@
                 android:layout_alignParentStart="true"/>
             <itsjustaaron.food.Utilities.PrettyTextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
+                android:textSize="30sp"
+                android:gravity="center"
                 android:id="@+id/userName"
                 android:layout_toRightOf="@id/userIcon"/>
             <ImageView
@@ -63,6 +62,7 @@
                 android:layout_height="30dp"
                 android:layout_below="@id/foodImage"
                 android:layout_marginBottom="10dp"
+                android:layout_marginRight="10dp"
                 android:id="@+id/tempID1"
                 android:src="@mipmap/price_logo_white"/>
             <itsjustaaron.food.Utilities.PrettyTextView
@@ -79,6 +79,7 @@
                 android:layout_height="30dp"
                 android:layout_below="@id/tempID1"
                 android:id="@+id/tempID2"
+                android:layout_marginRight="10dp"
                 android:src="@mipmap/location_logo_white"/>
             <itsjustaaron.food.Utilities.PrettyTextView
                 android:layout_width="wrap_content"
@@ -90,7 +91,5 @@
                 android:layout_toRightOf="@id/tempID2"
                 android:layout_below="@id/tempID1"/>
         </RelativeLayout>
-
-    </ScrollView>
 
 </LinearLayout>

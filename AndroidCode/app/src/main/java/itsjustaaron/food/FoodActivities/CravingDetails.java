@@ -118,7 +118,9 @@ public class CravingDetails extends AppCompatActivity {
 
             @Override
             public Void doInBackground(Void... voids) {
-                offers = null;
+                offers = new ArrayList<>();
+                //add a dummy offer as placeholder
+                offers.add(new Offer());
                 String where = "foodID='" + craving.food.objectId + "'";
                 PagedList result = Back.findObjectByWhere(where, Back.object.offer);
                 final List<Map> temp = result.getCurPage();
@@ -127,9 +129,6 @@ public class CravingDetails extends AppCompatActivity {
                     for (int i = 0; i < temp.size(); i++) {
                         offerIDs.add(temp.get(i).get("objectId").toString());
                     }
-                    offers = new ArrayList<>();
-                    //add a dummy offer as placeholder
-                    offers.add(new Offer());
                     for (int i = 0; i < offerIDs.size(); i++) {
                         try {
                             Offer offer = (Offer) Back.getObjectByID(offerIDs.get(i), Back.object.offer);
