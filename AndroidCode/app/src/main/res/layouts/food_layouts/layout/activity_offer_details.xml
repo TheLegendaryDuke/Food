@@ -73,23 +73,39 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="20px">
+                android:padding="10px">
 
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="30dp"
+                        android:layout_alignParentStart="true"
+                        android:id="@+id/quote1"
+                        android:src="@mipmap/quote1"/>
 
                     <ScrollView
                         android:layout_width="match_parent"
-                        android:layout_height="85dp">
+                        android:layout_height="85dp"
+                        android:layout_toLeftOf="@id/quote2"
+                        android:layout_toRightOf="@id/quote1">
                         <itsjustaaron.food.Utilities.PrettyTextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:id="@+id/offerDetailFoodDesc"
                             android:textSize="15sp"/>
                     </ScrollView>
-                </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="30dp"
+                        android:id="@+id/quote2"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentBottom="true"
+                        android:src="@mipmap/quote2" />
+                </RelativeLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"

@@ -19,7 +19,7 @@ import itsjustaaron.food.Back.Data;
 import itsjustaaron.food.FoodActivities.NewFood;
 import itsjustaaron.food.Model.Offer;
 import itsjustaaron.food.R;
-import itsjustaaron.food.Utilities.MyAdapter;
+import itsjustaaron.food.Utilities.MainAdapter;
 import itsjustaaron.food.Utilities.SimpleDividerItemDecoration;
 
 /**
@@ -28,7 +28,7 @@ import itsjustaaron.food.Utilities.SimpleDividerItemDecoration;
 
 public class MenuFragment extends Fragment {
     private View root;
-    private MyAdapter<Offer> mAdapter;
+    private MainAdapter<Offer> mAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -70,7 +70,7 @@ public class MenuFragment extends Fragment {
                 mRecyclerView.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
                 mRecyclerView.setHasFixedSize(true);
                 mRecyclerView.setLayoutManager(mLayoutManager);
-                mAdapter = new MyAdapter<>(Data.menu, 'm', getActivity());
+                mAdapter = new MainAdapter<>(Data.menu, 'm', getActivity());
                 mRecyclerView.setAdapter(mAdapter);
 
                 update();

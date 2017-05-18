@@ -35,14 +35,14 @@ import itsjustaaron.food.R;
  * Created by aozhang on 1/18/2017.
  */
 
-public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
+public class MainAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
     private String fileDir;
     private Context context;
     private char source;
     private ArrayList<T> mDataset;
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public MyAdapter(ArrayList<T> myDataset, char s, Context context) {
+    public MainAdapter(ArrayList<T> myDataset, char s, Context context) {
         mDataset = myDataset;
         source = s;
         this.fileDir = Data.fileDir;
@@ -51,7 +51,7 @@ public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
     // Create new views (invoked by the layout manager)
     @Override
-    public MyAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v;
         // create a new view
         switch (source) {
@@ -243,18 +243,5 @@ public class MyAdapter<T> extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     @Override
     public int getItemCount() {
         return mDataset.size();
-    }
-
-    // Provide a reference to the views for each data item
-    // Complex data items may need more than one view per item, and
-    // you provide access to all the views for a data item in a view holder
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        // each data item is just a string in this case
-        public View view;
-
-        public ViewHolder(View v) {
-            super(v);
-            view = v;
-        }
     }
 }

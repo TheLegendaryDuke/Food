@@ -21,7 +21,7 @@ import itsjustaaron.food.Model.Craving;
 import itsjustaaron.food.Model.Food;
 import itsjustaaron.food.R;
 import itsjustaaron.food.Utilities.EndlessScroll;
-import itsjustaaron.food.Utilities.MyAdapter;
+import itsjustaaron.food.Utilities.MainAdapter;
 import itsjustaaron.food.Utilities.SimpleDividerItemDecoration;
 
 /**
@@ -31,7 +31,7 @@ import itsjustaaron.food.Utilities.SimpleDividerItemDecoration;
 public class DemandFragment extends Fragment {
     ProgressDialog wait;
     SwipeRefreshLayout swipeRefreshLayout;
-    MyAdapter mAdapter;
+    MainAdapter mAdapter;
 
     public void refresh(final SwipeRefreshLayout s) {
         if(s != null) {
@@ -113,7 +113,7 @@ public class DemandFragment extends Fragment {
         mRecyclerView.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new MyAdapter<>(Data.cravings, 'd', getActivity());
+        mAdapter = new MainAdapter<>(Data.cravings, 'd', getActivity());
         mRecyclerView.setAdapter(mAdapter);
 
         final SwipeRefreshLayout srl = (SwipeRefreshLayout) rootView.findViewById(R.id.cSwipeRefresh);

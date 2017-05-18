@@ -4,9 +4,7 @@ import android.util.Log;
 
 import java.io.File;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.StringTokenizer;
 
 import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
@@ -27,6 +25,8 @@ public class Offer {
     public String offererPortrait;
     public String contact;
     public Map map;
+
+    public Offer() {}
 
     public Offer(Map map) {
         this.map = map;
