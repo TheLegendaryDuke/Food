@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/drawerOption"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Settings" />
+
+        <item
+            android:id="@+id/contactDev"
+            android:icon="@drawable/contact_dev"
+            android:title="Contact Us" />
+
+        <item
+            android:icon="@drawable/logoff"
+            android:title="Log off"
+            android:id="@+id/logoff" />
+    </group>
+
+    <group android:id="@+id/nav_footer">
+        <item
+            android:id="@+id/swap"
+            android:icon="@drawable/swap"
+            android:title="Go to Food" />
+    </group>
+
+</menu>

@@ -13,13 +13,14 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <itsjustaaron.food.Utilities.DefaultTextView
+        <itsjustaaron.food.Utilities.PrettyTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Start Food-Shop by default"/>
         <Switch
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/switchDefault"
             android:layout_alignParentEnd="true"/>
     </RelativeLayout>
 

@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ import itsjustaaron.food.Back.PagedList;
 import itsjustaaron.food.Model.Craving;
 import itsjustaaron.food.Model.Food;
 import itsjustaaron.food.R;
-import itsjustaaron.food.Utilities.BasicFoodAdapter;
+import itsjustaaron.food.Utilities.favoriteCravingAdapter;
 
 public class MyCravings extends AppCompatActivity {
     ArrayList<Craving> cravings = new ArrayList<>();
@@ -40,7 +41,7 @@ public class MyCravings extends AppCompatActivity {
             public Void doInBackground(Void... voids) {
                 String where = "userID = '" + Data.user.getObjectId() + "'";
                 PagedList<Map> result = Back.findObjectByWhere(where, Back.object.cravingfollower);
-                for (Map m : result.getCurPage()) {
+                for(Map m : result.getCurPage()) {
                     String cravingid = m.get("cravingID").toString();
                     cravings.add((Craving) Back.getObjectByID(cravingid, Back.object.craving));
                 }
@@ -49,14 +50,20 @@ public class MyCravings extends AppCompatActivity {
 
             @Override
             public void onPostExecute(Void v) {
-                ListView listView = (ListView) findViewById(R.id.myCravingList);
-                ArrayList<Food> foods = new ArrayList<>();
-                for (Craving craving : cravings) {
-                    foods.add(craving.food);
+                if(cravings.size() == 0) {
+                    findViewById(R.id.myCravingEmpty).setVisibility(View.VISIBLE);
+                    findViewById(R.id.myCravingList).setVisibility(View.GONE);
+                    progressDialog.dismiss();
+                }else {
+                    ListView listView = (ListView) findViewById(R.id.myCravingList);
+                    ArrayList<Food> foods = new ArrayList<>();
+                    for (Craving craving : cravings) {
+                        foods.add(craving.food);
+                    }
+                    favoriteCravingAdapter foodAdapter = new favoriteCravingAdapter(MyCravings.this, cravings);
+                    listView.setAdapter(foodAdapter);
+                    progressDialog.dismiss();
                 }
-                BasicFoodAdapter foodAdapter = new BasicFoodAdapter(MyCravings.this, cravings);
-                listView.setAdapter(foodAdapter);
-                progressDialog.dismiss();
             }
         }.execute();
     }

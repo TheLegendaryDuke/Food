@@ -12,28 +12,29 @@
         android:textStyle="bold"
         android:text="Sort By:"/>
     <RadioGroup
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/sorts"
         android:background="#ffffff">
+        <!--TODO: add back popularity, score and location-->
+        <!--<RadioButton-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:checked="true"-->
+            <!--android:id="@+id/sortPopularity"-->
+            <!--android:text="Popuarity"/>-->
+        <!--<RadioButton-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:id="@+id/sortScore"-->
+            <!--android:text="Score"/>-->
+        <!--<RadioButton-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:id="@+id/sortLocation"-->
+            <!--android:text="Location"/>-->
         <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            android:id="@+id/sortPopularity"
-            android:text="Popuarity"/>
-        <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/sortScore"
-            android:text="Score"/>
-        <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/sortLocation"
-            android:text="Location"/>
-        <RadioButton
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/sortPrice"
             android:text="Price"/>

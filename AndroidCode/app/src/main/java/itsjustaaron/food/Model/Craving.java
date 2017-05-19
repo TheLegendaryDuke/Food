@@ -1,6 +1,5 @@
 package itsjustaaron.food.Model;
 
-import android.os.AsyncTask;
 import android.util.Log;
 
 import java.io.File;
@@ -70,26 +69,27 @@ public class Craving {
     }
 
     public void followSwitch() {
-        this.following = !this.following;
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            public Void doInBackground(Void... voids) {
-                if (following) {
-                    HashMap map = new HashMap();
-                    map.put("cravingID", objectId);
-                    map.put("userID", Data.user.getObjectId());
-                    numFollowers++;
-                    save();
-                    Back.store(map, Back.object.cravingfollower);
-                } else {
-                    numFollowers--;
-                    save();
-                    String whereC = "cravingID='" + objectId + "' and userID='" + Data.user.getObjectId() + "'";
-                    PagedList<Map> pagedList = Back.findObjectByWhere(whereC, Back.object.cravingfollower);
-                    Back.remove(pagedList.getCurPage().get(0), Back.object.cravingfollower);
-                }
-                return null;
-            }
-        }.execute();
+        final boolean newFollow = !this.following;
+        Craving.this.following = ((Craving) Back.getObjectByID(Craving.this.objectId, Back.object.craving)).following;
+        if (newFollow == Craving.this.following) {
+            return;
+        } else {
+            following = newFollow;
+        }
+        if (following) {
+            HashMap map = new HashMap();
+            map.put("cravingID", objectId);
+            map.put("userID", Data.user.getObjectId());
+            numFollowers++;
+            save();
+            Back.store(map, Back.object.cravingfollower);
+        } else {
+            numFollowers--;
+            save();
+            String whereC = "cravingID='" + objectId + "' and userID='" + Data.user.getObjectId() + "'";
+            PagedList<Map> pagedList = Back.findObjectByWhere(whereC, Back.object.cravingfollower);
+            Back.remove(pagedList.getCurPage().get(0), Back.object.cravingfollower);
+        }
+        return;
     }
 }

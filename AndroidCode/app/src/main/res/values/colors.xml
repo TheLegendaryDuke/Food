@@ -7,4 +7,15 @@
     <color name="darkOrange">#FD9E4E</color>
     <color name="darkWhite">#F1D9BD</color>
     <color name="red">#FF0000</color>
+    <color name="tagColor1">#ffd4d4</color>
+    <color name="tagColor2">#fff0bf</color>
+    <color name="tagColor3">#ffc594</color>
+    <color name="tagColor4">#fff094</color>
+    <color name="tagColor5">#b6ffaa</color>
+    <color name="tagColor6">#b4f9ff</color>
+    <!--<color name="tagColor7">#339eff</color>-->
+    <!--<color name="tagColor8">#4633ff</color>-->
+    <!--<color name="tagColor9">#e133ff</color>-->
+    <!--<color name="tagColor10">#c42727</color>-->
+    <!--<color name="tagColor11">#aec127</color>-->
 </resources>

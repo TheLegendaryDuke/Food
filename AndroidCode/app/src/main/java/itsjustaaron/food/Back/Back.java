@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
+import android.util.Pair;
 
 import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
@@ -21,12 +22,14 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import itsjustaaron.food.Model.Craving;
 import itsjustaaron.food.Model.Food;
 import itsjustaaron.food.Model.Offer;
+import itsjustaaron.food.Model.Offerer;
 
 /**
  * Created by Aaron-Home on 2017-02-11.
@@ -34,6 +37,31 @@ import itsjustaaron.food.Model.Offer;
 
 public class Back {
     private final static String downloadLink = "https://api.backendless.com/0020F1DC-E584-AD36-FF74-6D3E9E917400/v1/files";
+
+    public static String queryToSearchCriteria(String query, ArrayList<String> searchCriteria) {
+        List<String> tagResult = Food.csvToList(query.toUpperCase());
+        boolean tagCheck = true;
+        for (int i = 0; i < tagResult.size(); i++) {
+            if (!Data.tags.contains(tagResult.get(i))) {
+                tagCheck = false;
+                break;
+            }
+        }
+        String whereClause = "";
+        if (tagCheck) {
+            searchCriteria.addAll(tagResult);
+            for (int i = 0; i < tagResult.size(); i++) {
+                whereClause = whereClause + "tags LIKE '%" + tagResult.get(i) + "%'";
+                if (i != tagResult.size() - 1) {
+                    whereClause = whereClause + " and ";
+                }
+            }
+        } else {
+            searchCriteria.add(query);
+            whereClause = "name LIKE '%" + query + "%'";
+        }
+        return whereClause;
+    }
 
     public static void init(Context context) {
         Backendless.initApp(context, "0020F1DC-E584-AD36-FF74-6D3E9E917400", "7DCC75D9-058A-6830-FF54-817317E0C000", "v1");
@@ -48,6 +76,8 @@ public class Back {
                     return new Craving(Backendless.Persistence.of("cravings").findById(id));
                 case offer:
                     return new Offer(Backendless.Persistence.of("offers").findById(id));
+                case offerer:
+                    return new Offerer(Backendless.Persistence.of("offerers").findById(id));
             }
         } catch (Exception e) {
             errorHandle(e);
@@ -88,6 +118,8 @@ public class Back {
                     return Backendless.Persistence.of("tags").save(map);
                 case offer:
                     return Backendless.Persistence.of("offers").save(map);
+                case offerer:
+                    return Backendless.Persistence.of("offerers").save(map);
                 default:
                     return null;
             }
@@ -102,6 +134,10 @@ public class Back {
             switch (object) {
                 case cravingfollower:
                     Backendless.Persistence.of("cravingFollowers").remove(map);
+                    return;
+                case offer:
+                    Backendless.Persistence.of("offers").remove(map);
+                    return;
             }
         } catch (Exception e) {
             errorHandle(e);
@@ -247,38 +283,42 @@ public class Back {
     }
 
     public static void generateOffers() {
-        BackendlessDataQuery dataQuery = new BackendlessDataQuery();
-        if (Data.cityRestricted) {
-            dataQuery.setWhereClause("city='" + Data.user.getProperty("city") + "'");
-        }
-        List<String> sort = new ArrayList<>();
-        switch (Data.sortByO) {
-            case 0:
-                //TODO: finish this
-                sort.add("visits DESC");
-                break;
-            case 1:
-                sort.add("score DESC");
-                break;
-            case 2:
-                //sort by distance
-                break;
-            case 3:
-                sort.add("price");
-                break;
-        }
-        if (Data.sortByO != 2) {
-            QueryOptions queryOptions = new QueryOptions();
-            queryOptions.setSortBy(sort);
-            dataQuery.setQueryOptions(queryOptions);
-            Data.offerPaged = new PagedList<>(Backendless.Data.of("offers").find(dataQuery));
-        } else {
+        try {
+            BackendlessDataQuery dataQuery = new BackendlessDataQuery();
+            if (Data.cityRestricted) {
+                dataQuery.setWhereClause("city='" + Data.user.getProperty("city") + "'");
+            }
+            List<String> sort = new ArrayList<>();
+            switch (Data.sortByO) {
+                case 0:
+                    //TODO: finish this
+                    sort.add("visits DESC");
+                    break;
+                case 1:
+                    sort.add("score DESC");
+                    break;
+                case 2:
+                    //sort by distance
+                    break;
+                case 3:
+                    sort.add("price");
+                    break;
+            }
+            if (Data.sortByO != 2) {
+                QueryOptions queryOptions = new QueryOptions();
+                queryOptions.setSortBy(sort);
+                dataQuery.setQueryOptions(queryOptions);
+                Data.offerPaged = new PagedList<>(Backendless.Data.of("offers").find(dataQuery));
+            } else {
 
+            }
+        }catch (Exception e) {
+            errorHandle(e);
         }
 
     }
 
     public enum object {
-        food, offer, craving, cravingfollower, tag
+        food, offer, craving, cravingfollower, tag, offerer
     }
 }

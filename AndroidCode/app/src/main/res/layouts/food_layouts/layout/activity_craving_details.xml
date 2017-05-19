@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="itsjustaaron.food.FoodActivities.CravingDetails">
 
     <android.support.v7.widget.Toolbar
@@ -12,84 +14,113 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@android:color/holo_orange_dark"
-        android:theme="@style/AppBarOverlay"/>
+        android:theme="@style/AppBarOverlay">
+        <itsjustaaron.food.Utilities.PrettyTextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="name"
+            android:id="@+id/detailName"
+            android:textAlignment="center"
+            android:gravity="center"
+            android:textSize="30sp"
+            android:textColor="#ffffff"/>
+    </android.support.v7.widget.Toolbar>
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/detailBar">
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <ImageView
-                android:layout_width="200dp"
-                android:layout_height="200dp"
-                android:id="@+id/detailImage"/>
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <HorizontalScrollView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/detailImage"
-                android:id="@+id/tempID1"
-                android:scrollbars="none">
-                <itsjustaaron.food.Utilities.DefaultTextView
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <android.support.v7.widget.CardView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/detailName"
-                    android:text="Name of the Food"
-                    android:textSize="30sp"
-                    android:textStyle="bold"
-                    android:textAlignment="center"/>
-
-            </HorizontalScrollView>
-            <ScrollView
-                android:layout_width="fill_parent"
-                android:layout_height="150dp"
-                android:layout_below="@id/tempID1"
-                android:layout_toRightOf="@id/detailImage"
-                android:paddingTop="20dp">
-                <LinearLayout
-                    android:layout_width="fill_parent"
+                    android:id="@+id/cravingCardView"
+                    app:cardCornerRadius="40dp"
+                    android:layout_centerHorizontal="true"
+                    android:innerRadius="0dp"
+                    android:shape="ring"
+                    android:thicknessRatio="1.9">
+                    <ImageView
+                        android:layout_height="80dp"
+                        android:layout_width="match_parent"
+                        android:id="@+id/cravingDetailFoodImage"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true">
+                    </ImageView>
+                </android.support.v7.widget.CardView>
+                <ImageView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:gravity="center">
-                    <itsjustaaron.food.Utilities.DefaultTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/detailTags"
-                        android:text="Tags of the Food"
-                        android:textAlignment="center"
-                        android:textSize="20sp" />
-                </LinearLayout>
-            </ScrollView>
-            <itsjustaaron.food.Utilities.DefaultTextView
+                    android:id="@+id/cravingDetailFoodImageMat"
+                    android:scaleType="centerCrop"
+                    android:src="@mipmap/mat_transparent"/>
+            </RelativeLayout>
+
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/detailImage"
-                android:id="@+id/detailDescription"
-                android:text="Some description"
-                android:gravity="center"
-                android:textSize="25sp"/>
-            <itsjustaaron.food.Utilities.DefaultTextView
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentStart="true"
+                    android:id="@+id/quote1"
+                    android:src="@mipmap/quote1"/>
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="30dp"
+                    android:id="@+id/quote2"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentBottom="true"
+                    android:src="@mipmap/quote2" />
+
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="85dp"
+                    android:layout_toLeftOf="@id/quote2"
+                    android:layout_toRightOf="@id/quote1">
+                    <itsjustaaron.food.Utilities.PrettyTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/detailDescription"
+                        android:textSize="15sp"/>
+                </ScrollView>
+            </RelativeLayout>
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:id="@+id/cravingDetailFoodTags"/>
+            </HorizontalScrollView>
+
+            <itsjustaaron.food.Utilities.PrettyTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Offers for this:"
+                android:textColor="#000000"
+                android:background="@color/lightOrange"
+                android:padding="5dp"
                 android:textStyle="bold"
-                android:layout_below="@id/detailDescription"
+                android:layout_marginTop="10dp"
                 android:id="@+id/internalID3"
                 android:gravity="center"
                 android:textSize="20sp"/>
-            <ListView
+            <android.support.v7.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/internalID3"
                 android:id="@+id/detailCravingOffers"/>
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Propose an offer"
-                android:gravity="center"
-                android:id="@+id/proposeOffer"
-                android:layout_below="@id/detailCravingOffers"/>
-        </RelativeLayout>
+        </LinearLayout>
     </ScrollView>
-</RelativeLayout>
+</LinearLayout>
