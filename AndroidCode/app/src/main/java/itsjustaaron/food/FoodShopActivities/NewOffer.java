@@ -2,11 +2,14 @@ package itsjustaaron.food.FoodShopActivities;
 
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.util.Log;
@@ -23,6 +26,9 @@ import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -46,12 +52,15 @@ import itsjustaaron.food.Utilities.Helpers;
 
 public class NewOffer extends AppCompatActivity {
     private Food food;
-    private HashMap<String, String> offer = new HashMap<>();
+    private HashMap<String, Object> offer = new HashMap<>();
     private Date date;
     private boolean defaultAddress = true;
+    private Bitmap image;
+    private boolean imageUpdated;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        imageUpdated = false;
         Data.handler = new MyHandler(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_offer);
@@ -65,7 +74,14 @@ public class NewOffer extends AppCompatActivity {
         //todo: allow user to add their photo of the food
         ImageView image = (ImageView) findViewById(R.id.newOfferFoodImage);
         ImageView mat = (ImageView) findViewById(R.id.newOfferMat);
-        image.setImageBitmap(BitmapFactory.decodeFile(getFilesDir() + "/foods/" + food.image));
+        image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(pickPhoto, 0);
+            }
+        });
+        //image.setImageBitmap(BitmapFactory.decodeFile(getFilesDir() + "/offers/" + food.image));
 
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
@@ -178,6 +194,7 @@ public class NewOffer extends AppCompatActivity {
         offer.put("foodID", food.objectId);
         offer.put("offerer", Data.user.getProperty("name").toString());
         offer.put("offererPortrait", Data.user.getProperty("portrait").toString());
+        offer.put("image", imageUpdated);
         new AsyncTask<Void, Void, Integer>() {
             ProgressDialog progressDialog = new ProgressDialog(NewOffer.this);
 
@@ -197,9 +214,15 @@ public class NewOffer extends AppCompatActivity {
                         if (!newFile.getParentFile().exists()) {
                             newFile.getParentFile().mkdirs();
                         }
-                        newFile.createNewFile();
-                        OutputStream out = new FileOutputStream(newFile);
-                        bitmap.compress(Bitmap.CompressFormat.PNG, 0, out);
+                        if(imageUpdated) {
+                            File dest = new File(Data.fileDir + "/offers/" + o.get("objectId").toString() + ".png");
+                            OutputStream out = new FileOutputStream(dest);
+                            image.compress(Bitmap.CompressFormat.PNG, 100, out);
+                            Back.upload(dest, "offers/", true);
+                            newFile.createNewFile();
+                        }
+                        OutputStream out2 = new FileOutputStream(newFile);
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 0, out2);
                         Back.upload(newFile, "offers/offerers/", true);
                     } catch (Exception e) {
                         Log.e("IO", e.toString(), e);
@@ -217,5 +240,38 @@ public class NewOffer extends AppCompatActivity {
                 finish();
             }
         }.execute();
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 0) {
+            if (data != null) {
+                Uri image = data.getData();
+                //crop image activity written by ArthurHub
+                //https://github.com/ArthurHub/Android-Image-Cropper
+                CropImage.activity(image)
+                        .setCropShape(CropImageView.CropShape.RECTANGLE)
+                        .setAspectRatio(1, 1)
+                        .setFixAspectRatio(true)
+                        .setGuidelines(CropImageView.Guidelines.ON)
+                        .start(this);
+            }
+        } else {
+            if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+                CropImage.ActivityResult result = CropImage.getActivityResult(data);
+                if (resultCode == RESULT_OK) {
+                    try {
+                        Uri resultUri = result.getUri();
+                        image = MediaStore.Images.Media.getBitmap(this.getContentResolver(), resultUri);
+                        imageUpdated = true;
+                        ((ImageView) findViewById(R.id.newOfferFoodImage)).setImageBitmap(image);
+                    }catch (Exception e) {
+                        Data.handler.uncaughtException(Thread.currentThread(), e);
+                    }
+                } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                    Data.handler.uncaughtException(Thread.currentThread(), result.getError());
+                }
+            }
+        }
     }
 }

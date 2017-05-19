@@ -52,7 +52,11 @@ public class OfferCardAdapter extends RecyclerView.Adapter<ViewHolder> {
                 ((ImageView) v.findViewById(R.id.userIcon)).setImageBitmap(BitmapFactory.decodeFile(Data.fileDir + path));
             }
             ((TextView)v.findViewById(R.id.userName)).setText(offer.offerer);
-            ((ImageView) v.findViewById(R.id.foodImage)).setImageBitmap(BitmapFactory.decodeFile(Data.fileDir + "/foods/" + offer.food.image));
+            if(offer.image) {
+                ((ImageView) v.findViewById(R.id.foodImage)).setImageBitmap(BitmapFactory.decodeFile(Data.fileDir + "/offers/" + offer.objectId + ".png"));
+            }else {
+                ((ImageView) v.findViewById(R.id.foodImage)).setImageBitmap(BitmapFactory.decodeFile(Data.fileDir + "/foods/" + offer.food.image));
+            }
             ((TextView)v.findViewById(R.id.price)).setText(String.valueOf(offer.price));
             ((TextView)v.findViewById(R.id.location)).setText(offer.city);
             v.findViewById(R.id.normalCase).setOnClickListener(new View.OnClickListener() {

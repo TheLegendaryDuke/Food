@@ -171,7 +171,11 @@ public class MainAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
                 }
                 Date exp = offer.expire;
                 ((TextView) v.findViewById(R.id.offerFoodExpire)).setText("Expiring: " + Data.standardDateFormat.format(exp));
-                image.setImageBitmap(BitmapFactory.decodeFile(fileDir + "/foods/" + offer.food.image));
+                if(offer.image) {
+                    image.setImageBitmap(BitmapFactory.decodeFile(fileDir + "/offers/" + offer.objectId + ".png"));
+                }else {
+                    image.setImageBitmap(BitmapFactory.decodeFile(fileDir + "/foods/" + offer.food.image));
+                }
                 v.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -189,7 +193,12 @@ public class MainAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy MMM dd");
                 sdf.setTimeZone(TimeZone.getDefault());
                 ((TextView)v.findViewById(R.id.menuItemDescription)).setText("Expiring on: " + sdf.format(menuItem.expire));
-                imageView.setImageBitmap(BitmapFactory.decodeFile(fileDir + "/foods/" + menuItem.food.image));
+
+                if(menuItem.image) {
+                    imageView.setImageBitmap(BitmapFactory.decodeFile(fileDir + "/offers/" + menuItem.objectId + ".png"));
+                }else {
+                    imageView.setImageBitmap(BitmapFactory.decodeFile(fileDir + "/foods/" + menuItem.food.image));
+                }
                 v.findViewById(R.id.removeItem).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

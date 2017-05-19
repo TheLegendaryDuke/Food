@@ -63,7 +63,11 @@ public class OfferDetails extends AppCompatActivity {
     public void updateUI() {
         ImageView image = (ImageView) findViewById(R.id.offerDetailFoodImage);
         ImageView mat = (ImageView) findViewById(R.id.offerDetailFoodImageMat);
-        image.setImageBitmap(BitmapFactory.decodeFile(getFilesDir() + "/foods/" + offer.food.image));
+        if(offer.image) {
+            image.setImageBitmap(BitmapFactory.decodeFile(getFilesDir() + "/offers/" + offer.objectId + ".png"));
+        }else {
+            image.setImageBitmap(BitmapFactory.decodeFile(getFilesDir() + "/foods/" + offer.food.image));
+        }
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);

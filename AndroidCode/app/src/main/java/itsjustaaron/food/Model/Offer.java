@@ -25,6 +25,7 @@ public class Offer {
     public String offererPortrait;
     public String contact;
     public Map map;
+    public boolean image;
 
     public Offer() {}
 
@@ -60,6 +61,14 @@ public class Offer {
             final String path = "/offers/offerers/" + offererPortrait;
             File file = new File(Data.fileDir + path);
             if (!file.exists()) {
+                Back.downloadToLocal(path);
+            }
+        }
+        image = (Boolean) map.get("image");
+        if(image) {
+            final String path = "/offers/" + objectId + ".png";
+            File file = new File(Data.fileDir + path);
+            if(!file.exists()) {
                 Back.downloadToLocal(path);
             }
         }
