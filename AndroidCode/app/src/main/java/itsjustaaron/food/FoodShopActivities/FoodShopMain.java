@@ -45,6 +45,7 @@ import itsjustaaron.food.Back.MyHandler;
 import itsjustaaron.food.Back.PagedList;
 import itsjustaaron.food.FoodActivities.Main;
 import itsjustaaron.food.FoodActivities.Options;
+import itsjustaaron.food.FoodActivities.ProfileSetup;
 import itsjustaaron.food.FoodActivities.Welcome;
 import itsjustaaron.food.Model.Craving;
 import itsjustaaron.food.Model.Food;
@@ -459,5 +460,11 @@ public class FoodShopMain extends AppCompatActivity
                 searchDialog.show();
                 break;
         }
+    }
+
+    public void ProfileSetup(View v) {
+        Intent intent = new Intent(this, ProfileSetup.class);
+        intent.putExtra("source", "shop");
+        startActivity(intent);
     }
 }

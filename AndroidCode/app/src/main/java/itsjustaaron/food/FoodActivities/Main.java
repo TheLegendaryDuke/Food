@@ -482,6 +482,7 @@ public class Main extends AppCompatActivity
     public void ProfileSetup(View view) {
         if(checkUser(this)) {
             Intent intent = new Intent(this, ProfileSetup.class);
+            intent.putExtra("source", "");
             Main.this.startActivity(intent);
         }
     }

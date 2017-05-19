@@ -9,13 +9,17 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.CheckedTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,22 +29,30 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
 import itsjustaaron.food.Back.MyHandler;
+import itsjustaaron.food.Model.Food;
+import itsjustaaron.food.Model.Offerer;
 import itsjustaaron.food.R;
+import itsjustaaron.food.Utilities.Helpers;
 
 
 public class ProfileSetup extends AppCompatActivity {
     private boolean imageUpdated;
     private ProgressDialog d;
-    private Uri rawImage;
     private String portrait;
+    private boolean fromShop;
+    private Offerer offerer;
+
+    private ArrayList<Boolean> tagChecks = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        getIntent();
+        fromShop = getIntent().getStringExtra("source").equals("shop");
         Data.handler = new MyHandler(this);
         super.onCreate(savedInstanceState);
         imageUpdated = false;
@@ -63,6 +75,116 @@ public class ProfileSetup extends AppCompatActivity {
             //portrait must be there for custom-portrait user since Main downloads it
             ((ImageView) findViewById(R.id.profileImage)).setImageBitmap(BitmapFactory.decodeFile(portrait.getAbsolutePath()));
         }
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            public Void doInBackground(Void... voids) {
+                offerer = (Offerer) Back.getObjectByID(Data.user.getProperty("offerer").toString(), Back.object.offerer);
+                return null;
+            }
+            @Override
+            public void onPostExecute(Void v) {
+                ((EditText) findViewById(R.id.profileDesc)).setText(offerer.description);
+                ArrayList checkedTags = new ArrayList(Food.csvToList(offerer.tags));
+                final LinearLayout container = (LinearLayout) findViewById(R.id.tagContainer);
+                for (int i = 0; i < Data.tags.size(); i++) {
+                    String tag = Data.tags.get(i);
+                    final CheckedTextView checkedTextView = new CheckedTextView(ProfileSetup.this);
+                    checkedTextView.setText(tag);
+                    checkedTextView.setBackgroundResource(Helpers.getTagDrawable(Data.tagColors.get(tag)));
+                    checkedTextView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (checkedTextView.isChecked()) {
+                                checkedTextView.setCheckMarkDrawable(null);
+                                checkedTextView.setChecked(false);
+                                tagChecks.set(checkedTextView.getId(), false);
+                            } else {
+                                checkedTextView.setCheckMarkDrawable(ContextCompat.getDrawable(ProfileSetup.this, R.drawable.ic_check));
+                                checkedTextView.setChecked(true);
+                                tagChecks.set(checkedTextView.getId(), true);
+                            }
+                        }
+                    });
+                    checkedTextView.setChecked(checkedTags.contains(tag));
+                    if (!checkedTextView.isChecked()) {
+                        checkedTextView.setCheckMarkDrawable(null);
+                    } else {
+                        checkedTextView.setCheckMarkDrawable(ContextCompat.getDrawable(ProfileSetup.this, R.drawable.ic_check));
+                    }
+                    checkedTextView.setId(i);
+                    container.addView(checkedTextView);
+                    tagChecks.add(i, checkedTags.contains(tag));
+                }
+                final Button button = new Button(ProfileSetup.this);
+                button.setText("Add");
+
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(ProfileSetup.this);
+                        final EditText input = new EditText(ProfileSetup.this);
+                        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.MATCH_PARENT);
+                        input.setLayoutParams(lp);
+                        alertDialog.setView(input);
+                        alertDialog.setTitle("Enter your tag:");
+                        alertDialog.setPositiveButton("add", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                final String tag = input.getText().toString().toUpperCase();
+                                if (Data.tags.contains(tag)) {
+                                    Toast.makeText(ProfileSetup.this, "There is already a tag with the same name!", Toast.LENGTH_LONG).show();
+                                } else {
+                                    Data.tags.add(tag);
+
+                                    new AsyncTask<Void, Void, Integer>() {
+                                        @Override
+                                        public Integer doInBackground(Void... voids) {
+                                            HashMap<String, String> tagMap = new HashMap<String, String>();
+                                            tagMap.put("tag", tag);
+                                            tagMap.put("ownerId", Data.user.getObjectId());
+                                            Back.store(tagMap, Back.object.tag);
+                                            return 0;
+                                        }
+
+                                        @Override
+                                        public void onPostExecute(Integer integer) {
+                                            final CheckedTextView ctv = new CheckedTextView(ProfileSetup.this);
+                                            ctv.setText(tag);
+                                            ctv.setChecked(true);
+                                            ctv.setId(Data.tags.size() - 1);
+                                            ctv.setCheckMarkDrawable(ContextCompat.getDrawable(ProfileSetup.this, R.drawable.ic_check));
+                                            ctv.setOnClickListener(new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+                                                    if (ctv.isChecked()) {
+                                                        ctv.setCheckMarkDrawable(null);
+                                                        ctv.setChecked(false);
+                                                    } else {
+                                                        ctv.setCheckMarkDrawable(ContextCompat.getDrawable(ProfileSetup.this, R.drawable.ic_check));
+                                                        ctv.setChecked(true);
+                                                    }
+                                                }
+                                            });
+                                            container.addView(ctv, container.getChildCount() - 1);
+                                            tagChecks.add(ctv.getId(), true);
+                                        }
+                                    }.execute();
+                                }
+                            }
+                        }).setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                        });
+                        alertDialog.show();
+                    }
+                });
+                button.setWidth(container.getWidth());
+                container.addView(button);
+            }
+        }.execute();
     }
 
     @Override
@@ -71,7 +193,6 @@ public class ProfileSetup extends AppCompatActivity {
         if (requestCode == 0) {
             if (data != null) {
                 Uri image = data.getData();
-                rawImage = image;
                 //crop image activity written by ArthurHub
                 //https://github.com/ArthurHub/Android-Image-Cropper
                 CropImage.activity(image)
@@ -117,10 +238,23 @@ public class ProfileSetup extends AppCompatActivity {
         Data.user.setProperty("zipCode", ((EditText) findViewById(R.id.profileZip)).getText().toString());
         Data.user.setProperty("portrait", portrait);
 
+        final HashMap<String, String> map = new HashMap<>();
+        map.put("objectId", offerer.objectId);
+        map.put("description", ((EditText)findViewById(R.id.profileDesc)).getText().toString());
+        map.put("userID", offerer.userID);
+        final ArrayList<String> tags = new ArrayList<>();
+        for (int i = 0; i < Data.tags.size(); i++) {
+            if (tagChecks.get(i)) {
+                tags.add(Data.tags.get(i));
+            }
+        }
+        map.put("tags", Food.listToCsv(tags));
+
         new AsyncTask<Void, Void, Integer>() {
             @Override
             public Integer doInBackground(Void... voids) {
                 Back.updateUserData();
+                Back.store(map, Back.object.offerer);
                 if (imageUpdated) {
                     try {
                         final File image = new File(Data.fileDir + "/users/" + Data.user.getObjectId() + "/" + portrait);
