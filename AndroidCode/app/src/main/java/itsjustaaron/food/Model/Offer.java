@@ -23,8 +23,14 @@ public class Offer {
     public String zipCode;
     public double price;
     public String offererPortrait;
+    public String contact;
+    public Map map;
+    public boolean image;
+
+    public Offer() {}
 
     public Offer(Map map) {
+        this.map = map;
         offerer = map.get("offerer").toString();
         objectId = map.get("objectId").toString();
         boolean found = false;
@@ -58,16 +64,29 @@ public class Offer {
                 Back.downloadToLocal(path);
             }
         }
+        image = (Boolean) map.get("image");
+        if(image) {
+            final String path = "/offers/" + objectId + ".png";
+            File file = new File(Data.fileDir + path);
+            if(!file.exists()) {
+                Back.downloadToLocal(path);
+            }
+        }
         address = map.get("address").toString();
         city = map.get("city").toString();
         comment = map.get("comment").toString();
         zipCode = map.get("zipCode").toString();
         price = Double.parseDouble(map.get("price").toString());
+        contact = map.get("contact").toString();
         try {
             expire = Data.serverDateFormat.parse(map.get("expire").toString());
         } catch (Exception e) {
             Log.d("dateParse", e.toString());
         }
 
+    }
+
+    public Map returnMap() {
+        return map;
     }
 }

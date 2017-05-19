@@ -23,6 +23,8 @@ import itsjustaaron.food.Model.Craving;
 import itsjustaaron.food.Model.Food;
 import itsjustaaron.food.R;
 import itsjustaaron.food.Utilities.EndlessScroll;
+import itsjustaaron.food.Utilities.MainAdapter;
+import itsjustaaron.food.Utilities.SimpleDividerItemDecoration;
 
 /**
  * Created by Aaron-Work on 8/7/2016.
@@ -32,12 +34,10 @@ public class CravingFragment extends Fragment {
     public View rootView;
     public SwipeRefreshLayout swipeRefreshLayout;
     ProgressDialog wait;
-    RecyclerView mRecyclerView;
-    LinearLayoutManager mLayoutManager;
-    private MyAdapter mAdapter;
+    private MainAdapter mAdapter;
 
     public void refresh(final SwipeRefreshLayout s) {
-        if (s != null) {
+        if(s != null) {
             s.setRefreshing(true);
         }
         if (Data.cravings.size() == 0 || Data.cSearchCriteria.size() == 0) {
@@ -50,7 +50,7 @@ public class CravingFragment extends Fragment {
 
                     Data.cravings.clear();
                     String query = Food.listToCsv(Data.cSearchCriteria);
-                    ((Main) getActivity()).doMySearch(query);
+                    ((Main)getActivity()).doMySearch(query);
                     return null;
                 }
 
@@ -59,7 +59,7 @@ public class CravingFragment extends Fragment {
                     mAdapter.notifyDataSetChanged();
                     swipeRefreshLayout.setRefreshing(false);
                 }
-            }.execute();
+            }.execute(new Void[]{});
         }
     }
 
@@ -75,11 +75,12 @@ public class CravingFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         rootView = inflater.inflate(R.layout.tab_craving, container, false);
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.cravingList);
+        RecyclerView mRecyclerView = (RecyclerView) rootView.findViewById(R.id.cravingList);
+        mRecyclerView.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
         mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(getActivity());
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new MyAdapter<Craving>(Data.cravings, 'c', getActivity());
+        mAdapter = new MainAdapter<>(Data.cravings, 'c', getActivity());
         mRecyclerView.setAdapter(mAdapter);
 
         final SwipeRefreshLayout srl = (SwipeRefreshLayout) rootView.findViewById(R.id.cSwipeRefresh);
@@ -144,9 +145,6 @@ public class CravingFragment extends Fragment {
 
     public void notifyChanges() {
         mAdapter.notifyDataSetChanged();
-    }
-
-    public void notifySortChange() {
     }
 
     private class start extends AsyncTask<Void, Void, Void> {

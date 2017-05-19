@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/loginRemember"/>
 
-        <itsjustaaron.food.Utilities.DefaultTextView
+        <itsjustaaron.food.Utilities.PrettyTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Remember Me"
@@ -49,7 +49,7 @@
 
     </LinearLayout>
 
-    <itsjustaaron.food.Utilities.DefaultTextView
+    <itsjustaaron.food.Utilities.PrettyTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/red"

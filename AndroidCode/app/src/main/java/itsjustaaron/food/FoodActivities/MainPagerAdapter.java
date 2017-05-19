@@ -42,7 +42,7 @@ public class MainPagerAdapter extends FragmentPagerAdapter {
             case 0:
                 return "Cravings";
             case 1:
-                return "Foods";
+                return "Offers";
             default:
                 return null;
         }

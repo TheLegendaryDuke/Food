@@ -54,15 +54,12 @@ import java.util.TimeZone;
 import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
 import itsjustaaron.food.Back.MyHandler;
+import itsjustaaron.food.FoodShopActivities.FoodShopMain;
+import itsjustaaron.food.FoodShopActivities.FoodShopWelcome;
 import itsjustaaron.food.Model.Craving;
 import itsjustaaron.food.Model.Food;
 import itsjustaaron.food.Model.Offer;
 import itsjustaaron.food.R;
-
-
-//TODO: side nav actions, guest restriction
-
-//not so urgent TODO: caching Data
 
 //future add-ons: in-app communication, in-app payment
 
@@ -89,34 +86,13 @@ public class Main extends AppCompatActivity
     public void doMySearch(String query) {
         progressDialog.show();
         ArrayList searchCriteria;
-        if (Data.onCraving) {
+        if(Data.onCraving) {
             searchCriteria = Data.cSearchCriteria;
-        } else {
+        }else {
             searchCriteria = Data.oSearchCriteria;
         }
         searchCriteria.clear();
-        List<String> tagResult = Food.csvToList(query.toUpperCase());
-        boolean tagCheck = true;
-        for (int i = 0; i < tagResult.size(); i++) {
-            if (!Data.tags.contains(tagResult.get(i))) {
-                tagCheck = false;
-                break;
-            }
-        }
-        String whereClause = "";
-        if (tagCheck) {
-            searchCriteria.addAll(tagResult);
-            for (int i = 0; i < tagResult.size(); i++) {
-                whereClause = whereClause + "tags LIKE '%" + tagResult.get(i) + "%'";
-                if (i != tagResult.size() - 1) {
-                    whereClause = whereClause + " and ";
-                }
-            }
-        } else {
-            searchCriteria.add(query);
-            whereClause = "name LIKE '%" + query + "%'";
-        }
-        final String where = whereClause;
+        final String where = Back.queryToSearchCriteria(query, searchCriteria);
         new AsyncTask<Void, Void, Integer>() {
             @Override
             public Integer doInBackground(Void... voids) {
@@ -134,12 +110,12 @@ public class Main extends AppCompatActivity
                         }
                     }
                     where = where + ")";
-                    if (Data.onCraving) {
+                    if(Data.onCraving) {
                         Data.cravingPaged = Back.findObjectByWhere(where, Back.object.craving);
                         List<Map> mapResult = Data.cravingPaged.getCurPage();
-                        if (mapResult.size() == 0) {
+                        if(mapResult.size() == 0) {
                             return 1;
-                        } else {
+                        }else {
                             Data.cravings.clear();
                             for (int i = 0; i < mapResult.size(); i++) {
                                 Map obj = mapResult.get(i);
@@ -147,10 +123,10 @@ public class Main extends AppCompatActivity
                                 Data.cravings.add(craving);
                             }
                         }
-                    } else {
+                    }else {
                         Data.offerPaged = Back.findObjectByWhere(where, Back.object.offer);
                         List<Map> mapResult = Data.offerPaged.getCurPage();
-                        if (mapResult.size() == 0) {
+                        if(mapResult.size() == 0) {
                             return 1;
                         } else {
                             Data.offers.clear();
@@ -161,7 +137,7 @@ public class Main extends AppCompatActivity
                             }
                         }
                     }
-                } else {
+                }else {
                     return 1;
                 }
                 return 0;
@@ -169,14 +145,14 @@ public class Main extends AppCompatActivity
 
             @Override
             public void onPostExecute(Integer v) {
-                if (Data.onCraving) {
+                if(Data.onCraving) {
                     if (v == 1) {
                         Toast.makeText(getApplicationContext(), "Your search yields no results", Toast.LENGTH_SHORT).show();
                         progressDialog.dismiss();
                     } else {
                         searchCallBack();
                     }
-                } else {
+                }else {
                     if (v == 1) {
                         Toast.makeText(getApplicationContext(), "Your search yields no results", Toast.LENGTH_SHORT).show();
                         progressDialog.dismiss();
@@ -242,15 +218,11 @@ public class Main extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Data.handler = new MyHandler(this);
-        Data.cravings = new ArrayList<>();
-        Data.foods = new ArrayList<Food>();
-        Data.fileDir = getFilesDir().toString();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ((TextView)findViewById(R.id.actionBarTitle)).setText("");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("");
         setSupportActionBar(toolbar);
-
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Please wait...");
@@ -396,32 +368,33 @@ public class Main extends AppCompatActivity
             @Override
             public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
             switch (checkedId) {
-                case R.id.sortPopularity:
-                    Data.sortByO = 0;
-                    offerFragment.notifySortChange();
-                    break;
-                case R.id.sortScore:
-                    Data.sortByO = 1;
-                    offerFragment.notifySortChange();
-                    break;
-                case R.id.sortLocation:
-                    new AlertDialog.Builder(Main.this)
-                            .setMessage("Update your current location?")
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            //Data.sortByO = 2;
-                            //offerFragment.notifySortChange();
-                            dialog.dismiss();
-                        }
-                    })
-                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    }).show();
-                    break;
+                //todo: add back sort options
+//                case R.id.sortPopularity:
+//                    Data.sortByO = 0;
+//                    offerFragment.notifySortChange();
+//                    break;
+//                case R.id.sortScore:
+//                    Data.sortByO = 1;
+//                    offerFragment.notifySortChange();
+//                    break;
+//                case R.id.sortLocation:
+//                    new AlertDialog.Builder(Main.this)
+//                            .setMessage("Update your current location?")
+//                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            //Data.sortByO = 2;
+//                            //offerFragment.notifySortChange();
+//                            dialog.dismiss();
+//                        }
+//                    })
+//                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            dialog.dismiss();
+//                        }
+//                    }).show();
+//                    break;
                 case R.id.sortPrice:
                     Data.sortByO = 3;
                     offerFragment.notifySortChange();
@@ -433,19 +406,6 @@ public class Main extends AppCompatActivity
         sortMenuO.setElevation(5.0f);
 
         sortMenuO.setOutsideTouchable(true);
-
-        Data.tags = new ArrayList<>();
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            public Void doInBackground(Void... voids) {
-                //download all the available food tags
-                List<Map> result = Back.getAll(Back.object.tag).getCurPage();
-                for (int i = 0; i < result.size(); i++) {
-                    Data.tags.add(result.get(i).get("tag").toString());
-                }
-                return null;
-            }
-        }.execute();
 
         final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -526,24 +486,25 @@ public class Main extends AppCompatActivity
     }
 
     public void ProfileSetup(View view) {
-        if (checkUser(this)) {
+        if(checkUser(this)) {
             Intent intent = new Intent(this, ProfileSetup.class);
+            intent.putExtra("source", "");
             Main.this.startActivity(intent);
         }
     }
 
     @Override
     public void onBackPressed() {
-        if (backPressed == null) {
+        if(backPressed == null) {
             backPressed = Toast.makeText(this, "Press again to exit the application.", Toast.LENGTH_LONG);
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            if (backPressed.getView().getWindowVisibility() == View.VISIBLE) {
+            if(backPressed.getView().getWindowVisibility() == View.VISIBLE) {
                 super.onBackPressed();
-            } else {
+            }else {
                 backPressed.show();
             }
         }
@@ -572,21 +533,21 @@ public class Main extends AppCompatActivity
 
     public void searchCallBack() {
         final LinearLayout criteriaContainer;
-        if (Data.onCraving) {
+        if(Data.onCraving) {
             criteriaContainer = (LinearLayout) findViewById(R.id.cSearchCriterias);
-        } else {
+        }else {
             criteriaContainer = (LinearLayout) findViewById(R.id.oSearchCriterias);
         }
         criteriaContainer.removeAllViews();
         final ArrayList<String> searchCriteria;
-        if (Data.onCraving) {
+        if(Data.onCraving) {
             searchCriteria = Data.cSearchCriteria;
             cravingFragment.notifyChanges();
-        } else {
+        }else {
             searchCriteria = Data.oSearchCriteria;
             offerFragment.notifyChanges();
         }
-        for (final String c : searchCriteria) {
+        for(final String c : searchCriteria) {
             TextView textView = new TextView(this);
             final LinearLayout smaller = new LinearLayout(this);
             smaller.setOrientation(LinearLayout.HORIZONTAL);
@@ -603,15 +564,15 @@ public class Main extends AppCompatActivity
                 @Override
                 public void onClick(View v) {
                     searchCriteria.remove(c);
-                    if (searchCriteria.size() == 0) {
-                        if (Data.onCraving) {
+                    if(searchCriteria.size() == 0) {
+                        if(Data.onCraving) {
                             Data.cravings.clear();
                             cravingFragment.refresh(cravingFragment.swipeRefreshLayout);
                         } else {
                             Data.offers.clear();
                             offerFragment.refresh(offerFragment.swipeRefreshLayout);
                         }
-                    } else {
+                    }else {
                         String query = Food.listToCsv(searchCriteria);
                         doMySearch(query);
                     }
@@ -623,19 +584,6 @@ public class Main extends AppCompatActivity
             criteriaContainer.addView(smaller);
         }
         progressDialog.dismiss();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 0) {
-            if (resultCode == RESULT_OK) {
-                String id = data.getStringExtra("id");
-                Intent intent = new Intent(this, NewOffer.class);
-                intent.putExtra("food", id);
-                startActivity(intent);
-            }
-        }
     }
 
     //Side drawer actions
@@ -652,7 +600,7 @@ public class Main extends AppCompatActivity
                     finish();
                 }
             }).show();
-        } else {
+        }else {
             // Handle navigation view item clicks here.
             int id = item.getItemId();
 
@@ -681,14 +629,13 @@ public class Main extends AppCompatActivity
                     startActivity(myCravings);
                     break;
 
-                case R.id.drawerOffer:
-                    Intent myOffers = new Intent(this, MyOffers.class);
-                    startActivity(myOffers);
-                    break;
-
                 case R.id.drawerOption:
                     Intent options = new Intent(this, Options.class);
                     startActivity(options);
+                    break;
+
+                case R.id.swap:
+                    goToFoodShop(null);
                     break;
             }
         }
@@ -697,8 +644,17 @@ public class Main extends AppCompatActivity
         return true;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
+    public void goToFoodShop(View view) {
+        if(checkUser(this)) {
+            Intent swap;
+            if (Data.user.getProperty("offerer") == null || Data.user.getProperty("offerer").toString().equals("")) {
+                swap = new Intent(this, FoodShopWelcome.class);
+            } else {
+                swap = new Intent(this, FoodShopMain.class);
+            }
+            startActivity(swap);
+            overridePendingTransition(R.anim.right_slide_in, R.anim.right_slide_out);
+            finish();
+        }
     }
 }

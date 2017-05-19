@@ -22,14 +22,19 @@
             android:layout_height="?attr/actionBarSize"
             android:background="@android:color/holo_orange_dark"
             app:popupTheme="@style/PopupOverlay">
-                <RelativeLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="end">
+                    android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:id="@+id/actionBarTitle"
+                            android:layout_weight="1"/>
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:layout_alignParentEnd="true"
+                            android:layout_weight="0"
                             android:layout_margin="10dp"
                             android:background="@drawable/ripple_effect"
                             android:id="@+id/sort"
@@ -39,13 +44,13 @@
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
+                            android:layout_weight="0"
                             android:id="@+id/search"
                             android:layout_margin="10dp"
                             android:onClick="barOnClick"
                             android:background="@drawable/ripple_effect"
-                            android:layout_toLeftOf="@id/sort"
                             android:src="@drawable/search"/>
-                </RelativeLayout>
+                </LinearLayout>
         </android.support.v7.widget.Toolbar>
 
         <android.support.design.widget.TabLayout

@@ -10,6 +10,13 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="itsjustaaron.food.FoodActivities.MyCravings">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:id="@+id/myCravingEmpty"
+        android:text="There is nothing here\n Go out there and start hunting for food you crave!"/>
+
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"

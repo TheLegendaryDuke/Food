@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="100dp"
+    android:padding="6dip"
+    android:gravity="center_vertical">
+
+    <ImageView
+        android:id="@+id/cravingItemImage"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginRight="6dip" />
+
+
+    <LinearLayout
+        android:layout_width="50dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:orientation="vertical"
+        android:id="@+id/internalID1"
+        android:gravity="center">
+
+        <itsjustaaron.food.Utilities.PrettyTextView
+            android:id="@+id/cravingFollowerCount"
+            android:textSize="20sp"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="0" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="likes"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toRightOf="@id/cravingItemImage"
+        android:layout_toLeftOf="@id/internalID1"
+        android:orientation="vertical" >
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <itsjustaaron.food.Utilities.PrettyTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:id="@+id/cravingItemName"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:text="Hambaobao"/>
+        </HorizontalScrollView>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <itsjustaaron.food.Utilities.PrettyTextView
+                android:id="@+id/cravingItemDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Description"
+                android:textSize="15sp" />
+
+        </ScrollView>
+
+
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <itsjustaaron.food.Utilities.PrettyTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="something"
+                android:id="@+id/cravingItemTags"
+                android:maxLines="1"/>
+        </HorizontalScrollView>
+
+
+    </LinearLayout>
+
+</RelativeLayout>

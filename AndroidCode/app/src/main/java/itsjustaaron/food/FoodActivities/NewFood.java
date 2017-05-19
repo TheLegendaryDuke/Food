@@ -27,6 +27,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -42,7 +45,9 @@ import itsjustaaron.food.Back.MyHandler;
 import itsjustaaron.food.Back.PagedList;
 import itsjustaaron.food.Model.Food;
 import itsjustaaron.food.R;
+import itsjustaaron.food.Utilities.Helpers;
 
+//returns a string "id" as the foodID created/selected, consumes a boolean "onCraving" to indicate calling activity
 
 public class NewFood extends AppCompatActivity {
 
@@ -92,7 +97,7 @@ public class NewFood extends AppCompatActivity {
             public void onClick(DialogInterface dialogInterface, int i) {
                 new AlertDialog.Builder(NewFood.this)
                         .setTitle("Caution")
-                        .setMessage("Please make sure that you cannot find the food you are looking for before creating a new Food\n(Did you know you can enter tags of a food like \"noodle\" in the search?")
+                        .setMessage("Please make sure that you cannot find the food you are looking for before creating a new Food\n(Did you know you can enter tags of a food like \"noodle\" in the search?)")
                         .setPositiveButton("Proceed", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -115,6 +120,7 @@ public class NewFood extends AppCompatActivity {
             String tag = Data.tags.get(i);
             final CheckedTextView checkedTextView = new CheckedTextView(this);
             checkedTextView.setText(tag);
+            checkedTextView.setBackgroundResource(Helpers.getTagDrawable(Data.tagColors.get(tag)));
             checkedTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -156,7 +162,6 @@ public class NewFood extends AppCompatActivity {
                             Toast.makeText(NewFood.this, "There is already a tag with the same name!", Toast.LENGTH_LONG).show();
                         } else {
                             Data.tags.add(tag);
-
                             new AsyncTask<Void, Void, Integer>() {
                                 @Override
                                 public Integer doInBackground(Void... voids) {
@@ -211,33 +216,27 @@ public class NewFood extends AppCompatActivity {
             if (data != null) {
                 Uri image = data.getData();
                 rawImage = image;
-                Intent cropIntent = new Intent("com.android.camera.action.CROP");
-                cropIntent.setDataAndType(image, "image/*");
-                cropIntent.putExtra("crop", "true");
-                cropIntent.putExtra("aspectX", 10);
-                cropIntent.putExtra("aspectY", 10);
-                cropIntent.putExtra("outputX", 128);
-                cropIntent.putExtra("outputY", 128);
-                cropIntent.putExtra("return-data", true);
-                startActivityForResult(cropIntent, 1);
+                CropImage.activity(image)
+                        .setCropShape(CropImageView.CropShape.OVAL)
+                        .setFixAspectRatio(true)
+                        .setGuidelines(CropImageView.Guidelines.ON)
+                        .start(this);
             }
         } else {
-            if (resultCode == RESULT_OK) {
-                if (data != null) {
+            if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+                CropImage.ActivityResult result = CropImage.getActivityResult(data);
+                if (resultCode == RESULT_OK) {
+                    Uri resultUri = result.getUri();
                     imageUpdated = true;
-                    pic = data.getExtras().getParcelable("data");
-                    ((ImageView) findViewById(R.id.createFoodImage)).setImageBitmap(pic);
-                }
-            } else {
-                if (rawImage != null) {
                     try {
-                        pic = MediaStore.Images.Media.getBitmap(this.getContentResolver(), rawImage);
-                        pic = Bitmap.createScaledBitmap(pic, 200, 200, true);
-                        ((ImageView) findViewById(R.id.createFoodImage)).setImageURI(rawImage);
-                        imageUpdated = true;
-                    } catch (Exception e) {
-                        Log.d("error", e.toString(), e);
+                        pic = MediaStore.Images.Media.getBitmap(this.getContentResolver(), resultUri);
+                        ((ImageView) findViewById(R.id.createFoodImage)).setImageBitmap(pic);
+                    }catch (Exception e) {
+                        Data.handler.uncaughtException(Thread.currentThread(), e);
                     }
+
+                } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                    Data.handler.uncaughtException(Thread.currentThread(), result.getError());
                 }
             }
         }
@@ -527,5 +526,12 @@ public class NewFood extends AppCompatActivity {
             });
             return rowView;
         }
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        setResult(RESULT_CANCELED);
+        finish();
     }
 }

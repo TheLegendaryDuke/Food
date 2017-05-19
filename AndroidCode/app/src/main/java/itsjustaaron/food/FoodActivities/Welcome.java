@@ -14,7 +14,6 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.PasswordTransformationMethod;
-import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,12 +25,18 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
 import itsjustaaron.food.Back.MyHandler;
+import itsjustaaron.food.FoodShopActivities.FoodShopMain;
+import itsjustaaron.food.Model.Food;
 import itsjustaaron.food.R;
 
 
@@ -43,17 +48,46 @@ public class Welcome extends AppCompatActivity {
     private ProgressDialog wait;
 
     private void Proceed() {
-        Intent intent = new Intent(this, Main.class);
-        startActivity(intent);
-        this.finish();
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            public Void doInBackground(Void... voids) {
+                Data.tags = new ArrayList<>();
+                Data.tagColors = new HashMap<>();
+                List<Map> result = Back.getAll(Back.object.tag).getCurPage();
+                for (int i = 0; i < result.size(); i++) {
+                    Data.tags.add(result.get(i).get("tag").toString());
+                    Data.tagColors.put(result.get(i).get("tag").toString(),
+                            (Integer)result.get(i).get("color"));
+                }
+                return null;
+            }
+        }.execute();
+        if((Boolean) Data.user.getProperty("defaultFood")) {
+            Intent intent = new Intent(this, Main.class);
+            startActivity(intent);
+            this.finish();
+        }else {
+            Intent intent = new Intent(this, FoodShopMain.class);
+            startActivity(intent);
+            this.finish();
+        }
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Data.handler = new MyHandler(this);
+        Data.cravings = new ArrayList<>();
+        Data.foods = new ArrayList<Food>();
+        Data.fileDir = getFilesDir().toString();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
-        Back.init(getApplicationContext());
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            public Void doInBackground(Void... voids) {
+                Back.init(getApplicationContext());
+                return null;
+            }
+        }.execute();
         timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
@@ -187,7 +221,7 @@ public class Welcome extends AppCompatActivity {
                                 message = "Too many failed attempts, account is reset! Check your entered email for new password";
                                 Back.resetPassword(email);
                             } else {
-                                message = "Error code " + errorCode + ", please contact developer at contactfoodapp@gmail.com";
+                                message = "Error code " + errorCode + ", please contact us at contactfoodapp@gmail.com";
                             }
                             return 1;
                         }

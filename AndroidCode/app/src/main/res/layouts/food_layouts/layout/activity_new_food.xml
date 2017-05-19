@@ -18,7 +18,7 @@
         android:visibility="gone"
         android:gravity="center_horizontal">
 
-        <itsjustaaron.food.Utilities.DefaultTextView
+        <itsjustaaron.food.Utilities.PrettyTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Please enter comma seperated tags or the name of the food"
@@ -89,7 +89,7 @@
                     android:orientation="vertical"
                     android:gravity="right">
 
-                    <itsjustaaron.food.Utilities.DefaultTextView
+                    <itsjustaaron.food.Utilities.PrettyTextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Please check all the tags that fit this food:"
@@ -101,7 +101,7 @@
             </ScrollView>
         </LinearLayout>
 
-        <itsjustaaron.food.Utilities.DefaultTextView
+        <itsjustaaron.food.Utilities.PrettyTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:hint="Please enter the name of the food:"
@@ -116,7 +116,7 @@
             android:textAlignment="center"
             android:id="@+id/createFoodName"/>
 
-        <itsjustaaron.food.Utilities.DefaultTextView
+        <itsjustaaron.food.Utilities.PrettyTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:hint="Please enter a description of the food:"
