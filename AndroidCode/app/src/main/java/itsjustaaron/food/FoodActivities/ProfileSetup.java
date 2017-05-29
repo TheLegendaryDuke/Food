@@ -53,13 +53,13 @@ public class ProfileSetup extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         fromShop = getIntent().getStringExtra("source").equals("shop");
-        if(fromShop) {
-            findViewById(R.id.shopContent).setVisibility(View.VISIBLE);
-        }
         Data.handler = new MyHandler(this);
         super.onCreate(savedInstanceState);
         imageUpdated = false;
         setContentView(R.layout.activity_profile_setup);
+        if(fromShop) {
+            findViewById(R.id.shopContent).setVisibility(View.VISIBLE);
+        }
         d = new ProgressDialog(this);
         d.setMessage("Please wait...");
         Toolbar toolbar = (Toolbar) findViewById(R.id.profileToolbar);
