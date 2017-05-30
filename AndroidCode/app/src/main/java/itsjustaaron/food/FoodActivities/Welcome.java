@@ -35,6 +35,7 @@ import java.util.TimerTask;
 import itsjustaaron.food.Back.Back;
 import itsjustaaron.food.Back.Data;
 import itsjustaaron.food.Back.MyHandler;
+import itsjustaaron.food.Back.PagedList;
 import itsjustaaron.food.FoodShopActivities.FoodShopMain;
 import itsjustaaron.food.Model.Food;
 import itsjustaaron.food.R;
@@ -61,16 +62,20 @@ public class Welcome extends AppCompatActivity {
                 }
                 return null;
             }
+
+            @Override
+            public void onPostExecute(Void v) {
+                if((Boolean) Data.user.getProperty("defaultFood")) {
+                    Intent intent = new Intent(Welcome.this, Main.class);
+                    startActivity(intent);
+                    Welcome.this.finish();
+                }else {
+                    Intent intent = new Intent(Welcome.this, FoodShopMain.class);
+                    startActivity(intent);
+                    Welcome.this.finish();
+                }
+            }
         }.execute();
-        if((Boolean) Data.user.getProperty("defaultFood")) {
-            Intent intent = new Intent(this, Main.class);
-            startActivity(intent);
-            this.finish();
-        }else {
-            Intent intent = new Intent(this, FoodShopMain.class);
-            startActivity(intent);
-            this.finish();
-        }
     }
 
     @Override
@@ -206,10 +211,10 @@ public class Welcome extends AppCompatActivity {
                     final boolean stayLogged = ((CheckBox) dialog.findViewById(R.id.loginRemember)).isChecked();
                     new AsyncTask<Void, Void, Integer>() {
                         String message;
-
                         @Override
                         //0 is success, 1 is failure
                         public Integer doInBackground(Void... voids) {
+                            Back.clearUser();
                             String errorCode = Back.login(email, password, stayLogged);
                             if (errorCode.equals("")) {
                                 return 0;
@@ -304,6 +309,7 @@ public class Welcome extends AppCompatActivity {
                         @Override
                         public Integer doInBackground(Void... voids) {
                             String errorCode = Back.registerUser(email, password, name);
+                            Back.clearUser();
                             if (errorCode.equals("")) {
                                 return 0;
                             } else if (errorCode.equals("3011")) {
@@ -328,6 +334,7 @@ public class Welcome extends AppCompatActivity {
                                     public void onClick(DialogInterface dialogInterface, int i) {
                                         dialogInterface.dismiss();
                                         dialog.dismiss();
+                                        wait.dismiss();
                                         Proceed();
                                     }
                                 }).setTitle("Your account has been created!").setMessage("Please check your email to activate your account or you won't be able to login next time").show();

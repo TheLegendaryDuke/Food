@@ -182,12 +182,12 @@ public class Back {
             sorts.add("numFollowers DESC");
             queryOptions.setSortBy(sorts);
             backendlessDataQuery.setQueryOptions(queryOptions);
-            if(object == Back.object.tag) {
+            if (object == Back.object.tag) {
                 return new PagedList<>(Backendless.Persistence.of("tags").find());
-            }else {
+            } else {
                 return new PagedList<>(Backendless.Persistence.of("cravings").find(backendlessDataQuery));
             }
-        } catch (Exception e) {
+        }catch (Exception e) {
             errorHandle(e);
         }
         return null;
@@ -316,6 +316,12 @@ public class Back {
             errorHandle(e);
         }
 
+    }
+
+    public static void clearUser() {
+        if(Backendless.UserService.CurrentUser() != null) {
+            Backendless.UserService.logout();
+        }
     }
 
     public enum object {
