@@ -220,6 +220,8 @@ public class Welcome extends AppCompatActivity {
                             } else if (errorCode.equals("3036")) {
                                 message = "Too many failed attempts, account is reset! Check your entered email for new password";
                                 Back.resetPassword(email);
+                            }else if(errorCode.equals("3087")) {
+                                message = "Please check your email for the verification before logging in";
                             } else {
                                 message = "Error code " + errorCode + ", please contact us at contactfoodapp@gmail.com";
                             }
